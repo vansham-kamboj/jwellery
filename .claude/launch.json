@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "aurelle",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "5173", "--directory", "D:/MY/Demos/Jwellery demo"],
+      "port": 5173
+    }
+  ]
+}
