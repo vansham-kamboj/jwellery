@@ -1,4 +1,4 @@
-/* Aurelle — tiny hash-routed storefront. State lives here; every change re-renders #app. */
+/* Avya — tiny hash-routed storefront. State lives here; every change re-renders #app. */
 (() => {
   const money = n => '$' + n.toFixed(2);
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -96,13 +96,13 @@
     const cur = r => state.route === r ? 'aria-current="page"' : '';
     if (state.route === 'checkout') {
       return `<header class="site-header fade-rule"><nav class="nav">
-        <a href="#/" class="nav-brand">AURELLE</a>
+        <a href="#/" class="nav-brand" aria-label="Avya Jewels home"><span class="logo-word">AVYA</span><span class="logo-sub">JEWELS</span></a>
         <span class="steps-nav"><span class="on">Bag</span><span class="line on"></span><span class="on">Details</span><span class="line"></span><span style="color:var(--color-neutral-500)">Confirmation</span></span>
         <a href="#/bag" style="margin-left:40px;font-size:14px">← Back to bag</a></nav></header>`;
     }
     return `<div class="announce"><span>Free shipping across Canada over $150</span><span>Lifetime replating</span><span>60-day returns</span></div>
       <header class="site-header fade-rule"><nav class="nav" aria-label="Main">
-        <a href="#/" class="nav-brand">AURELLE</a>
+        <a href="#/" class="nav-brand" aria-label="Avya Jewels home"><span class="logo-word">AVYA</span><span class="logo-sub">JEWELS</span></a>
         <div class="nav-links ${state.navOpen ? 'open' : ''}" id="nav-links">
           <a href="#/shop" data-act="newIn">New in</a><a href="#/shop" ${cur('shop')}>Shop</a><a href="#/custom" ${cur('custom')}>Custom order</a><a href="#/studio" ${cur('studio')}>Studio</a>
           <span class="nav-sep"></span><a href="#/track" ${cur('track')}>Track</a>
@@ -115,13 +115,13 @@
   function footer() {
     return `<footer class="footer">
       <div class="footer-grid">
-        <div class="stack" style="gap:14px"><span style="letter-spacing:.34em;font-size:19px;font-weight:500;color:var(--color-bg)">AURELLE</span>
+        <div class="stack" style="gap:14px"><span class="logo"><span class="logo-word">AVYA</span><span class="logo-sub">JEWELS</span></span>
           <span style="font-size:14px;color:var(--color-neutral-700);max-width:320px">First look at new drops, studio sales and care notes. One email a month.</span>
           <form class="row" style="gap:8px;max-width:380px" data-form="newsletter"><input class="input" type="email" required placeholder="Email address" aria-label="Email address" data-model="newsletter" value="${esc(state.form.newsletter)}"><button class="btn" type="submit">Sign up</button></form></div>
         ${CONTENT.footerCols.map(col => `<div class="stack" style="gap:10px"><span style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-neutral-600)">${col.h}</span>
           ${col.links.map(([l, h]) => `<a href="${h}">${l}</a>`).join('')}</div>`).join('')}
       </div>
-      <div class="footer-base"><span>© 2026 Aurelle Jewellery Inc. · 1082 Queen St W, Toronto ON</span><span>CAD · English / Français</span></div>
+      <div class="footer-base"><span>© 2026 Avya Jewels Inc. · 1082 Queen St W, Toronto ON</span><span>CAD · English / Français</span></div>
     </footer>`;
   }
 
@@ -160,7 +160,7 @@
     <section class="standard">
       ${ph('studio — hand-polishing a hoop')}
       <div class="standard-copy">
-        ${eyebrow('The Aurelle standard')}
+        ${eyebrow('The Avya standard')}
         <h2>Gold that outlasts the trend it was bought for.</h2>
         <div class="stack" style="margin-top:6px">${CONTENT.standards.map(s => `<div class="standard-item fade-rule"><span class="n">${s.n}</span><span class="stack" style="gap:2px"><span style="font-size:16px;font-weight:500">${s.title}</span><span style="font-size:14px" class="soft">${s.body}</span></span></div>`).join('')}</div>
         <a href="#/studio" class="btn btn-primary" style="align-self:flex-start;margin-top:6px">Meet the studio</a>
@@ -179,7 +179,7 @@
         <figcaption class="row" style="gap:10px;margin-top:auto"><span class="avatar">${r.i}</span><span class="stack"><span style="font-size:14px;font-weight:500">${r.n}</span><span style="font-size:12px" class="muted">${r.c} · ${r.p}</span></span></figcaption></figure>`).join('')}</div>
     </section>
 
-    <section class="pad" style="padding-top:48px">${secHead('@aurelle.studio', 'Styled by you', `<a href="#/" class="btn btn-ghost">Follow along →</a>`)}</section>
+    <section class="pad" style="padding-top:48px">${secHead('@avya.jewels', 'Styled by you', `<a href="#/" class="btn btn-ghost">Follow along →</a>`)}</section>
     <section class="social-grid pad">${CONTENT.social.map(s => ph(s)).join('')}</section>`;
   }
 
@@ -342,7 +342,7 @@
         <div class="rule" style="margin:6px 0"></div>
         ${summaryRows(t)}
         <div class="between" style="font-size:20px;font-weight:500"><span>Total</span><span>${money(t.total)} <span style="font-size:13px" class="muted">CAD</span></span></div>
-        <div class="card elev-sm on-bg" style="padding:14px;gap:4px;margin-top:auto"><span style="font-size:13px;font-weight:500">Every order is insured and signed for.</span><span style="font-size:12px" class="muted">Questions? hello@aurelle.ca · (416) 555-0182</span></div>
+        <div class="card on-teal" style="padding:14px;gap:4px;margin-top:auto"><span style="font-size:13px;font-weight:500">Every order is insured and signed for.</span><span style="font-size:12px" class="muted">Questions? hello@avya.ca · (416) 555-0182</span></div>
       </aside>
     </section>`;
   }
@@ -416,7 +416,7 @@
       <div class="stack" style="gap:18px">
         ${eyebrow('Since 2019 · Queen West, Toronto')}
         <h1>A two-person studio above a bakery.</h1>
-        <p class="soft" style="max-width:460px">Aurelle began at a kitchen table in Parkdale. Every piece is still cast, polished and plated by hand on Queen Street West — and the door is open six days a week to try things on.</p>
+        <p class="soft" style="max-width:460px">Avya began at a kitchen table in Parkdale. Every piece is still cast, polished and plated by hand on Queen Street West — and the door is open six days a week to try things on.</p>
         <div class="grid-3" style="margin-top:6px">${CONTENT.timeline.map(t => `<div class="stack" style="gap:4px;padding:14px;border-radius:var(--radius-md);background:var(--color-surface)"><span style="font-size:20px;font-weight:500;color:var(--color-accent)">${t.y}</span><span style="font-size:13px" class="soft">${t.b}</span></div>`).join('')}</div>
       </div>
       <div class="studio-media">
@@ -440,7 +440,7 @@
   }
 
   const PAGES = { home, shop, product, bag, checkout, custom, track, studio };
-  const TITLES = { home: 'Aurelle Jewellery — Small gold things, worn every day', shop: 'Shop', product: '', bag: 'Your bag', checkout: 'Checkout', custom: 'Custom order', track: 'Track your order', studio: 'The studio' };
+  const TITLES = { home: 'Avya Jewels — Small gold things, worn every day', shop: 'Shop', product: '', bag: 'Your bag', checkout: 'Checkout', custom: 'Custom order', track: 'Track your order', studio: 'The studio' };
 
   /* ── Render & routing ───────────────────────────────────────────────── */
   function render() {
@@ -462,7 +462,7 @@
       if (state.pdp.id !== p.id) patch.pdp = { id: p.id, finish: FINISH_OF[p.fin], size: SIZES[p.cat].def, added: false };
     }
     set(patch);
-    document.title = name === 'home' ? TITLES.home : (name === 'product' ? byId(state.pdp.id).name : TITLES[name]) + ' · Aurelle';
+    document.title = name === 'home' ? TITLES.home : (name === 'product' ? byId(state.pdp.id).name : TITLES[name]) + ' · Avya Jewels';
     window.scrollTo(0, 0);
   }
 

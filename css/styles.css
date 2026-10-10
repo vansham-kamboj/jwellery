@@ -1,37 +1,45 @@
-/* Aurelle Jewellery — built on the Nocturne design system, Premium light theme. */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Avya Jewels — built on the Nocturne design system, Premium light theme. */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600;700&display=swap');
 
 /* ── Tokens ───────────────────────────────────────────────────────────── */
 :root {
   --color-bg: #fbfbfe;
   --color-surface: #f1f2f9;
-  --color-text: #1f2130;
-  --color-accent: #6f62b8;
-  --color-divider: color-mix(in srgb, #1f2130 13%, transparent);
+  --color-text: #04313F;
+  --color-accent: #a87d3e;
+  --color-divider: color-mix(in srgb, #04313F 13%, transparent);
 
-  --color-neutral-100: #1f2130;
-  --color-neutral-200: #2e3140;
-  --color-neutral-300: #474a5a;
-  --color-neutral-400: #5f6374;
-  --color-neutral-500: #737789;
+  /* Brand teal (from the Avya logo) */
+  --teal: #04313F;
+  --teal-700: #0d4a5b;
+  --teal-tint: #e8f0f1;
+  --teal-ink: #cfe0e3;
+  --on-teal: #f6efe2;
+
+  --color-neutral-100: #04313F;
+  --color-neutral-200: #173e4a;
+  --color-neutral-300: #3c5660;
+  --color-neutral-400: #566c74;
+  --color-neutral-500: #6a7d84;
   --color-neutral-600: #9397ab;
   --color-neutral-700: #cfd3e5;
   --color-neutral-800: #e4e7f5;
   --color-neutral-900: #eef0f9;
 
-  --color-accent-100: #2b2741;
-  --color-accent-200: #423a6a;
-  --color-accent-300: #5d5294;
-  --color-accent-400: #6a5eb0;
-  --color-accent-500: #796cbf;
-  --color-accent-600: #968ae0;
-  --color-accent-700: #d2cefd;
-  --color-accent-800: #e9e6fd;
-  --color-accent-900: #f3f1ff;
+  --color-accent-100: #2e2210;
+  --color-accent-200: #4a3718;
+  --color-accent-300: #6e5226;
+  --color-accent-400: #8c6830;
+  --color-accent-500: #a87d3e;
+  --color-accent-600: #c39a5a;
+  --color-accent-700: #e3cba3;
+  --color-accent-800: #f1e4cc;
+  --color-accent-900: #f9f2e6;
 
-  --color-section: #ebe8fd;
-  --color-section-glow: #f8f0f6;
+  --color-section: #f3e9d8;
+  --color-section-glow: #fbf6ee;
 
+  --font-logo: "Cormorant Garamond", Georgia, serif;
   --font-heading: "Inter", system-ui, sans-serif;
   --font-heading-weight: 500;
   --font-body: "Inter", system-ui, sans-serif;
@@ -156,6 +164,8 @@ textarea.input { min-height: 90px; resize: vertical; }
 
 .card { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3); border-radius: var(--radius-md); background: var(--color-surface); }
 .card.on-bg { background: var(--color-bg); }
+.card.on-teal { background: var(--teal); --color-neutral-400: #b6ccd1; color: var(--on-teal); }
+.reviews .avatar { color: #e8cf9f; }
 .card-kicker { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-accent); }
 .card-title { font-family: var(--font-heading); font-weight: var(--font-heading-weight); font-size: 17px; line-height: 1.2; }
 .elev-sm { box-shadow: var(--shadow-sm); }
@@ -171,15 +181,23 @@ textarea.input { min-height: 90px; resize: vertical; }
 .table thead tr { background: linear-gradient(to right, transparent, var(--color-divider) 48px, var(--color-divider) calc(100% - 48px), transparent) no-repeat bottom / 100% 1px; }
 .table tbody tr { background: linear-gradient(to right, transparent, color-mix(in srgb, var(--color-text) 8%, transparent) 48px, color-mix(in srgb, var(--color-text) 8%, transparent) calc(100% - 48px), transparent) no-repeat bottom / 100% 1px; }
 
-.avatar { width: 32px; height: 32px; flex: none; border-radius: 50%; background: var(--color-accent-800); color: var(--color-accent-200); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; }
+.avatar { width: 32px; height: 32px; flex: none; border-radius: 50%; background: var(--teal); color: var(--on-teal); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; }
 
 /* ── Chrome: announcement, nav, footer ────────────────────────────────── */
-.announce { background: var(--color-text); color: var(--color-neutral-800); display: flex; justify-content: center; gap: 56px; padding: 10px 16px; font-size: 12px; letter-spacing: .08em; }
+.announce { background: var(--teal); color: var(--teal-ink); display: flex; justify-content: center; gap: 56px; padding: 10px 16px; font-size: 12px; letter-spacing: .08em; }
 
 .site-header { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--color-bg) 92%, transparent); backdrop-filter: blur(10px); }
 .nav { display: flex; align-items: center; gap: 28px; padding: 18px var(--gutter); }
-.nav-brand { font-weight: 500; letter-spacing: .34em; font-size: 19px; margin-right: auto; }
-.nav-brand:hover { color: var(--color-text); }
+.nav-brand, .logo { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; gap: 3px; color: var(--color-accent-400); }
+.nav-brand { margin-right: auto; }
+.nav-brand:hover { color: var(--color-accent-400); }
+.logo-word { font-family: var(--font-logo); font-weight: 500; font-size: 28px; letter-spacing: .06em; }
+.logo-sub { font-size: 8px; letter-spacing: .42em; padding-left: .42em; }
+.footer .logo { align-items: flex-start; gap: 4px; color: var(--color-accent-600); }
+.footer .logo-word { font-size: 34px; }
+.footer .logo-sub { font-size: 9px; padding-left: 0; }
+.bag-btn.btn-primary { background: var(--teal); border-color: var(--teal); color: var(--on-teal); }
+.bag-btn.btn-primary:hover { background: var(--teal-700); border-color: var(--teal-700); color: var(--on-teal); }
 .nav-links { display: flex; align-items: center; gap: 28px; }
 .nav-links a:not(.btn) { font-size: 14px; }
 .nav-links a[aria-current="page"] { color: var(--color-accent); }
@@ -190,7 +208,7 @@ textarea.input { min-height: 90px; resize: vertical; }
 .steps-nav .line { width: 24px; height: 1px; background: var(--color-divider); }
 .steps-nav .line.on { background: var(--color-accent); }
 
-.footer { background: var(--color-text); color: var(--color-neutral-800); padding: 48px var(--gutter) 28px; display: flex; flex-direction: column; gap: 40px; }
+.footer { background: var(--teal); color: var(--teal-ink); padding: 48px var(--gutter) 28px; display: flex; flex-direction: column; gap: 40px; }
 .footer-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; }
 .footer a { color: var(--color-neutral-800); font-size: 14px; }
 .footer a:hover { color: var(--color-bg); }
@@ -240,12 +258,13 @@ textarea.input { min-height: 90px; resize: vertical; }
 
 .standard { display: grid; grid-template-columns: 1fr 1fr; margin: 0 var(--gutter); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
 .standard > .ph { min-height: 480px; border-radius: 0; }
-.standard-copy { padding: 48px; display: flex; flex-direction: column; gap: 18px; background: linear-gradient(150deg, var(--color-section), var(--color-section-glow)); }
+.standard-copy { padding: 48px; display: flex; flex-direction: column; gap: 18px; background: radial-gradient(ellipse at 100% 0%, var(--teal-700), var(--teal) 70%);
+  --color-text: var(--on-teal); --color-neutral-300: #b6ccd1; --color-accent-300: #d6b37a; --color-divider: rgba(246, 239, 226, .16); color: var(--on-teal); }
 .standard-copy h2 { font-size: 38px; line-height: 1.08; letter-spacing: -.03em; }
 .standard-item { display: grid; grid-template-columns: 44px 1fr; gap: 12px; padding: 16px 0; }
 .standard-item .n { font-size: 13px; color: var(--color-accent); font-weight: 500; }
 
-.reviews { background: var(--color-surface); padding: 48px var(--gutter); display: flex; flex-direction: column; gap: 24px; }
+.reviews { background: var(--teal-tint); padding: 48px var(--gutter); display: flex; flex-direction: column; gap: 24px; }
 .review-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .review { padding: 24px; gap: 14px; }
 .review p { font-size: 16px; line-height: 1.5; text-wrap: pretty; }
@@ -366,7 +385,7 @@ textarea.input { min-height: 90px; resize: vertical; }
 .studio-cards { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 16px; padding: 0 var(--gutter) 48px; align-items: stretch; }
 .hours-row { display: flex; justify-content: space-between; font-size: 14px; padding-bottom: 10px;
   background: linear-gradient(to right, transparent, var(--color-divider) 24px, var(--color-divider) calc(100% - 24px), transparent) no-repeat bottom / 100% 1px; }
-.booking { padding: 24px; gap: 14px; background: linear-gradient(160deg, var(--color-section), var(--color-section-glow)); }
+.booking { padding: 24px; gap: 14px; background: var(--teal-tint); }
 .day-btn { flex: 1; flex-direction: column; gap: 0; padding: 8px 0; }
 .day-btn small { font-size: 11px; color: var(--color-neutral-400); }
 .day-btn span { font-size: 16px; }
@@ -400,7 +419,7 @@ textarea.input { min-height: 90px; resize: vertical; }
   .announce span:not(:first-child) { display: none; }
 
   .nav { gap: 12px; padding: 14px var(--gutter); }
-  .nav-brand { font-size: 17px; }
+  .nav-brand .logo-word { font-size: 24px; }
   .nav-toggle { display: inline-flex; }
   .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0;
     padding: 8px var(--gutter) 16px; background: var(--color-bg); box-shadow: 0 12px 24px rgba(40, 44, 80, .08); }

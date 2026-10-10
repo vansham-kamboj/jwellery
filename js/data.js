@@ -1,4 +1,4 @@
-/* Aurelle — catalogue and static content. */
+/* Avya — catalogue and static content. */
 const IMG = {
   diamond: 'assets/web/diamond-hoops.jpg',
   hoops: 'assets/web/gold-hoops.jpg',
@@ -122,8 +122,8 @@ const CONTENT = {
   updates: [
     ['Departed sorting facility', 'Mississauga, ON', 'Oct 7, 6:12 AM'],
     ['Picked up by Canada Post', 'Toronto, ON', 'Oct 6, 4:40 PM'],
-    ['Packed and quality-checked', 'Aurelle studio', 'Oct 6, 11:05 AM'],
-    ['Polished and plated', 'Aurelle studio', 'Oct 5, 2:20 PM'],
+    ['Packed and quality-checked', 'Avya studio', 'Oct 6, 11:05 AM'],
+    ['Polished and plated', 'Avya studio', 'Oct 5, 2:20 PM'],
     ['Order confirmed', '—', 'Oct 3, 8:31 PM']
   ],
   timeline: [{ y: '2019', b: 'First hoops, Parkdale kitchen' }, { y: '2022', b: 'Studio opens on Queen W' }, { y: '40k+', b: 'Pieces shipped across Canada' }],
