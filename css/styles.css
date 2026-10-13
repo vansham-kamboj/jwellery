@@ -9,12 +9,17 @@
   --color-accent: #a87d3e;
   --color-divider: color-mix(in srgb, #04313F 13%, transparent);
 
-  /* Brand teal (from the Avya logo) */
-  --teal: #04313F;
-  --teal-700: #0d4a5b;
-  --teal-tint: #e8f0f1;
-  --teal-ink: #cfe0e3;
-  --on-teal: #f6efe2;
+  /* Brand colour (announcement bar, footer, feature panels) */
+  --brand: #04313F;
+  --brand-700: #0d4a5b;
+  --brand-tint: #e8f0f1;
+  --brand-ink: #cfe0e3;
+  --on-brand: #f6efe2;
+  --on-brand-soft: #b6ccd1;
+  --on-brand-accent: #d6b37a;
+  --on-brand-muted: #9397ab;
+  --on-brand-divider: rgba(246, 239, 226, .16);
+  --avatar-ink: #e8cf9f;
 
   --color-neutral-100: #04313F;
   --color-neutral-200: #173e4a;
@@ -39,6 +44,11 @@
   --color-section: #f3e9d8;
   --color-section-glow: #fbf6ee;
 
+  --shadow-sm: 0 0 0 1px #e3e5f0;
+  --shadow-md: 0 0 0 1px #e0e3ee, 0 10px 28px rgba(40, 44, 80, .08);
+  --shadow-lg: 0 0 0 1px #d6d9e6, 0 16px 40px rgba(40, 44, 80, .10);
+  /* end theme */
+
   --font-logo: "Cormorant Garamond", Georgia, serif;
   --font-heading: "Inter", system-ui, sans-serif;
   --font-heading-weight: 500;
@@ -53,9 +63,6 @@
   --radius-md: 8px;
   --radius-lg: 14px;
 
-  --shadow-sm: 0 0 0 1px #e3e5f0;
-  --shadow-md: 0 0 0 1px #e0e3ee, 0 10px 28px rgba(40, 44, 80, .08);
-  --shadow-lg: 0 0 0 1px #d6d9e6, 0 16px 40px rgba(40, 44, 80, .10);
 
   --gutter: clamp(48px, 4vw, 96px);
   --page-max: 1280px;
@@ -164,8 +171,8 @@ textarea.input { min-height: 90px; resize: vertical; }
 
 .card { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3); border-radius: var(--radius-md); background: var(--color-surface); }
 .card.on-bg { background: var(--color-bg); }
-.card.on-teal { background: var(--teal); --color-neutral-400: #b6ccd1; color: var(--on-teal); }
-.reviews .avatar { color: #e8cf9f; }
+.card.on-brand { background: var(--brand); --color-neutral-400: var(--on-brand-soft); color: var(--on-brand); }
+.reviews .avatar { color: var(--avatar-ink); }
 .card-kicker { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-accent); }
 .card-title { font-family: var(--font-heading); font-weight: var(--font-heading-weight); font-size: 17px; line-height: 1.2; }
 .elev-sm { box-shadow: var(--shadow-sm); }
@@ -181,10 +188,10 @@ textarea.input { min-height: 90px; resize: vertical; }
 .table thead tr { background: linear-gradient(to right, transparent, var(--color-divider) 48px, var(--color-divider) calc(100% - 48px), transparent) no-repeat bottom / 100% 1px; }
 .table tbody tr { background: linear-gradient(to right, transparent, color-mix(in srgb, var(--color-text) 8%, transparent) 48px, color-mix(in srgb, var(--color-text) 8%, transparent) calc(100% - 48px), transparent) no-repeat bottom / 100% 1px; }
 
-.avatar { width: 32px; height: 32px; flex: none; border-radius: 50%; background: var(--teal); color: var(--on-teal); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; }
+.avatar { width: 32px; height: 32px; flex: none; border-radius: 50%; background: var(--brand); color: var(--on-brand); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; }
 
 /* ── Chrome: announcement, nav, footer ────────────────────────────────── */
-.announce { background: var(--teal); color: var(--teal-ink); display: flex; justify-content: center; gap: 56px; padding: 10px 16px; font-size: 12px; letter-spacing: .08em; }
+.announce { background: var(--brand); color: var(--brand-ink); display: flex; justify-content: center; gap: 56px; padding: 10px 16px; font-size: 12px; letter-spacing: .08em; }
 
 .site-header { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--color-bg) 92%, transparent); backdrop-filter: blur(10px); }
 .nav { display: flex; align-items: center; gap: 28px; padding: 18px var(--gutter); }
@@ -196,8 +203,8 @@ textarea.input { min-height: 90px; resize: vertical; }
 .footer .logo { align-items: flex-start; gap: 4px; color: var(--color-accent-600); }
 .footer .logo-word { font-size: 34px; }
 .footer .logo-sub { font-size: 9px; padding-left: 0; }
-.bag-btn.btn-primary { background: var(--teal); border-color: var(--teal); color: var(--on-teal); }
-.bag-btn.btn-primary:hover { background: var(--teal-700); border-color: var(--teal-700); color: var(--on-teal); }
+.bag-btn.btn-primary { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.bag-btn.btn-primary:hover { background: var(--brand-700); border-color: var(--brand-700); color: var(--on-brand); }
 .nav-links { display: flex; align-items: center; gap: 28px; }
 .nav-links a:not(.btn) { font-size: 14px; }
 .nav-links a[aria-current="page"] { color: var(--color-accent); }
@@ -208,7 +215,8 @@ textarea.input { min-height: 90px; resize: vertical; }
 .steps-nav .line { width: 24px; height: 1px; background: var(--color-divider); }
 .steps-nav .line.on { background: var(--color-accent); }
 
-.footer { background: var(--teal); color: var(--teal-ink); padding: 48px var(--gutter) 28px; display: flex; flex-direction: column; gap: 40px; }
+.footer { background: var(--brand); color: var(--brand-ink);
+  --color-bg: var(--on-brand); --color-neutral-300: var(--on-brand-divider); --color-neutral-400: var(--on-brand-soft); --color-neutral-600: var(--on-brand-muted); --color-neutral-700: var(--brand-ink); --color-neutral-800: var(--on-brand); padding: 48px var(--gutter) 28px; display: flex; flex-direction: column; gap: 40px; }
 .footer-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; }
 .footer a { color: var(--color-neutral-800); font-size: 14px; }
 .footer a:hover { color: var(--color-bg); }
@@ -258,13 +266,13 @@ textarea.input { min-height: 90px; resize: vertical; }
 
 .standard { display: grid; grid-template-columns: 1fr 1fr; margin: 0 var(--gutter); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
 .standard > .ph { min-height: 480px; border-radius: 0; }
-.standard-copy { padding: 48px; display: flex; flex-direction: column; gap: 18px; background: radial-gradient(ellipse at 100% 0%, var(--teal-700), var(--teal) 70%);
-  --color-text: var(--on-teal); --color-neutral-300: #b6ccd1; --color-accent-300: #d6b37a; --color-divider: rgba(246, 239, 226, .16); color: var(--on-teal); }
+.standard-copy { padding: 48px; display: flex; flex-direction: column; gap: 18px; background: radial-gradient(ellipse at 100% 0%, var(--brand-700), var(--brand) 70%);
+  --color-text: var(--on-brand); --color-neutral-300: var(--on-brand-soft); --color-accent-300: var(--on-brand-accent); --color-divider: var(--on-brand-divider); color: var(--on-brand); }
 .standard-copy h2 { font-size: 38px; line-height: 1.08; letter-spacing: -.03em; }
 .standard-item { display: grid; grid-template-columns: 44px 1fr; gap: 12px; padding: 16px 0; }
 .standard-item .n { font-size: 13px; color: var(--color-accent); font-weight: 500; }
 
-.reviews { background: var(--teal-tint); padding: 48px var(--gutter); display: flex; flex-direction: column; gap: 24px; }
+.reviews { background: var(--brand-tint); padding: 48px var(--gutter); display: flex; flex-direction: column; gap: 24px; }
 .review-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .review { padding: 24px; gap: 14px; }
 .review p { font-size: 16px; line-height: 1.5; text-wrap: pretty; }
@@ -385,7 +393,7 @@ textarea.input { min-height: 90px; resize: vertical; }
 .studio-cards { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 16px; padding: 0 var(--gutter) 48px; align-items: stretch; }
 .hours-row { display: flex; justify-content: space-between; font-size: 14px; padding-bottom: 10px;
   background: linear-gradient(to right, transparent, var(--color-divider) 24px, var(--color-divider) calc(100% - 24px), transparent) no-repeat bottom / 100% 1px; }
-.booking { padding: 24px; gap: 14px; background: var(--teal-tint); }
+.booking { padding: 24px; gap: 14px; background: var(--brand-tint); }
 .day-btn { flex: 1; flex-direction: column; gap: 0; padding: 8px 0; }
 .day-btn small { font-size: 11px; color: var(--color-neutral-400); }
 .day-btn span { font-size: 16px; }
@@ -422,7 +430,7 @@ textarea.input { min-height: 90px; resize: vertical; }
   .nav-brand .logo-word { font-size: 24px; }
   .nav-toggle { display: inline-flex; }
   .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0;
-    padding: 8px var(--gutter) 16px; background: var(--color-bg); box-shadow: 0 12px 24px rgba(40, 44, 80, .08); }
+    padding: 8px var(--gutter) 16px; background: var(--color-bg); box-shadow: 0 12px 24px color-mix(in srgb, var(--color-text) 8%, transparent); }
   .nav-links.open { display: flex; }
   .nav-links a:not(.btn) { padding: 12px 0; font-size: 16px; }
   .nav-links .nav-sep, .nav-links .btn { display: none; }
