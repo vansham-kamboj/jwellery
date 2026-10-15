@@ -7,11 +7,16 @@ const IMG = {
   model: 'assets/web/model-chains.jpg',
   gift: 'assets/web/gift-bracelet.jpg'
 };
+const BRAND = { logo: 'assets/brand/avya-logo.png', bars: 'assets/brand/gold-bars.webp' };
+
+/* Gold bars & coins. ratePerGram is a placeholder in CAD — the admin panel will set the live rate. */
+const GOLD = { ratePerGram: 152, weights: [1, 5, 10, 20, 50], defaultWeight: 10 };
+const GOLD_BAR = { id: 'bar', name: 'Avya Fine Gold Bar', cat: 'Gold bars', material: '999.9 fine gold', img: BRAND.bars, taxExempt: true };
 
 /* Which photo fills each named image slot. Slots not listed (maps) keep their placeholder. */
 const LABEL_IMG = {
   'model portrait — hoops + layered chains': IMG.model, 'ring stack, macro': IMG.signet, 'pendant on linen': IMG.flatlay,
-  'earrings on model': IMG.diamond, 'layered necklaces': IMG.model, 'stacked rings': IMG.flatlay, 'bracelets on wrist': IMG.gift, 'gift box, ribbon': IMG.gift,
+  'earrings on model': IMG.diamond, 'layered necklaces': IMG.model, 'stacked rings': IMG.flatlay, 'bracelets on wrist': IMG.gift, 'gift box, ribbon': IMG.hoops,
   'studio — hand-polishing a hoop': IMG.hoops,
   'hoops, mirror selfie': IMG.hoops, 'ring stack, coffee': IMG.signet, 'layered chains': IMG.model, 'ear party': IMG.diamond, 'cuff, beach': IMG.gift, 'pendant, sweater': IMG.flatlay,
   'category banner — All': IMG.gift, 'category banner — Earrings': IMG.diamond, 'category banner — Necklaces': IMG.model,
@@ -85,21 +90,17 @@ const CONTENT = {
     { n: '02', title: 'Recycled, made locally', body: '100% recycled silver, cast and finished in Toronto.' },
     { n: '03', title: 'Replated for life', body: 'Send it back once a year, we restore it free.' }
   ],
-  homeSets: {
-    'Bestsellers': ['halo', 'tide', 'lumen', 'seed'],
-    'New in': ['arc', 'lumen', 'link', 'knot'],
-    'Under $75': ['orbit', 'pebble', 'arc', 'seed']
-  },
+  announce: ['Free insured shipping across Canada over $150', 'Lifetime replating', '60-day returns'],
+  homeTabs: { All: ['halo', 'tide', 'lumen', 'seed'], Earrings: null, Rings: null, Necklaces: null },
   reviews: [
     { q: 'I haven’t taken the Halos off in eight months — showers, hot yoga, sleeping. Still bright gold.', n: 'Priya S.', i: 'PS', c: 'Vancouver, BC', p: 'Halo Hoops' },
     { q: 'Ordered a custom signet with my grandmother’s initials. The sketch came back in a day and it’s perfect.', n: 'Émilie R.', i: 'ÉR', c: 'Montréal, QC', p: 'Custom signet' },
     { q: 'Beautiful packaging, arrived in three days to Halifax. Already ordered the matching chain.', n: 'Jordan M.', i: 'JM', c: 'Halifax, NS', p: 'Fil Chain' }
   ],
-  social: ['hoops, mirror selfie', 'ring stack, coffee', 'layered chains', 'ear party', 'cuff, beach', 'pendant, sweater'],
   footerCols: [
-    { h: 'Shop', links: [['New in', '#/shop'], ['Earrings', '#/shop/Earrings'], ['Necklaces', '#/shop/Necklaces'], ['Rings', '#/shop/Rings'], ['Bracelets', '#/shop/Bracelets']] },
-    { h: 'Help', links: [['Shipping', '#/bag'], ['Returns', '#/track'], ['Ring sizer', '#/product/tide'], ['Care guide', '#/product/halo'], ['Track order', '#/track']] },
-    { h: 'Studio', links: [['Our story', '#/studio'], ['Custom orders', '#/custom'], ['Book a fitting', '#/studio'], ['Journal', '#/studio']] }
+    { h: 'Shop', links: [['New in', '#/shop'], ['Earrings', '#/shop/Earrings'], ['Rings', '#/shop/Rings'], ['Necklaces', '#/shop/Necklaces'], ['Gold bars & coins', '#/gold-bars']] },
+    { h: 'Avya', links: [['Our story', '#/studio'], ['The studio', '#/studio'], ['Bespoke', '#/custom'], ['Book a fitting', '#/studio']] },
+    { h: 'Help', links: [['Size guide', '#/product/tide'], ['Shipping & returns', '#/bag'], ['Care guide', '#/product/halo'], ['Contact', '#/studio']] }
   ],
   perks: [{ t: 'Free shipping', b: 'Over $150 CAD' }, { t: '60-day returns', b: 'Anywhere in Canada' }, { t: 'Replated for life', b: 'Once a year, free' }],
   accordions: [
@@ -114,18 +115,6 @@ const CONTENT = {
     { n: '4', title: 'Made in Toronto', body: 'Ready in 2–3 weeks, shipped insured.' }
   ],
   commissions: [{ ph: 'initial signet', t: 'Initial signet · $210' }, { ph: 'birthstone stack', t: 'Birthstone stack · $165' }, { ph: 'heirloom rework', t: 'Heirloom rework · $340' }],
-  track: [
-    { label: 'Confirmed', date: 'Oct 3' }, { label: 'Made & packed', date: 'Oct 6' }, { label: 'Shipped', date: 'Oct 6' },
-    { label: 'Out for delivery', date: 'Est. Oct 8' }, { label: 'Delivered', date: '—' }
-  ],
-  trackCurrent: 2,
-  updates: [
-    ['Departed sorting facility', 'Mississauga, ON', 'Oct 7, 6:12 AM'],
-    ['Picked up by Canada Post', 'Toronto, ON', 'Oct 6, 4:40 PM'],
-    ['Packed and quality-checked', 'Avya studio', 'Oct 6, 11:05 AM'],
-    ['Polished and plated', 'Avya studio', 'Oct 5, 2:20 PM'],
-    ['Order confirmed', '—', 'Oct 3, 8:31 PM']
-  ],
   timeline: [{ y: '2019', b: 'First hoops, Parkdale kitchen' }, { y: '2022', b: 'Studio opens on Queen W' }, { y: '40k+', b: 'Pieces shipped across Canada' }],
   hours: [{ d: 'Tue – Fri', t: '11 – 7' }, { d: 'Saturday', t: '10 – 6' }, { d: 'Sunday', t: '12 – 5' }, { d: 'Monday', t: 'Closed' }],
   days: [['Thu', '8'], ['Fri', '9'], ['Sat', '10'], ['Sun', '11']],
