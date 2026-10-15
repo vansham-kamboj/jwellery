@@ -2,9 +2,9 @@
 (() => {
   const money = n => '$' + n.toFixed(2);
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const byId = id => id === 'bar' ? GOLD_BAR : PRODUCTS.find(p => p.id === id);
-  const href = id => id === 'bar' ? '#/gold-bars' : '#/product/' + id;
-  const barPrice = g => Math.round(g * GOLD.ratePerGram);
+  const byId = id => PRODUCTS.find(p => p.id === id);
+  const href = id => '#/product/' + id;
+  const sizesOf = p => p.sizes === false ? null : (p.sizes || SIZES[p.cat] || null);
   const store = {
     get(k, d) { try { const v = localStorage.getItem('aurelle.' + k); return v ? JSON.parse(v) : d; } catch { return d; } },
     set(k, v) { try { localStorage.setItem('aurelle.' + k, JSON.stringify(v)); } catch { /* storage unavailable */ } }
@@ -17,9 +17,9 @@
 
   const state = {
     route: 'home', param: null, navOpen: false, filtersOpen: false, draft: { filter: 'All', ffin: 'Any' },
-    filter: 'All', ffin: 'Any', homeTab: 'All', grams: GOLD.defaultWeight,
+    filter: 'All', ffin: 'Any', homeTab: 'All', barPick: GOLD.featured[1],
     pdp: { id: null, finish: null, size: null, added: false }, open: 0,
-    justAdded: {}, gift: false, cart: store.get('cart', DEFAULT_CART),
+    justAdded: {}, gift: false, cart: store.get('cart', DEFAULT_CART).filter(l => byId(l.id)),
     ship: 'std', promo: '',
     ptype: 'Ring', bfin: 'Gold vermeil', budget: '$150–300', submitted: false,
     day: 'Sat', slot: null, booked: false,
@@ -68,10 +68,10 @@
   }
   function pdpPrice(p, finish, size) {
     let price = p.price;
-    const sz = SIZES[p.cat];
-    if (sz.opts.indexOf(size) === sz.opts.length - 1 && p.cat !== 'Rings') price += 10;
-    if (finish === 'Sterling silver' && p.fin !== 'silver') price -= 14;
-    if (finish !== 'Sterling silver' && p.fin === 'silver') price += 14;
+    const sz = sizesOf(p);
+    if (sz && sz.opts.indexOf(size) === sz.opts.length - 1 && p.cat !== 'Rings') price += 10;
+    if (p.sw.length > 1 && finish === 'Sterling silver' && p.fin !== 'silver') price -= 14;
+    if (p.sw.length > 1 && finish !== 'Sterling silver' && p.fin === 'silver') price += 14;
     return price;
   }
 
@@ -136,7 +136,9 @@
   function home() {
     const tab = state.homeTab;
     const picks = CONTENT.homeTabs[tab] ? CONTENT.homeTabs[tab].map(byId) : PRODUCTS.filter(p => p.cat === tab).slice(0, 4);
-    const g = state.grams;
+    const hero = byId('cluster-halo-ring') || PRODUCTS[0];
+    const bar = byId(state.barPick) || byId(GOLD.featured[0]);
+    const count = f => PRODUCTS.filter(p => p.cat === f).length;
     return `
     <section class="hero">
       <div class="hero-copy">
@@ -153,9 +155,9 @@
       <div class="hero-main">
         ${ph('model portrait — hoops + layered chains', 'eager')}
         <div class="hero-float">
-          ${ph('Halo Hoops', '', '', IMG.hoops)}
-          <a href="#/product/halo" class="info"><span class="kicker">Bestseller</span><span class="name">Halo Hoops</span><span class="sub">$68 · 18k gold vermeil</span></a>
-          ${addBtn('halo')}
+          ${ph(hero.name, '', '', hero.img)}
+          <a href="#/product/${hero.id}" class="info"><span class="kicker">New in</span><span class="name">${hero.name}</span><span class="sub">$${hero.price} · ${hero.material}</span></a>
+          ${addBtn(hero.id)}
         </div>
       </div>
       <div class="hero-side">${ph('ring stack, macro')}${ph('pendant on linen')}</div>
@@ -164,7 +166,7 @@
     <section class="section">
       ${secHead('Shop by piece', 'Find your everyday', `<a href="#/shop" class="link">View all ${PRODUCTS.length} pieces →</a>`)}
       <div class="cat-grid">
-        ${CONTENT.categories.map(c => `<a href="#/shop/${c.filter}" class="ph cat-tile">${photo(LABEL_IMG[c.ph], c.name)}<span class="chip"><span>${c.name}</span><small>${c.count} →</small></span></a>`).join('')}
+        ${CONTENT.categories.map(c => `<a href="#/shop/${c.filter}" class="ph cat-tile">${photo(LABEL_IMG[c.ph], c.name)}<span class="chip"><span>${c.name}</span><small>${count(c.filter)} →</small></span></a>`).join('')}
       </div>
     </section>
 
@@ -189,23 +191,24 @@
         <figcaption class="row" style="gap:10px;margin-top:auto"><span class="avatar">${r.i}</span><span class="stack"><span style="font-size:14px;font-weight:500">${r.n}</span><span style="font-size:12px" class="muted">${r.c} · ${r.p}</span></span></figcaption></figure>`).join('')}</div>
     </section>
 
-    <section class="gold-bars" id="gold-bars">
+    ${bar ? `<section class="gold-bars" id="gold-bars">
       <div class="stack" style="gap:24px">
         ${eyebrow('Gold bars &amp; coins')}
-        <h2>The same bars on our mark.</h2>
-        <p>Certified 999.9 fine gold, sealed and insured to your door — priced at today’s rate.</p>
-        <div class="weights" role="group" aria-label="Bar weight">${GOLD.weights.map(w => `<button class="weight" data-act="grams" data-arg="${w}" aria-pressed="${w === g}">${w}g</button>`).join('')}</div>
+        <h2>Royal Canadian Mint gold, sealed and insured.</h2>
+        <p>Certified 999.9 fine gold coins and bars in original assay — priced at today’s rate and shipped insured to your door.</p>
+        <div class="weights" role="group" aria-label="Choose a piece">${GOLD.featured.map(id => `<button class="weight" data-act="barPick" data-arg="${id}" aria-pressed="${id === bar.id}">${byId(id).short}</button>`).join('')}</div>
         <div class="bar-buy">
-          <div class="bar-price"><small>Today’s price · CAD, HST-exempt</small><strong>$${barPrice(g).toLocaleString('en-CA')}</strong></div>
-          <button class="btn btn-primary btn-lg" data-act="buyBar">Buy ${g}g bar</button>
+          <div class="bar-price"><small>${esc(bar.name)} · CAD, HST-exempt</small><strong>$${bar.price.toLocaleString('en-CA')}</strong></div>
+          <button class="btn btn-primary btn-lg" data-act="quickAdd" data-arg="${bar.id}">${state.justAdded[bar.id] ? 'Added ✓' : 'Add to bag'}</button>
         </div>
+        <a href="#/shop/Bullion" class="link" style="font-weight:500">Shop all gold &amp; silver bullion →</a>
       </div>
-      <div class="art"><img src="${BRAND.bars}" alt="Avya fine gold bars" loading="lazy" width="548" height="417"></div>
-    </section>`;
+      <a href="#/product/${bar.id}" class="art ph" aria-label="${esc(bar.name)}">${photo(bar.img, bar.name)}</a>
+    </section>` : ''}`;
   }
 
-  const FIN_MAP = { Any: null, 'Gold vermeil': 'gold', 'Sterling silver': 'silver', 'Rose vermeil': 'rose' };
-  const matches = (filter, ffin) => PRODUCTS.filter(p => (filter === 'All' || p.cat === filter) && (!FIN_MAP[ffin] || p.sw.includes(FIN_MAP[ffin])));
+  const FIN_MAP = { Any: null, 'Gold vermeil': 'gold', 'Sterling silver': 'silver', 'Rose vermeil': 'rose', 'Fine gold': 'finegold', 'Fine silver': 'finesilver' };
+  const matches = (filter, ffin) => PRODUCTS.filter(p => (filter === 'All' || p.cat === filter) && (!FIN_MAP[ffin] || p.sw.includes(FIN_MAP[ffin]) || (FIN_MAP[ffin] === 'silver' && p.fin === 'plainsilver')));
   const FILTER_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>';
 
   /* Category + finish groups. `act`/`set`/`name` let the sidebar apply instantly and the mobile sheet edit a draft. */
@@ -256,32 +259,35 @@
 
   function product() {
     const p = byId(state.param) || byId('halo');
-    const sz = SIZES[p.cat];
+    const sz = sizesOf(p);
     const finishes = p.sw.map(k => ({ name: FINISH_OF[k], swatch: SW[k] }));
     const { finish, size, added } = state.pdp;
     const price = pdpPrice(p, finish, size);
     const count = totals().count;
     return `
     <section class="pdp">
-      <div class="gallery">
-        ${ph(`${p.name} — ${finish}, ${size}`, 'eager', p.tag ? `<span class="tag tag-accent">${p.tag}</span>` : '', p.img)}
-        ${ph(p.name + ' styled', 'accent', '', p.img === IMG.model ? IMG.gift : IMG.model)}
-        ${ph(p.name + ' detail', '', '', p.img2)}
+      <div class="gallery ${p.gallery ? 'real' : ''} ${p.video ? 'has-video' : ''}">
+        ${p.gallery
+          ? p.gallery.map((src, i) => ph(p.name + (i ? ' — view ' + (i + 1) : ''), i ? 'tall' : 'eager', !i && p.tag ? `<span class="tag tag-accent">${p.tag}</span>` : '', src)).join('')
+          : `${ph(`${p.name} — ${finish}, ${size}`, 'eager', p.tag ? `<span class="tag tag-accent">${p.tag}</span>` : '', p.img)}
+             ${ph(p.name + ' styled', 'accent', '', p.img === IMG.model ? IMG.gift : IMG.model)}
+             ${ph(p.name + ' detail', '', '', p.img2)}`}
+        ${p.video ? `<div class="ph tall"><video src="${p.video}" poster="${p.img}" autoplay muted loop playsinline aria-label="${esc(p.name)} video"></video></div>` : ''}
       </div>
       <div class="buybox">
         <div class="stack" style="gap:10px"><span style="font-size:13px" class="muted"><a href="#/shop" class="muted">Shop</a> / <a href="#/shop/${p.cat}" class="muted">${p.cat}</a></span>
           <h1>${esc(p.name)}</h1>
-          <div class="row" style="gap:14px;flex-wrap:wrap"><span style="font-size:24px;font-weight:500">${money(price)}</span><span style="font-size:13px" class="muted"><span class="stars" style="letter-spacing:0">★★★★★</span> ${p.rating} · ${p.reviews} reviews</span></div>
+          <div class="row" style="gap:14px;flex-wrap:wrap"><span style="font-size:24px;font-weight:500">${money(price)}</span>${p.rating ? `<span style="font-size:13px" class="muted"><span class="stars" style="letter-spacing:0">★★★★★</span> ${p.rating} · ${p.reviews} reviews</span>` : `<span style="font-size:13px" class="muted">${p.bullion ? 'HST-exempt · insured shipping' : 'New in · no reviews yet'}</span>`}</div>
           <p class="soft">${esc(p.desc)}</p></div>
         <div class="stack" style="gap:10px"><div class="between" style="font-size:13px"><span class="muted">Finish</span><span style="font-weight:500">${finish}</span></div>
           <div class="seg">${finishes.map(f => `<label class="seg-opt"><input type="radio" name="pfin" data-pdp="finish" value="${f.name}" ${finish === f.name ? 'checked' : ''}><span class="swatch" style="background:${f.swatch}"></span>${f.name}</label>`).join('')}</div></div>
-        <div class="stack" style="gap:10px"><div class="between" style="font-size:13px"><span class="muted">${sz.label}</span><a href="#/studio" style="color:var(--color-accent-300)">Size guide</a></div>
-          <div class="seg">${sz.opts.map(v => `<label class="seg-opt"><input type="radio" name="psize" data-pdp="size" value="${v}" ${size === v ? 'checked' : ''}>${v}</label>`).join('')}</div></div>
+        ${sz ? `<div class="stack" style="gap:10px"><div class="between" style="font-size:13px"><span class="muted">${sz.label}</span><a href="#/studio" style="color:var(--color-accent-300)">Size guide</a></div>
+          <div class="seg">${sz.opts.map(v => `<label class="seg-opt"><input type="radio" name="psize" data-pdp="size" value="${v}" ${size === v ? 'checked' : ''}>${v}</label>`).join('')}</div></div>` : ''}
         <div class="row" style="gap:8px;align-items:stretch">
           <button class="btn btn-primary" data-act="addToBag" style="flex:1;padding:14px;font-size:15px">${added ? `Added — view bag (${count})` : 'Add to bag · ' + money(price)}</button>
           <button class="btn btn-secondary" data-act="save" style="padding:0 18px;font-size:13px">Save</button></div>
         <div class="perks">${CONTENT.perks.map(k => `<div><span style="font-size:13px;font-weight:500">${k.t}</span><span style="font-size:12px" class="muted">${k.b}</span></div>`).join('')}</div>
-        <div class="stack">${CONTENT.accordions.map((a, i) => `<button class="acc fade-rule" data-act="acc" data-arg="${i}" aria-expanded="${state.open === i}"><span class="between"><span>${a.title}</span><span>${state.open === i ? '−' : '+'}</span></span>${state.open === i ? `<p>${a.body}</p>` : ''}</button>`).join('')}</div>
+        <div class="stack">${CONTENT.accordions.map((a, i) => (i === 0 && p.care ? { ...a, body: p.care } : a)).map((a, i) => `<button class="acc fade-rule" data-act="acc" data-arg="${i}" aria-expanded="${state.open === i}"><span class="between"><span>${a.title}</span><span>${state.open === i ? '−' : '+'}</span></span>${state.open === i ? `<p>${a.body}</p>` : ''}</button>`).join('')}</div>
       </div>
     </section>
     <section class="pairs">
@@ -449,7 +455,7 @@
     if (name === 'shop' && param && CATS.includes(param)) patch.filter = param;
     if (name === 'product') {
       const p = byId(param) || byId('halo');
-      if (state.pdp.id !== p.id) patch.pdp = { id: p.id, finish: FINISH_OF[p.fin], size: SIZES[p.cat].def, added: false };
+      if (state.pdp.id !== p.id) patch.pdp = { id: p.id, finish: FINISH_OF[p.fin], size: sizesOf(p) ? sizesOf(p).def : null, added: false };
     }
     set(patch);
     document.title = name === 'home' ? TITLES.home : (name === 'product' ? byId(state.pdp.id).name : TITLES[name]) + ' · Avya Jewels';
@@ -473,7 +479,7 @@
       const { id, finish, size, added } = state.pdp;
       if (added) { location.hash = '#/bag'; return; }
       const p = byId(id);
-      set({ cart: addLine(id, finish + ' · ' + size, pdpPrice(p, finish, size)), pdp: { ...state.pdp, added: true } });
+      set({ cart: addLine(id, size ? finish + ' · ' + size : finish, pdpPrice(p, finish, size)), pdp: { ...state.pdp, added: true } });
       toast(p.name + ' added to your bag');
     },
     save: () => toast('Saved to your wishlist'),
@@ -482,12 +488,7 @@
     gift: () => set({ gift: !state.gift }),
     express: () => toast('Express checkout isn’t connected in this demo'),
     resetBespoke: () => set({ submitted: false, form: { ...state.form, idea: '' } }),
-    grams: g => set({ grams: +g }),
-    buyBar: () => {
-      const g = state.grams;
-      set({ cart: addLine('bar', g + ' g · 999.9 fine gold', barPrice(g)) });
-      toast(g + 'g gold bar added to your bag');
-    },
+    barPick: id => set({ barPick: id }),
     day: w => set({ day: w, slot: null, booked: false }),
     slot: s => set({ slot: s, booked: false }),
     confirmSlot: () => { set({ booked: true }); toast('Fitting booked — see you soon!'); }

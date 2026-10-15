@@ -9,9 +9,8 @@ const IMG = {
 };
 const BRAND = { logo: 'assets/brand/avya-logo.png', bars: 'assets/brand/gold-bars.webp' };
 
-/* Gold bars & coins. ratePerGram is a placeholder in CAD — the admin panel will set the live rate. */
-const GOLD = { ratePerGram: 152, weights: [1, 5, 10, 20, 50], defaultWeight: 10 };
-const GOLD_BAR = { id: 'bar', name: 'Avya Fine Gold Bar', cat: 'Gold bars', material: '999.9 fine gold', img: BRAND.bars, taxExempt: true };
+/* Gold bars & coins shown on the homepage — filled in catalog-real.js. */
+const GOLD = { featured: [] };
 
 /* Which photo fills each named image slot. Slots not listed (maps) keep their placeholder. */
 const LABEL_IMG = {
