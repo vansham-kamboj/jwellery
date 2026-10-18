@@ -1,8 +1,10 @@
-/* Avya — lavender studio photography (assets/purple → assets/web/purple).
-   Loaded only by the purple designs (ivory-editorial, teal-boutique), after catalog-real.js.
+/* Avya — studio photography: the same 23 shots in two colourways.
+   'purple' (assets/web/purple) for Ivory Editorial and Teal Boutique; 'ivory' (assets/web/ivory) for Gilded Gallery.
+   A page picks its set with  <script>var STUDIO_SET = 'ivory';</script>  before this file (default: purple).
    New-piece NAMES AND PRICES ARE PLACEHOLDERS until the owner confirms them. */
-const PUR = n => 'assets/web/purple/ring-' + n + '.jpg';          // close crop, 4:5
-const PUR_FULL = n => 'assets/web/purple/ring-' + n + '-full.jpg'; // whole styled scene
+const STUDIO = typeof STUDIO_SET === 'string' ? STUDIO_SET : 'purple';
+const PUR = n => 'assets/web/' + STUDIO + '/ring-' + n + '.jpg';          // close crop, 4:5
+const PUR_FULL = n => 'assets/web/' + STUDIO + '/ring-' + n + '-full.jpg'; // whole styled scene
 
 /* Pieces already in the catalogue → their lavender studio shots (first = main image). */
 const PURPLE_SHOTS = {
