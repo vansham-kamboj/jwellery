@@ -1,0 +1,327 @@
+/* ══ Ivory Editorial — serif, hairlines, magazine layout (Avya Jewels design 2 · 3a–3c) ══ */
+:root {
+  --color-bg: #fbfbfe;
+  --color-surface: #f5f3fb;
+  --color-text: #2b2741;
+  --color-accent: #6f62b8;
+  --color-divider: #e3e5f0;
+  --teal: #2b2741;
+  --teal-700: #423a6a;
+  --teal-tint: #ebe8fd;
+  --gold: #6f62b8;
+  --gold-ink: #5d5294;
+  --ink: #2b2741;
+  --color-neutral-300: #474a5a;
+  --color-neutral-400: #5f6374;
+  --color-neutral-500: #737789;
+  --color-accent-300: #5d5294;
+  --color-accent-900: #f3f1ff;
+  --color-accent-800: #ebe8fd;
+  --color-section: #ebe8fd;
+  --color-section-glow: #f8f0f6;
+  --font-heading: "Cormorant Garamond", Georgia, serif;
+  --font-heading-weight: 400;
+  --font-body: "Jost", system-ui, sans-serif;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --g: clamp(16px, 4.4vw, 72px);
+  --gutter: var(--g);
+  --plum: radial-gradient(ellipse at 100% 0%, #4a4278, transparent 55%), radial-gradient(ellipse at 0% 100%, #3a2f55, transparent 60%), #2b2741;
+}
+body {
+  font-family: var(--font-body); font-weight: 300; color: #2b2741;
+  background: radial-gradient(ellipse 820px 620px at 0% 0%, #f8f0f6, transparent 70%), radial-gradient(ellipse 900px 700px at 100% 6%, #ebe8fd, transparent 70%), #fbfbfe;
+}
+h1, h2, h3 { font-family: var(--font-heading); font-weight: 400; letter-spacing: 0; }
+.page { background: transparent; }
+::selection { background: #ebe8fd; color: #2b2741; }
+
+/* shared components restyled for the remaining pages (bag, checkout, bespoke, studio) */
+.btn { font-family: var(--font-body); font-weight: 400; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; border-radius: 0; min-height: 46px; padding: 0 22px; }
+.btn-primary { background: #2b2741; border-color: #2b2741; color: #fbfbfe; }
+.btn-primary:hover:not(:disabled) { background: #423a6a; border-color: #423a6a; color: #fbfbfe; }
+.btn-secondary { background: transparent; border-color: #2b2741; color: #2b2741; }
+.btn-secondary:hover:not(:disabled) { background: #2b2741; color: #fbfbfe; }
+.btn-ghost { color: #5d5294; text-transform: uppercase; letter-spacing: .2em; font-size: 11px; }
+.btn-add { border-radius: 0; text-transform: uppercase; letter-spacing: .2em; font-size: 11px; border-color: #2b2741; color: #2b2741; background: transparent; }
+.btn-add:hover, .btn-add.on, .btn-add.on:hover { background: #2b2741; color: #fbfbfe; }
+.input { border-radius: 0; background: transparent; border-color: #e3e5f0; font-family: var(--font-body); }
+.card, .summary, .review, .option-box, .ph, .seg, .seg-opt, .dropzone, .qty { border-radius: 0 !important; }
+.seg { background: transparent; border: 1px solid #e3e5f0; }
+.seg-opt:has(input:checked) { background: #ebe8fd; box-shadow: inset 0 0 0 1px #2b2741; }
+.eyebrow { font-family: var(--font-body); font-weight: 400; font-size: 12px; letter-spacing: .28em; color: #5d5294; }
+.card-title { font-family: var(--font-heading); font-size: 24px; font-weight: 400; }
+.summary { background: #fbfbfe; box-shadow: 0 0 0 1px #e3e5f0; }
+.ship-meter { border-radius: 0; background: linear-gradient(120deg, #ebe8fd, #f8f0f6 70%, #f3f1ff); }
+.ship-meter .fill { background: #6f62b8; }
+.checkout-side { background: linear-gradient(170deg, #ebe8fd, #f8f0f6); }
+.booking { background: #f3f1ff; }
+.avatar { background: #2b2741; color: #c4bbf5; }
+.stars { color: #6f62b8; }
+.bag h1, .bespoke h1, .studio h1 { font-family: var(--font-heading); font-weight: 400; letter-spacing: 0; }
+.line-note { color: #5d5294; }
+.toast { background: #2b2741; color: #fbfbfe; border-radius: 0; font-family: var(--font-body); }
+
+/* ── chrome ── */
+.iv-top { background: #2b2741; color: #e9e6fd; display: flex; justify-content: space-between; gap: 16px; padding: 10px var(--g); font: 400 12px/1.2 Jost, sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+.iv-head { position: sticky; top: 0; z-index: 30; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 18px var(--g); border-bottom: 1px solid #e3e5f0; background: rgba(251, 251, 254, .93); backdrop-filter: blur(10px); }
+.iv-nav { display: flex; gap: 30px; font: 400 13px Jost, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+.iv-nav a, .iv-right a { color: #2b2741; }
+.iv-nav a:hover, .iv-right a:hover, .iv-nav a[aria-current], .iv-right a[aria-current] { color: #5d5294; }
+.iv-logo { display: block; line-height: 0; }
+.iv-logo img { height: 54px; width: auto; }
+.iv-right { display: flex; gap: 26px; justify-content: flex-end; align-items: center; font: 400 13px Jost, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+.iv-burger, .iv-only-m { display: none; }
+
+/* ── type ── */
+.iv-label { font: 400 12px/1.3 Jost, sans-serif; letter-spacing: .28em; text-transform: uppercase; color: #5f6374; }
+.iv-label.accent { color: #5d5294; }
+.iv-label.lilac, .iv-label.light { color: #c4bbf5; }
+.iv-label.light { font-size: 11px; letter-spacing: .24em; }
+.iv-label.tight { letter-spacing: .16em; }
+.iv-h1 { margin: 0; font: 400 74px/.98 "Cormorant Garamond", serif; letter-spacing: -.01em; color: #2b2741; text-wrap: pretty; }
+.iv-h1 i, .iv-h2 i { color: #6f62b8; }
+.iv-h1.shop { font-size: 72px; line-height: .95; }
+.iv-h1.title { font-size: 60px; line-height: 1; }
+.iv-h2 { margin: 0; font: 400 52px/1 "Cormorant Garamond", serif; color: #2b2741; }
+.iv-h2.sm { font-size: 44px; }
+.iv-h2.light { font-size: 54px; line-height: 1.02; color: #fbfbfe; }
+.iv-h2.light i { color: #c4bbf5; }
+.iv-lead { margin: 0; font: 300 16px/1.7 Jost, sans-serif; color: #474a5a; max-width: 460px; }
+.iv-body { margin: 0; font: 300 15px/1.7 Jost, sans-serif; color: #474a5a; }
+.iv-body.sm { font-size: 14px; line-height: 1.6; margin-top: -8px; }
+.iv-muted { font: 300 13px/1.5 Jost, sans-serif; color: #5f6374; }
+.iv-serif-20 { font: 400 20px/1.2 "Cormorant Garamond", serif; color: #2b2741; }
+.iv-serif-22 { font: 400 22px/1.2 "Cormorant Garamond", serif; color: #2b2741; }
+.iv-serif-24 { font: 400 24px/1.15 "Cormorant Garamond", serif; color: #2b2741; }
+.iv-serif-28 { font: 400 28px/1.1 "Cormorant Garamond", serif; color: #2b2741; }
+.iv-price-sm { font: 400 15px Jost, sans-serif; color: #2b2741; }
+.iv-quote { font: italic 400 20px/1.35 "Cormorant Garamond", serif; color: #2b2741; }
+
+/* ── buttons & links ── */
+.iv-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 16px 28px; border: 1px solid #2b2741; background: #2b2741; color: #fbfbfe; font: 400 12px/1 Jost, sans-serif; letter-spacing: .2em; text-transform: uppercase; cursor: pointer; transition: background-color .2s, color .2s, border-color .2s; }
+.iv-btn:hover { background: #423a6a; border-color: #423a6a; color: #fbfbfe; }
+.iv-btn.ghost { background: transparent; color: #2b2741; }
+.iv-btn.ghost:hover, .iv-btn.ghost.on { background: #2b2741; color: #fbfbfe; }
+.iv-btn.lilac { background: #6f62b8; border-color: #6f62b8; color: #fdfdff; font-weight: 500; align-self: flex-start; margin-top: 8px; }
+.iv-btn.lilac:hover { background: #5d5294; border-color: #5d5294; }
+.iv-btn.block { width: 100%; }
+.iv-btn.lg { padding: 19px; }
+.iv-btn.sm { padding: 12px; font-size: 11px; }
+.iv-link { align-self: flex-start; padding-bottom: 3px; border-bottom: 1px solid #6f62b8; color: #5d5294; font: 400 12px Jost, sans-serif; letter-spacing: .2em; text-transform: uppercase; }
+.iv-link.dark { color: #2b2741; border-color: #2b2741; }
+.iv-link.lilac { color: #c4bbf5; border-color: #c4bbf5; }
+.iv-underline { background: none; border: 0; border-bottom: 1px solid #6f62b8; padding: 0 0 3px; cursor: pointer; color: #5d5294; font: 400 11px Jost, sans-serif; letter-spacing: .2em; text-transform: uppercase; }
+.iv-underline:hover { color: #2b2741; border-color: #2b2741; }
+
+/* ── images ── */
+.iv-img { position: relative; display: block; overflow: hidden; background: #ebe8fd; }
+.iv-img > img, .iv-img > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.2, .7, .2, 1); }
+a.iv-img:hover > img, a:hover > .iv-img > img { transform: scale(1.03); }
+.iv-img.on-ivory { background: #fbfbfe; }
+.iv-img.portrait { aspect-ratio: 4 / 5; }
+.iv-img.square { aspect-ratio: 1; }
+.iv-tag { position: absolute; top: 14px; left: 14px; z-index: 1; background: #fbfbfe; padding: 5px 10px; font: 400 10px Jost, sans-serif; letter-spacing: .2em; text-transform: uppercase; color: #5d5294; white-space: nowrap; }
+
+/* ── home ── */
+.iv-hero { display: grid; grid-template-columns: 400px minmax(0, 1fr) 260px; gap: 28px; padding: 40px var(--g) 56px; align-items: stretch; }
+.iv-hero-copy { display: flex; flex-direction: column; justify-content: space-between; gap: 28px; padding: 12px 0; }
+.iv-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+.iv-stats { display: flex; gap: 28px; padding-top: 22px; border-top: 1px solid #e3e5f0; }
+.iv-stats div { display: flex; flex-direction: column; gap: 2px; }
+.iv-stats strong { font: 500 28px "Cormorant Garamond", serif; }
+.iv-stats span { font: 400 11px Jost, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #5f6374; }
+.iv-hero-main { height: 620px; }
+.iv-hero-side { display: flex; flex-direction: column; gap: 14px; }
+.iv-hero-small { height: 360px; }
+
+.iv-cats { display: flex; justify-content: center; flex-wrap: wrap; row-gap: 10px; border-top: 1px solid #e3e5f0; border-bottom: 1px solid #e3e5f0; padding: 22px var(--g); }
+.iv-cats a { display: flex; align-items: center; gap: 28px; padding: 0 14px; font: 400 30px "Cormorant Garamond", serif; color: #2b2741; }
+.iv-cats a:hover { color: #6f62b8; }
+.iv-gem { width: 5px; height: 5px; transform: rotate(45deg); background: #6f62b8; }
+
+.iv-sec { padding: 72px var(--g) 80px; }
+.iv-sec-head, .iv-band-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+.iv-band-head { margin-bottom: 32px; }
+.iv-cols { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+.iv-col { display: flex; flex-direction: column; gap: 16px; color: #2b2741; }
+.iv-col-img { height: 460px; }
+.iv-col-row { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: baseline; }
+
+.iv-band { background: linear-gradient(120deg, #ebe8fd, #f8f0f6 70%, #f3f1ff); padding: 72px var(--g); }
+.iv-tabs { display: flex; gap: 28px; flex-wrap: wrap; font: 400 13px Jost, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+.iv-tabs button { background: none; border: 0; border-bottom: 1px solid transparent; padding: 0 0 6px; cursor: pointer; font: inherit; letter-spacing: inherit; text-transform: inherit; color: #5f6374; }
+.iv-tabs button.on, .iv-tabs button:hover { color: #2b2741; border-color: #2b2741; }
+.iv-tabs button span { color: #9397ab; }
+.iv-band-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.iv-bcard { display: flex; flex-direction: column; gap: 14px; }
+.iv-bcard-info { display: flex; flex-direction: column; gap: 4px; text-align: center; }
+
+.iv-bespoke { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); background: var(--plum); color: #ebe8fd; }
+.iv-bespoke-img { min-height: 540px; background: #2b2741; }
+.iv-bespoke-copy { padding: 64px; display: flex; flex-direction: column; gap: 24px; justify-content: center; }
+.iv-bespoke-copy p { margin: 0; font: 300 16px/1.7 Jost, sans-serif; color: #cfd0e3; max-width: 440px; }
+.iv-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid rgba(196, 187, 245, .35); }
+.iv-steps div { display: flex; flex-direction: column; gap: 6px; padding: 20px 16px 0 0; }
+.iv-steps .n { font: 400 30px "Cormorant Garamond", serif; color: #c4bbf5; }
+.iv-steps .t { font: 400 14px Jost, sans-serif; color: #fbfbfe; }
+.iv-steps .b { font: 300 13px/1.5 Jost, sans-serif; color: #b0b2cc; }
+
+.iv-testimonial { padding: 80px var(--g); display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
+.iv-testimonial .stars { color: #6f62b8; gap: 4px; }
+.iv-testimonial blockquote { margin: 0; font: italic 400 36px/1.3 "Cormorant Garamond", serif; max-width: 860px; text-wrap: pretty; color: #2b2741; }
+.iv-dots { display: flex; gap: 8px; margin-top: 6px; }
+.iv-dots button { width: 24px; height: 18px; padding: 8px 0; border: 0; background: #e3e5f0; background-clip: content-box; cursor: pointer; }
+.iv-dots button.on { background-color: #2b2741; }
+
+.iv-promises { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #e3e5f0; border-bottom: 1px solid #e3e5f0; }
+.iv-promises div { display: flex; flex-direction: column; gap: 6px; padding: 28px 32px; border-right: 1px solid #e3e5f0; }
+.iv-promises div:last-child { border-right: 0; }
+
+/* ── footer ── */
+.iv-foot { background: var(--plum); color: #cfd0e3; padding: 56px var(--g) 28px; display: flex; flex-direction: column; gap: 40px; }
+.iv-foot-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; }
+.iv-foot-brand { display: flex; flex-direction: column; gap: 16px; font: 300 14px/1.6 Jost, sans-serif; }
+.iv-foot-brand > span { max-width: 320px; }
+.iv-foot-logo { height: 60px; width: auto; align-self: flex-start; }
+.iv-news { display: flex; max-width: 380px; border-bottom: 1px solid #c4bbf5; }
+.iv-news input { flex: 1; min-width: 0; background: transparent; border: 0; color: #fbfbfe; font: 300 14px Jost, sans-serif; padding: 12px 0; outline: none; }
+.iv-news input::placeholder { color: #9a9cb8; }
+.iv-news button { background: none; border: 0; color: #c4bbf5; font: 400 12px Jost, sans-serif; letter-spacing: .2em; text-transform: uppercase; cursor: pointer; }
+.iv-foot-col { display: flex; flex-direction: column; gap: 12px; }
+.iv-foot-col a { font: 300 14px Jost, sans-serif; color: #cfd0e3; }
+.iv-foot-col a:hover { color: #fbfbfe; }
+.iv-foot-base { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 20px; border-top: 1px solid rgba(207, 208, 227, .18); font: 300 12px Jost, sans-serif; color: #9a9cb8; }
+
+/* ── collection ── */
+.iv-shop-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; padding: 56px var(--g) 40px; align-items: end; }
+.iv-filterbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin: 0 var(--g); padding: 18px 0; border-top: 1px solid #e3e5f0; border-bottom: 1px solid #e3e5f0; }
+.iv-metals { display: flex; gap: 10px; align-items: center; font: 400 12px Jost, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: #5f6374; }
+.iv-sw { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid #fbfbfe; box-shadow: 0 0 0 1px #e3e5f0; padding: 0; }
+.iv-sw.on { box-shadow: 0 0 0 1px #2b2741; }
+.iv-sort { margin-left: 18px; }
+.iv-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px 24px; padding: 40px var(--g) 80px; }
+.iv-pcard { display: flex; flex-direction: column; gap: 14px; }
+.iv-pcard-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.iv-pcard-row.center { align-items: center; }
+.iv-swatches { display: flex; gap: 6px; }
+.iv-swatches span { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 1px #e3e5f0; }
+.iv-promo { aspect-ratio: 4 / 5; background: var(--plum); display: flex; flex-direction: column; justify-content: space-between; padding: 36px; color: #ebe8fd; }
+.iv-promo-title { font: 400 44px/1.02 "Cormorant Garamond", serif; color: #fbfbfe; }
+.iv-promo-title i { color: #c4bbf5; }
+.iv-empty { margin: 0 var(--g) 80px; padding: 36px; border: 1px solid #e3e5f0; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+
+/* ── product ── */
+.iv-pdp { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 64px; padding: 40px var(--g) 72px; align-items: start; }
+.iv-gallery { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.iv-gallery .main { grid-column: 1 / 3; height: 620px; }
+.iv-gallery .half { height: 300px; }
+.iv-buy { display: flex; flex-direction: column; gap: 28px; padding-top: 8px; position: sticky; top: 110px; }
+.iv-price-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.iv-price { font: 400 24px Jost, sans-serif; }
+.iv-opt { display: flex; flex-direction: column; gap: 12px; }
+.iv-opt-head { display: flex; justify-content: space-between; font: 400 12px Jost, sans-serif; letter-spacing: .18em; text-transform: uppercase; }
+.iv-opt-head > span:first-child { color: #5f6374; }
+.iv-guide { color: #5d5294; border-bottom: 1px solid #6f62b8; }
+.iv-opt-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.iv-choice { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; border: 1px solid #e3e5f0; cursor: pointer; font: 400 13px Jost, sans-serif; color: #2b2741; white-space: nowrap; transition: background-color .15s, border-color .15s; }
+.iv-choice input { position: absolute; opacity: 0; pointer-events: none; }
+.iv-choice:hover { border-color: #9397ab; }
+.iv-choice:has(input:checked) { background: #ebe8fd; border-color: #2b2741; }
+.iv-choice:has(input:focus-visible) { outline: 2px solid #6f62b8; outline-offset: 2px; }
+.iv-choice .sw { width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 1px #e3e5f0; }
+.iv-sizes { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; }
+.iv-sizes .iv-choice { padding: 11px 0; }
+.iv-sizes .iv-choice:has(input:checked) { background: #2b2741; border-color: #2b2741; color: #fbfbfe; }
+.iv-note { font: 300 13px Jost, sans-serif; color: #5f6374; text-align: center; }
+.iv-acc { display: flex; flex-direction: column; border-top: 1px solid #e3e5f0; }
+.iv-acc-item { display: flex; flex-direction: column; gap: 10px; padding: 18px 0; border: 0; border-bottom: 1px solid #e3e5f0; background: none; cursor: pointer; text-align: left; color: #2b2741; }
+.iv-acc-head { display: flex; justify-content: space-between; font: 400 13px Jost, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+.iv-acc-head .pm { color: #6f62b8; font-size: 16px; }
+.iv-acc-item p { margin: 0; font: 300 14px/1.7 Jost, sans-serif; color: #474a5a; }
+.iv-pairs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.iv-pair { display: flex; flex-direction: column; gap: 12px; color: #2b2741; }
+.iv-pair-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font: 400 14px Jost, sans-serif; }
+
+/* ── responsive ── */
+@media (max-width: 1180px) {
+  .iv-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .iv-hero-copy { grid-column: 1 / -1; }
+  .iv-hero-main { height: 520px; }
+  .iv-hero-small { height: 300px; }
+  .iv-col-img { height: 360px; }
+  .iv-band-grid, .iv-pairs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .iv-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .iv-promises { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .iv-promises div:nth-child(2) { border-right: 0; }
+  .iv-promises div:nth-child(-n+2) { border-bottom: 1px solid #e3e5f0; }
+  .iv-foot-grid { grid-template-columns: 1fr 1fr 1fr; }
+  .iv-foot-brand { grid-column: 1 / -1; }
+  .iv-pdp { gap: 40px; }
+  .iv-sizes { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+@media (max-width: 1024px) {
+  .iv-head { grid-template-columns: auto 1fr auto; padding: 12px var(--g); }
+  .iv-logo { grid-column: 1; grid-row: 1; }
+  .iv-logo img { height: 40px; }
+  .iv-right { grid-column: 3; gap: 14px; }
+  .iv-hide-m { display: none; }
+  .iv-burger { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: none; border: 1px solid #e3e5f0; color: #2b2741; cursor: pointer; }
+  .iv-nav { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 0; padding: 8px 16px 16px; background: #fbfbfe; border-bottom: 1px solid #e3e5f0; }
+  .iv-nav.open { display: flex; }
+  .iv-nav a { padding: 12px 0; }
+  .iv-only-m { display: block; }
+}
+@media (max-width: 860px) {
+  .iv-top { justify-content: center; font-size: 11px; letter-spacing: .1em; }
+  .iv-top span:last-child { display: none; }
+
+  .iv-hero { grid-template-columns: 1fr; padding: 24px 16px 40px; gap: 20px; }
+  .iv-h1 { font-size: 46px; }
+  .iv-hero-main { height: 420px; }
+  .iv-hero-side { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 8px 16px; align-items: center; }
+  .iv-hero-small { height: 150px; grid-row: span 2; }
+  .iv-quote { font-size: 17px; }
+  .iv-stats { gap: 18px; }
+  .iv-stats strong { font-size: 24px; }
+  .iv-cats { padding: 16px; }
+  .iv-cats a { font-size: 22px; gap: 14px; padding: 2px 8px; }
+  .iv-sec, .iv-band { padding: 48px 16px; }
+  .iv-h2 { font-size: 38px; }
+  .iv-h2.light { font-size: 40px; }
+  .iv-cols { grid-template-columns: 1fr; }
+  .iv-col-img { height: 300px; }
+  .iv-band-grid { gap: 28px 12px; }
+  .iv-serif-22 { font-size: 19px; }
+  .iv-bespoke { grid-template-columns: 1fr; }
+  .iv-bespoke-img { min-height: 280px; }
+  .iv-bespoke-copy { padding: 36px 20px; }
+  .iv-steps { grid-template-columns: 1fr; }
+  .iv-testimonial { padding: 56px 20px; }
+  .iv-testimonial blockquote { font-size: 26px; }
+  .iv-promises { grid-template-columns: 1fr; }
+  .iv-promises div { border-right: 0; border-bottom: 1px solid #e3e5f0; }
+  .iv-shop-head { grid-template-columns: 1fr; gap: 16px; padding: 32px 16px 24px; }
+  .iv-h1.shop { font-size: 48px; }
+  .iv-filterbar { margin: 0 16px; }
+  .iv-tabs { gap: 18px; }
+  .iv-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 12px; padding: 28px 16px 56px; }
+  .iv-promo { padding: 20px; }
+  .iv-promo-title { font-size: 30px; }
+  .iv-pdp { grid-template-columns: 1fr; padding: 20px 16px 48px; gap: 28px; }
+  .iv-gallery .main { height: 400px; }
+  .iv-gallery .half { height: 200px; }
+  .iv-buy { position: static; }
+  .iv-h1.title { font-size: 42px; }
+  .iv-foot { padding: 44px 16px 24px; }
+  .iv-foot-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+}
+@media (max-width: 520px) {
+  .iv-foot-grid { grid-template-columns: 1fr; }
+  .iv-foot-brand { grid-column: auto; }
+  .iv-grid .iv-pcard-row:first-of-type { flex-direction: column; gap: 4px; }
+  .iv-serif-24 { font-size: 20px; }
+  .iv-ctas .iv-btn { flex: 1; padding: 16px 12px; }
+  .iv-opt-row { flex-direction: column; }
+}
