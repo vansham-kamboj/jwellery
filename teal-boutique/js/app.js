@@ -214,12 +214,6 @@
         <ul class="promise-list">${CONTENT.promises.map(x => `<li><h3>${x.title}</h3><p>${x.body}</p></li>`).join('')}</ul>
         <a href="#/studio" class="btn btn-secondary btn-md" style="align-self:flex-start">Visit the studio</a>
       </div>
-    </section>
-
-    <section class="reviews">
-      <div class="sec-head"><h2>Worn and gifted across Canada</h2></div>
-      <div class="review-grid">${CONTENT.reviews.map(r => `<figure class="review">${stars(5)}<blockquote>${r.q}</blockquote>
-        <figcaption><span class="avatar">${r.i}</span><span class="stack"><span class="who">${r.n}</span><span class="what">${r.c} · ${r.p}</span></span></figcaption></figure>`).join('')}</div>
     </section>`;
   }
 
@@ -293,7 +287,7 @@
       <div class="buybox">
         <div class="stack" style="gap:10px"><span style="font-size:13px" class="muted"><a href="#/shop" class="muted">Shop</a> / <a href="#/shop/${p.cat}" class="muted">${p.cat}</a></span>
           <h1>${esc(p.name)}</h1>
-          <div class="row" style="gap:14px;flex-wrap:wrap"><span style="font-size:24px;font-weight:500">${money(price)}</span>${p.rating ? `<span style="font-size:13px" class="muted">${stars(5)} ${p.rating} · ${p.reviews} reviews</span>` : `<span style="font-size:13px" class="muted">${p.bullion ? 'HST-exempt · insured shipping' : 'New in · no reviews yet'}</span>`}</div>
+          <div class="row" style="gap:14px;flex-wrap:wrap"><span style="font-size:24px;font-weight:500">${money(price)}</span><span style="font-size:13px" class="muted">${p.bullion ? 'HST-exempt · insured shipping' : 'New in'}</span></div>
           <p class="soft">${esc(p.desc)}</p></div>
         <div class="stack" style="gap:10px"><div class="between" style="font-size:13px"><span class="muted">Finish</span><span style="font-weight:500">${finish}</span></div>
           <div class="seg">${finishes.map(f => `<label class="seg-opt"><input type="radio" name="pfin" data-pdp="finish" value="${f.name}" ${finish === f.name ? 'checked' : ''}><span class="swatch" style="background:${f.swatch}"></span>${f.name}</label>`).join('')}</div></div>
@@ -529,7 +523,7 @@
     const on = state.justAdded[p.id];
     return `<div class="tb-card">
       <a href="#/product/${p.id}" class="tb-img square">${p.tag ? `<span class="tb-tag">${p.tag}</span>` : ''}${photo(p.img, p.name)}</a>
-      <div class="tb-card-info"><div class="tb-card-row"><a href="#/product/${p.id}" class="tb-name">${esc(p.name)}</a>${p.rating ? `<span class="tb-rating">★ ${p.rating}</span>` : ''}</div><span class="tb-muted">${esc(p.material)}</span></div>
+      <div class="tb-card-info"><div class="tb-card-row"><a href="#/product/${p.id}" class="tb-name">${esc(p.name)}</a></div><span class="tb-muted">${esc(p.material)}</span></div>
       <div class="tb-card-row foot"><span class="tb-price">${cad(p.price)}</span><button class="tb-pill-btn ${on ? 'on' : ''}" data-act="quickAdd" data-arg="${p.id}">${tbAdd(p.id)}</button></div>
     </div>`;
   }
@@ -589,13 +583,7 @@
       <div class="tb-grid four">${picks.map(productCard).join('')}</div>
     </section>
 
-    <section class="tb-promises">${promises.map(([n, t, b]) => `<div><span class="tb-num">${n}</span><span class="stack"><span class="tb-name sm">${t}</span><span class="tb-muted">${b}</span></span></div>`).join('')}</section>
-
-    <section class="tb-sec">
-      <div class="tb-sec-head"><h2 class="tb-h2">Loved coast to coast</h2></div>
-      <div class="tb-reviews">${CONTENT.reviews.map(r => `<figure class="tb-review">${stars(5)}<blockquote>“${r.q}”</blockquote>
-        <figcaption><span class="tb-avatar">${r.i}</span><span class="stack"><span class="tb-name sm">${r.n}</span><span class="tb-muted">${r.c} · ${r.p}</span></span></figcaption></figure>`).join('')}</div>
-    </section>`;
+    <section class="tb-promises">${promises.map(([n, t, b]) => `<div><span class="tb-num">${n}</span><span class="stack"><span class="tb-name sm">${t}</span><span class="tb-muted">${b}</span></span></div>`).join('')}</section>`;
   }
 
   function shop() {
@@ -646,7 +634,7 @@
       <div class="tb-buy">
         <span class="tb-crumb dark"><a href="#/shop">Shop</a> / <a href="#/shop/${p.cat}">${catLabel(p.cat)}</a></span>
         <h1 class="tb-h1 title">${esc(p.name)}</h1>
-        <div class="tb-price-row"><span class="tb-price lg">${money(price)}</span><span class="tb-muted">${p.rating ? '★ ' + p.rating + ' · ' + p.reviews + ' reviews' : (p.bullion ? 'HST-exempt · insured delivery' : 'New in · no reviews yet')}</span></div>
+        <div class="tb-price-row"><span class="tb-price lg">${money(price)}</span><span class="tb-muted">${(p.bullion ? 'HST-exempt · insured delivery' : 'New in')}</span></div>
         <p class="tb-body">${esc(p.desc)}</p>
         ${fins.length ? `<div class="tb-group"><div class="tb-opt-head"><span class="tb-kicker grey">Metal</span><span>${finish}</span></div>
           <div class="tb-chips">${fins.map(f => `<label class="tb-chip"><input type="radio" name="pfin" data-pdp="finish" value="${esc(f.name)}" ${finish === f.name ? 'checked' : ''}><span class="sw" style="background:${f.swatch}"></span>${f.name}</label>`).join('')}</div></div>` : ''}

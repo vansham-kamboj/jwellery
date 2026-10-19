@@ -135,7 +135,6 @@
         <p>18k gold vermeil and recycled sterling silver — shower-proof, sleep-proof, and finished by hand on Queen Street West.</p>
         <div class="row" style="gap:12px"><a href="#/shop" class="btn btn-primary btn-lg">Shop the edit</a><a href="#/custom" class="btn btn-secondary btn-lg">Design your own</a></div>
         <div class="stats">
-          <div><strong>4.9 ★</strong><span>2,400+ reviews</span></div>
           <div><strong>2.5 µm</strong><span>18k gold layer</span></div>
           <div><strong>Nickel-free</strong><span>Hypoallergenic</span></div>
         </div>
@@ -171,12 +170,6 @@
       `<div class="seg" role="radiogroup" aria-label="Edit">${Object.keys(CONTENT.homeSets).map(t => radio('homeTab', t, t)).join('')}</div>`)}</section>
     <section class="product-grid four pad" style="padding-bottom:56px">
       ${CONTENT.homeSets[state.homeTab].map(id => productCard(byId(id))).join('')}
-    </section>
-
-    <section class="reviews">
-      ${secHead('From coast to coast', 'Worn daily, loved for years', `<span style="font-size:14px" class="muted">4.9 out of 5 · 2,418 verified reviews</span>`)}
-      <div class="review-grid">${CONTENT.reviews.map(r => `<figure class="card elev-sm on-bg review" style="margin:0"><span class="stars">★★★★★</span><p>“${r.q}”</p>
-        <figcaption class="row" style="gap:10px;margin-top:auto"><span class="avatar">${r.i}</span><span class="stack"><span style="font-size:14px;font-weight:500">${r.n}</span><span style="font-size:12px" class="muted">${r.c} · ${r.p}</span></span></figcaption></figure>`).join('')}</div>
     </section>
 
     <section class="pad" style="padding-top:48px">${secHead('@avya.jewels', 'Styled by you', `<a href="#/" class="btn btn-ghost">Follow along →</a>`)}</section>
@@ -250,7 +243,7 @@
       <div class="buybox">
         <div class="stack" style="gap:10px"><span style="font-size:13px" class="muted"><a href="#/shop" class="muted">Shop</a> / <a href="#/shop/${p.cat}" class="muted">${p.cat}</a></span>
           <h1>${esc(p.name)}</h1>
-          <div class="row" style="gap:14px;flex-wrap:wrap"><span style="font-size:24px;font-weight:500">${money(price)}</span><span style="font-size:13px" class="muted"><span class="stars" style="letter-spacing:0">★★★★★</span> ${p.rating} · ${p.reviews} reviews</span></div>
+          <div class="row" style="gap:14px;flex-wrap:wrap"><span style="font-size:24px;font-weight:500">${money(price)}</span></div>
           <p class="soft">${esc(p.desc)}</p></div>
         <div class="stack" style="gap:10px"><div class="between" style="font-size:13px"><span class="muted">Finish</span><span style="font-weight:500">${finish}</span></div>
           <div class="seg">${finishes.map(f => `<label class="seg-opt"><input type="radio" name="pfin" data-pdp="finish" value="${f.name}" ${finish === f.name ? 'checked' : ''}><span class="swatch" style="background:${f.swatch}"></span>${f.name}</label>`).join('')}</div></div>

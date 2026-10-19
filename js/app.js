@@ -1,6 +1,7 @@
 /* Avya — tiny hash-routed storefront. State lives here; every change re-renders #app. */
 (() => {
-  const money = n => '$' + n.toFixed(2);
+  const money = n => '$' + n.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const cad = n => '$' + n.toLocaleString('en-CA');
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const byId = id => PRODUCTS.find(p => p.id === id);
   const href = id => '#/product/' + id;
@@ -10,10 +11,7 @@
     set(k, v) { try { localStorage.setItem('aurelle.' + k, JSON.stringify(v)); } catch { /* storage unavailable */ } }
   };
 
-  const DEFAULT_CART = [
-    { key: 'halo|Gold vermeil · 20 mm', id: 'halo', variant: 'Gold vermeil · 20 mm', qty: 1, price: 68 },
-    { key: 'fil|Sterling silver · 45 cm', id: 'fil', variant: 'Sterling silver · 45 cm', qty: 1, price: 82 }
-  ];
+  const DEFAULT_CART = [];
 
   const state = {
     route: 'home', param: null, navOpen: false, filtersOpen: false, draft: { filter: 'All', ffin: 'Any' },
@@ -39,6 +37,25 @@
     clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
   }
 
+  /* Drawn icons — one stroke weight, currentColor. */
+  const svg = (d, size = 16, extra = '') => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${d}</svg>`;
+  const ICON = {
+    check: svg('<path d="M5 12.5l4.2 4.2L19 7"/>', 14),
+    arrow: svg('<path d="M5 12h14M13 6l6 6-6 6"/>', 16),
+    menu: svg('<path d="M4 7h16M4 12h16M4 17h16"/>', 20),
+    close: svg('<path d="M6 6l12 12M18 6L6 18"/>', 20),
+    gem: svg('<path d="M12 3l6 9-6 9-6-9z" fill="currentColor" stroke="none"/>', 8),
+    star: svg('<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.8z" fill="currentColor" stroke="none"/>', 15),
+    shield: svg('<path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>', 18)
+  };
+  const stars = n => `<span class="stars" role="img" aria-label="${n} out of 5 stars">${ICON.star.repeat(n)}</span>`;
+
+  /* High-value bullion is reserved one at a time; the team confirms the price before payment. */
+  const quoteLimit = typeof QUOTE_ABOVE === 'number' ? QUOTE_ABOVE : Infinity;
+  const isQuote = p => !!(p && p.bullion && p.price >= quoteLimit);
+  const tooMany = id => isQuote(byId(id)) && state.cart.some(l => l.id === id);
+  const quoteNote = p => `For more than one ${p.short || p.name}, request a quote — we’ll confirm today’s price.`;
+
   /* ── Cart maths ─────────────────────────────────────────────────────── */
   function addLine(id, variant, price) {
     const key = id + '|' + variant;
@@ -48,8 +65,9 @@
   }
   function quickAdd(id) {
     const p = byId(id);
+    if (tooMany(id)) { toast(quoteNote(p)); return; }
     set({ cart: addLine(id, p.material, p.price), justAdded: { ...state.justAdded, [id]: true } });
-    toast(p.name + ' added to your bag');
+    toast(isQuote(p) ? p.name + ' reserved at today’s rate' : p.name + ' added to your bag');
   }
   function totals() {
     const lines = state.cart.map(l => ({ ...l, p: byId(l.id), sum: l.price * l.qty }));
@@ -84,13 +102,13 @@
   const radio = (key, value, label, inner = '') =>
     `<label class="seg-opt"><input type="radio" name="${key}" data-set="${key}" value="${esc(value)}" ${state[key] === value ? 'checked' : ''}>${inner}${esc(label)}</label>`;
 
-  const addBtn = (id, extra = '') => `<button class="btn btn-add ${state.justAdded[id] ? 'on' : ''}" ${extra} data-act="quickAdd" data-arg="${id}">${state.justAdded[id] ? 'Added ✓' : 'Add'}</button>`;
+  const addBtn = (id, extra = '') => `<button class="btn btn-add ${state.justAdded[id] ? 'on' : ''}" ${extra} data-act="quickAdd" data-arg="${id}">${state.justAdded[id] ? 'Added ' + ICON.check : 'Add'}</button>`;
 
   function productCard(p) {
     return `<div class="p-card">
       <a href="#/product/${p.id}" class="ph" aria-label="${esc(p.name)}">${p.tag ? `<span class="tag tag-accent">${p.tag}</span>` : ''}${photo(p.img, p.name)}</a>
       <div class="row-info">
-        <a href="#/product/${p.id}" class="info"><span class="name">${esc(p.name)}</span><span class="sub">$${p.price} · ${esc(p.material)}</span></a>
+        <a href="#/product/${p.id}" class="info"><span class="name">${esc(p.name)}</span><span class="sub">${cad(p.price)} · ${esc(p.material)}</span></a>
         ${addBtn(p.id)}
       </div>
     </div>`;
@@ -107,15 +125,15 @@
         <span class="steps-nav"><span class="on">Bag</span><span class="line on"></span><span class="on">Details</span><span class="line"></span><span style="color:var(--color-neutral-500)">Confirmation</span></span>
         <a href="#/bag" style="margin-left:40px;font-size:14px">← Back to bag</a></nav></header>`;
     }
-    return `<div class="announce">${CONTENT.announce.map(a => `<span>${a}</span>`).join('<span class="gem" aria-hidden="true">◆</span>')}</div>
+    return `<div class="announce">${CONTENT.announce.map(a => `<span>${a}</span>`).join(`<span class="gem">${ICON.gem}</span>`)}</div>
       <header class="site-header"><nav class="nav" aria-label="Main">
         <a href="#/" class="nav-brand" aria-label="Avya Jewels home">${logo('')}</a>
         <div class="nav-links ${state.navOpen ? 'open' : ''}" id="nav-links">
-          <a href="#/shop" data-act="newIn">New in</a><a href="#/shop" ${cur('shop')}>Shop</a><a href="#/gold-bars">Gold bars</a><a href="#/custom" ${cur('custom')}>Bespoke</a>
+          <a href="#/shop/Rings" ${state.route === 'shop' && state.filter !== 'Bullion' ? 'aria-current="page"' : ''}>Jewellery</a><a href="#/shop/Bullion" ${state.route === 'shop' && state.filter === 'Bullion' ? 'aria-current="page"' : ''}>Gold &amp; silver</a><a href="#/gift">Diwali gifts</a><a href="#/custom" ${cur('custom')}>Bespoke</a>
           <span class="nav-sep"></span><a href="#/studio" ${cur('studio')}>Studio</a>
         </div>
         <a href="#/bag" class="btn btn-secondary btn-sm bag-btn">Bag · ${t.count}</a>
-        <button class="btn btn-secondary btn-icon nav-toggle" data-act="toggleNav" aria-label="Menu" aria-expanded="${state.navOpen}" aria-controls="nav-links">${state.navOpen ? '✕' : '☰'}</button>
+        <button class="btn btn-secondary btn-icon nav-toggle" data-act="toggleNav" aria-label="Menu" aria-expanded="${state.navOpen}" aria-controls="nav-links">${state.navOpen ? ICON.close : ICON.menu}</button>
       </nav></header>`;
   }
 
@@ -123,88 +141,80 @@
     return `<footer class="footer">
       <div class="footer-grid">
         <div class="stack" style="gap:18px">${logo('footer-logo')}
-          <span class="footer-blurb">New arrivals, studio sales and care notes — once a month.</span>
+          <span class="footer-blurb">New pieces, Diwali gifting and gold-rate notes — once a month, never more.</span>
           <form class="newsletter" data-form="newsletter"><input class="input" type="email" required placeholder="Email address" aria-label="Email address" data-model="newsletter" value="${esc(state.form.newsletter)}"><button class="btn btn-primary" type="submit">Subscribe</button></form></div>
-        ${CONTENT.footerCols.map(col => `<div class="footer-col"><span class="eyebrow">${col.h}</span>
+        ${CONTENT.footerCols.map(col => `<div class="footer-col"><h3 class="footer-h">${col.h}</h3>
           ${col.links.map(([l, h]) => `<a href="${h}">${l}</a>`).join('')}</div>`).join('')}
       </div>
-      <div class="footer-base"><span>© 2026 Avya Jewels · 1082 Queen St W, Toronto ON · CAD</span><nav aria-label="Legal"><a href="#/">Terms</a><a href="#/">Privacy</a><a href="#/">Returns policy</a></nav></div>
+      <div class="footer-base"><span>© 2026 Avya Jewels · 1082 Queen St W, Toronto ON</span><nav aria-label="Legal"><a href="#/">Terms</a><a href="#/">Privacy</a><a href="#/">Returns policy</a></nav></div>
     </footer>`;
   }
 
   /* ── Pages ──────────────────────────────────────────────────────────── */
   function home() {
     const tab = state.homeTab;
-    const picks = CONTENT.homeTabs[tab] ? CONTENT.homeTabs[tab].map(byId) : PRODUCTS.filter(p => p.cat === tab).slice(0, 4);
-    const hero = byId('cluster-halo-ring') || PRODUCTS[0];
+    const picks = (CONTENT.homeTabs[tab] ? CONTENT.homeTabs[tab].map(byId) : PRODUCTS.filter(p => p.cat === tab && p.real).slice(0, 4)).filter(Boolean);
+    const wear = byId('cluster-halo-ring') || PRODUCTS[0];
+    const keep = byId('maple-leaf-1oz-coin') || PRODUCTS[0];
     const bar = byId(state.barPick) || byId(GOLD.featured[0]);
-    const count = f => PRODUCTS.filter(p => p.cat === f).length;
+    const gifts = ['diwali-10g-gold-bars', 'pink-oval-ring'].map(byId).filter(Boolean);
+    const quote = bar && isQuote(bar);
     return `
-    <section class="hero">
-      <div class="hero-copy">
-        <span class="eyebrow">Autumn edit <span class="dot">·</span> Handmade in Toronto</span>
-        <h1>Small gold things, worn every single day.</h1>
-        <p>18k gold vermeil and recycled sterling silver — shower-proof, sleep-proof, and finished by hand on Queen Street West.</p>
-        <div class="hero-ctas"><a href="#/shop" class="btn btn-primary btn-lg">Shop the edit</a><a href="#/custom" class="btn btn-secondary btn-lg">Design your own</a></div>
-        <div class="stats">
-          <div><strong>4.9 <span class="star">★</span></strong><span>2,400+ reviews</span></div>
-          <div><strong>2.5 µm</strong><span>18k gold layer</span></div>
-          <div><strong>Nickel-free</strong><span>Hypoallergenic</span></div>
-        </div>
+    <section class="paths">
+      <div class="paths-intro">
+        <h1>Fine silver to wear. Certified gold to keep.</h1>
+        <p>Hand-set silver jewellery and Royal Canadian Mint gold and silver, chosen in our Toronto studio and shipped insured across Canada.</p>
       </div>
-      <div class="hero-main">
-        ${ph('model portrait — hoops + layered chains', 'eager')}
-        <div class="hero-float">
-          ${ph(hero.name, '', '', hero.img)}
-          <a href="#/product/${hero.id}" class="info"><span class="kicker">New in</span><span class="name">${hero.name}</span><span class="sub">$${hero.price} · ${hero.material}</span></a>
-          ${addBtn(hero.id)}
-        </div>
-      </div>
-      <div class="hero-side">${ph('ring stack, macro')}${ph('pendant on linen')}</div>
+      <a class="path" href="#/shop/Rings">
+        <div class="ph path-img">${photo(wear.img, wear.name, true)}</div>
+        <div class="path-copy"><h2>Wear it</h2><p>Silver rings and earrings set with cubic zirconia, from $48.</p><span class="path-cta">Shop jewellery ${ICON.arrow}</span></div>
+      </a>
+      <a class="path" href="#/shop/Bullion">
+        <div class="ph path-img">${photo(keep.img, keep.name, true)}</div>
+        <div class="path-copy"><h2>Keep it</h2><p>Gold and silver coins and bars from the Royal Canadian Mint, sealed and HST-exempt.</p><span class="path-cta">Shop gold &amp; silver ${ICON.arrow}</span></div>
+      </a>
     </section>
 
     <section class="section">
-      ${secHead('Shop by piece', 'Find your everyday', `<a href="#/shop" class="link">View all ${PRODUCTS.length} pieces →</a>`)}
-      <div class="cat-grid">
-        ${CONTENT.categories.map(c => `<a href="#/shop/${c.filter}" class="ph cat-tile">${photo(LABEL_IMG[c.ph], c.name)}<span class="chip"><span>${c.name}</span><small>${count(c.filter)} →</small></span></a>`).join('')}
-      </div>
-    </section>
-
-    <section class="standard">
-      ${ph('studio — hand-polishing a hoop')}
-      <div class="standard-copy">
-        ${eyebrow('The Avya standard')}
-        <h2>Gold that outlasts the trend it was bought for.</h2>
-        <div class="stack">${CONTENT.standards.map(s => `<div class="standard-item"><span class="n">${s.n}</span><span class="stack" style="gap:8px"><span class="t">${s.title}</span><span class="b">${s.body}</span></span></div>`).join('')}</div>
-        <a href="#/studio" class="btn btn-secondary btn-md" style="align-self:flex-start">Meet the studio</a>
-      </div>
-    </section>
-
-    <section class="section">
-      ${secHead('Loved by 2,400+', 'Bestsellers', `<div class="seg" role="radiogroup" aria-label="Category">${Object.keys(CONTENT.homeTabs).map(t => radio('homeTab', t, t)).join('')}</div>`)}
+      <div class="sec-head"><h2>New arrivals</h2>
+        <div class="seg" role="radiogroup" aria-label="Show">${Object.keys(CONTENT.homeTabs).map(t => radio('homeTab', t, t)).join('')}</div></div>
       <div class="product-grid four">${picks.map(productCard).join('')}</div>
+      <a href="#/shop/Rings" class="link-more">See all jewellery ${ICON.arrow}</a>
     </section>
 
-    <section class="reviews">
-      ${secHead('From coast to coast', 'Worn daily, loved for years', `<span style="font-size:15px" class="muted">4.9 out of 5 · 2,418 verified reviews</span>`)}
-      <div class="review-grid">${CONTENT.reviews.map(r => `<figure class="card on-bg review" style="margin:0"><span class="stars">★★★★★</span><p>“${r.q}”</p>
-        <figcaption class="row" style="gap:10px;margin-top:auto"><span class="avatar">${r.i}</span><span class="stack"><span style="font-size:14px;font-weight:500">${r.n}</span><span style="font-size:12px" class="muted">${r.c} · ${r.p}</span></span></figcaption></figure>`).join('')}</div>
-    </section>
+    ${gifts.length === 2 ? `<section class="gift" id="gift">
+      <div class="gift-copy">
+        <h2>Gold for Diwali, silver for every day.</h2>
+        <p>A 10 g Royal Canadian Mint bar in its festive card, or a ring she’ll wear long after the lights come down. Gift-wrapped free until November 1.</p>
+        <a href="#/product/${gifts[0].id}" class="btn btn-primary btn-lg">Shop Diwali gifts</a>
+      </div>
+      <div class="gift-picks">${gifts.map(productCard).join('')}</div>
+    </section>` : ''}
 
     ${bar ? `<section class="gold-bars" id="gold-bars">
       <div class="stack" style="gap:24px">
-        ${eyebrow('Gold bars &amp; coins')}
-        <h2>Royal Canadian Mint gold, sealed and insured.</h2>
-        <p>Certified 999.9 fine gold coins and bars in original assay — priced at today’s rate and shipped insured to your door.</p>
-        <div class="weights" role="group" aria-label="Choose a piece">${GOLD.featured.map(id => `<button class="weight" data-act="barPick" data-arg="${id}" aria-pressed="${id === bar.id}">${byId(id).short}</button>`).join('')}</div>
+        <h2>Royal Canadian Mint gold, priced at today’s rate.</h2>
+        <p>999.9 fine gold coins and bars, sealed in their original assay with a serial number. Choose a size to see today’s price.</p>
+        <div class="weights" role="group" aria-label="Choose a coin or bar">${GOLD.featured.map(byId).filter(Boolean).map(b => `<button class="weight" data-act="barPick" data-arg="${b.id}" aria-pressed="${b.id === bar.id}">${b.short}</button>`).join('')}</div>
         <div class="bar-buy">
-          <div class="bar-price"><small>${esc(bar.name)} · CAD, HST-exempt</small><strong>$${bar.price.toLocaleString('en-CA')}</strong></div>
-          <button class="btn btn-primary btn-lg" data-act="quickAdd" data-arg="${bar.id}">${state.justAdded[bar.id] ? 'Added ✓' : 'Add to bag'}</button>
+          <div class="bar-price"><span class="bar-name">${esc(bar.name)}</span><strong>$${bar.price.toLocaleString('en-CA')}</strong>
+            <small>${METAL.example ? 'Example rate' : 'Today’s rate'} · updated ${METAL.updated} · HST-exempt</small></div>
+          <button class="btn btn-primary btn-lg" data-act="quickAdd" data-arg="${bar.id}">${state.justAdded[bar.id] ? (quote ? 'Reserved ' : 'Added ') + ICON.check : (quote ? 'Reserve at today’s rate' : 'Add to bag')}</button>
         </div>
-        <a href="#/shop/Bullion" class="link" style="font-weight:500">Shop all gold &amp; silver bullion →</a>
+        ${quote ? `<p class="bar-note">${ICON.shield}<span>Orders over $${quoteLimit.toLocaleString('en-CA')} are reserved, not charged. We call to confirm the final price before you pay.</span></p>` : ''}
+        <a href="#/shop/Bullion" class="link-more">All gold &amp; silver ${ICON.arrow}</a>
       </div>
       <a href="#/product/${bar.id}" class="art ph" aria-label="${esc(bar.name)}">${photo(bar.img, bar.name)}</a>
-    </section>` : ''}`;
+    </section>` : ''}
+
+    <section class="promise">
+      <div class="ph promise-img">${photo((byId('bezel-eternity-band') || wear).img, 'Bezel Eternity Band')}</div>
+      <div class="promise-copy">
+        <h2>Why people buy from Avya</h2>
+        <ul class="promise-list">${CONTENT.promises.map(x => `<li><h3>${x.title}</h3><p>${x.body}</p></li>`).join('')}</ul>
+        <a href="#/studio" class="btn btn-secondary btn-md" style="align-self:flex-start">Visit the studio</a>
+      </div>
+    </section>`;
   }
 
   const FIN_MAP = { Any: null, 'Gold vermeil': 'gold', 'Sterling silver': 'silver', 'Rose vermeil': 'rose', 'Fine gold': 'finegold', 'Fine silver': 'finesilver' };
@@ -227,7 +237,7 @@
     return `<div class="sheet-wrap">
       <div class="sheet-backdrop" data-act="closeFilters"></div>
       <form class="sheet ${state.filtersOpen === 'opening' ? 'anim' : ''}" role="dialog" aria-modal="true" aria-labelledby="sheet-title" data-form="filters">
-        <div class="between sheet-head"><h2 id="sheet-title" style="font-size:20px">Filters</h2><button type="button" class="btn btn-secondary btn-icon" data-act="closeFilters" aria-label="Close filters">✕</button></div>
+        <div class="between sheet-head"><h2 id="sheet-title" style="font-size:20px">Filters</h2><button type="button" class="btn btn-secondary btn-icon" data-act="closeFilters" aria-label="Close filters">${ICON.close}</button></div>
         <div class="filters sheet-body">${filterGroups(d.filter, d.ffin, { act: 'draftFilter', set: 'draft.ffin', name: 'ffin-sheet' })}</div>
         <div class="sheet-foot"><button type="button" class="btn btn-secondary" data-act="clearDraft">Clear all</button><button type="submit" class="btn btn-primary" style="flex:1;padding:12px" ${n ? '' : 'disabled'}>${n ? `Show ${n} piece${n === 1 ? '' : 's'}` : 'No matches'}</button></div>
       </form></div>`;
@@ -277,7 +287,7 @@
       <div class="buybox">
         <div class="stack" style="gap:10px"><span style="font-size:13px" class="muted"><a href="#/shop" class="muted">Shop</a> / <a href="#/shop/${p.cat}" class="muted">${p.cat}</a></span>
           <h1>${esc(p.name)}</h1>
-          <div class="row" style="gap:14px;flex-wrap:wrap"><span style="font-size:24px;font-weight:500">${money(price)}</span>${p.rating ? `<span style="font-size:13px" class="muted"><span class="stars" style="letter-spacing:0">★★★★★</span> ${p.rating} · ${p.reviews} reviews</span>` : `<span style="font-size:13px" class="muted">${p.bullion ? 'HST-exempt · insured shipping' : 'New in · no reviews yet'}</span>`}</div>
+          <div class="row" style="gap:14px;flex-wrap:wrap"><span style="font-size:24px;font-weight:500">${money(price)}</span><span style="font-size:13px" class="muted">${p.bullion ? 'HST-exempt · insured shipping' : 'New in'}</span></div>
           <p class="soft">${esc(p.desc)}</p></div>
         <div class="stack" style="gap:10px"><div class="between" style="font-size:13px"><span class="muted">Finish</span><span style="font-weight:500">${finish}</span></div>
           <div class="seg">${finishes.map(f => `<label class="seg-opt"><input type="radio" name="pfin" data-pdp="finish" value="${f.name}" ${finish === f.name ? 'checked' : ''}><span class="swatch" style="background:${f.swatch}"></span>${f.name}</label>`).join('')}</div></div>
@@ -286,15 +296,15 @@
         <div class="row" style="gap:8px;align-items:stretch">
           <button class="btn btn-primary" data-act="addToBag" style="flex:1;padding:14px;font-size:15px">${added ? `Added — view bag (${count})` : 'Add to bag · ' + money(price)}</button>
           <button class="btn btn-secondary" data-act="save" style="padding:0 18px;font-size:13px">Save</button></div>
-        <div class="perks">${CONTENT.perks.map(k => `<div><span style="font-size:13px;font-weight:500">${k.t}</span><span style="font-size:12px" class="muted">${k.b}</span></div>`).join('')}</div>
-        <div class="stack">${CONTENT.accordions.map((a, i) => (i === 0 && p.care ? { ...a, body: p.care } : a)).map((a, i) => `<button class="acc fade-rule" data-act="acc" data-arg="${i}" aria-expanded="${state.open === i}"><span class="between"><span>${a.title}</span><span>${state.open === i ? '−' : '+'}</span></span>${state.open === i ? `<p>${a.body}</p>` : ''}</button>`).join('')}</div>
+        <div class="perks">${(p.perks || CONTENT.perks).map(k => `<div><span style="font-size:13px;font-weight:500">${k.t}</span><span style="font-size:12px" class="muted">${k.b}</span></div>`).join('')}</div>
+        <div class="stack">${(p.accordions || CONTENT.accordions).map((a, i) => (i === 0 && p.care ? { ...a, body: p.care } : a)).map((a, i) => `<button class="acc fade-rule" data-act="acc" data-arg="${i}" aria-expanded="${state.open === i}"><span class="between"><span>${a.title}</span><span>${state.open === i ? '−' : '+'}</span></span>${state.open === i ? `<p>${a.body}</p>` : ''}</button>`).join('')}</div>
       </div>
     </section>
     <section class="pairs">
       <div class="stack" style="gap:6px">${eyebrow('Complete the look')}<h2 style="font-size:30px;letter-spacing:-.025em">Pairs well with ${esc(p.name.split(' ')[0])}</h2></div>
       <div class="pair-grid">${PRODUCTS.filter(x => x.id !== p.id && x.cat !== p.cat).slice(0, 4).map(x => `<div class="card elev-sm on-bg" style="padding:10px;gap:10px">
         <a href="#/product/${x.id}" class="ph md">${photo(x.img, x.name)}</a>
-        <div class="between" style="padding:0 4px 4px"><a href="#/product/${x.id}" class="stack"><span style="font-size:14px;font-weight:500">${x.name}</span><span style="font-size:13px" class="muted">$${x.price}</span></a>
+        <div class="between" style="padding:0 4px 4px"><a href="#/product/${x.id}" class="stack"><span style="font-size:14px;font-weight:500">${x.name}</span><span style="font-size:13px" class="muted">${cad(x.price)}</span></a>
         ${addBtn(x.id)}</div></div>`).join('')}</div>
     </section>`;
   }
@@ -317,14 +327,14 @@
         ${t.lines.length ? '' : `<div class="stack" style="gap:16px;align-items:flex-start;padding:24px 0"><p class="soft">Your bag is empty.</p><a href="#/shop" class="btn btn-primary">Continue shopping</a></div>`}
         ${t.lines.map(l => `<div class="line-item fade-rule">
           <a href="${href(l.id)}" class="ph md">${photo(l.p.img, l.p.name)}</a>
-          <div class="stack" style="gap:4px"><a href="${href(l.id)}" style="font-size:17px;font-weight:500">${l.p.name}</a><span style="font-size:13px" class="muted">${esc(l.variant)}</span>
+          <div class="stack" style="gap:4px"><a href="${href(l.id)}" style="font-size:17px;font-weight:500">${l.p.name}</a><span style="font-size:13px" class="muted">${esc(l.variant)}</span>${isQuote(l.p) ? `<span class="line-note">${ICON.shield} Reserved — price confirmed by our team before payment</span>` : ''}
             <div class="row" style="gap:12px;margin-top:auto;padding-top:8px"><div class="qty"><button class="btn btn-icon" data-act="qty" data-arg="${esc(l.key)}" data-d="-1" aria-label="Decrease">−</button><span>${l.qty}</span><button class="btn btn-icon" data-act="qty" data-arg="${esc(l.key)}" data-d="1" aria-label="Increase">+</button></div>
             <button class="btn btn-ghost" style="font-size:13px" data-act="remove" data-arg="${esc(l.key)}">Remove</button></div></div>
           <span class="price" style="font-size:16px;font-weight:500">${money(l.sum)}</span></div>`).join('')}
         <button class="option-box radio check ${state.gift ? 'on' : ''}" data-act="gift" style="background:transparent;border:0;font:inherit;color:inherit;text-align:left" aria-pressed="${state.gift}">
           <span class="row" style="gap:12px"><span class="dot"></span><span class="stack"><span>Add gift wrapping &amp; a handwritten note</span><span style="font-size:12px" class="muted">Lavender box, ribbon, card — prices hidden</span></span></span><span>$6.00</span></button>
         <div class="stack" style="gap:12px;margin-top:12px">${eyebrow('You might also like')}
-          <div class="mini-grid">${['orbit', 'pebble', 'arc'].map(id => { const p = byId(id); return `<div class="mini"><a href="#/product/${id}" class="ph sm">${photo(p.img, p.name)}</a><span class="stack" style="align-items:flex-start"><span style="font-size:14px;font-weight:500">${p.name}</span><span style="font-size:12px" class="muted">$${p.price}</span>${addBtn(id, 'style="min-height:32px;font-size:13px;margin-top:4px"')}</span></div>`; }).join('')}</div></div>
+          <div class="mini-grid">${PRODUCTS.filter(p => p.real && !p.bullion && !state.cart.some(l => l.id === p.id)).slice(0, 3).map(p => p.id).map(id => { const p = byId(id); return `<div class="mini"><a href="#/product/${id}" class="ph sm">${photo(p.img, p.name)}</a><span class="stack" style="align-items:flex-start"><span style="font-size:14px;font-weight:500">${p.name}</span><span style="font-size:12px" class="muted">${cad(p.price)}</span>${addBtn(id, 'style="min-height:32px;font-size:13px;margin-top:4px"')}</span></div>`; }).join('')}</div></div>
       </div>
       <aside class="card elev-md on-bg summary">
         <span class="card-title">Order summary</span>
@@ -333,7 +343,7 @@
         <div class="between total"><span>Total</span><span>${money(t.total)} <span style="font-size:13px" class="muted">CAD</span></span></div>
         <form class="row" style="gap:8px" data-form="promo"><input class="input" placeholder="Promo code" aria-label="Promo code" data-model="promo" value="${esc(state.form.promo || '')}"><button class="btn btn-secondary" type="submit">Apply</button></form>
         <a href="#/checkout" class="btn btn-primary btn-block ${t.count ? '' : 'disabled'}" style="padding:14px;font-size:15px;${t.count ? '' : 'pointer-events:none;opacity:.45'}">Secure checkout</a>
-        <div class="assure"><span>✓ 60-day free returns</span><span>✓ Insured delivery</span><span>✓ Lifetime replating</span><span>✓ Pay in 4 with Afterpay</span></div>
+        <div class="assure"><span>${ICON.check} 30-day returns on jewellery</span><span>${ICON.check} Insured delivery</span><span>${ICON.check} Bullion is HST-exempt</span><span>${ICON.check} Pay by e-Transfer or card</span></div>
       </aside>
     </section>`;
   }
@@ -435,7 +445,7 @@
   }
 
   const PAGES = { home, shop, product, bag, checkout, custom, studio };
-  const TITLES = { home: 'Avya Jewels — Small gold things, worn every day', shop: 'Shop', product: '', bag: 'Your bag', checkout: 'Checkout', custom: 'Bespoke', studio: 'The studio' };
+  const TITLES = { home: 'Avya Jewels — Fine silver jewellery & certified gold, Toronto', shop: 'Shop', product: '', bag: 'Your bag', checkout: 'Checkout', custom: 'Bespoke', studio: 'The studio' };
 
   /* ── Render & routing ───────────────────────────────────────────────── */
   function render() {
@@ -450,7 +460,7 @@
   function route() {
     const [r, param] = location.hash.replace(/^#\/?/, '').split('/');
     const name = PAGES[r] ? r : 'home';
-    const anchor = r === 'gold-bars' ? 'gold-bars' : null;
+    const anchor = r === 'gold-bars' || r === 'gift' ? r : null;
     const patch = { route: name, param: param ? decodeURIComponent(param) : null, navOpen: false, filtersOpen: false };
     if (name === 'shop' && param && CATS.includes(param)) patch.filter = param;
     if (name === 'product') {
@@ -459,7 +469,7 @@
     }
     set(patch);
     document.title = name === 'home' ? TITLES.home : (name === 'product' ? byId(state.pdp.id).name : TITLES[name]) + ' · Avya Jewels';
-    if (anchor) document.getElementById(anchor).scrollIntoView({ block: 'start' });
+    if (anchor && document.getElementById(anchor)) document.getElementById(anchor).scrollIntoView({ block: 'start' });
     else window.scrollTo(0, 0);
   }
 
@@ -483,7 +493,11 @@
       toast(p.name + ' added to your bag');
     },
     save: () => toast('Saved to your wishlist'),
-    qty: (key, el) => set({ cart: state.cart.map(l => l.key === key ? { ...l, qty: l.qty + +el.dataset.d } : l).filter(l => l.qty > 0) }),
+    qty: (key, el) => {
+      const line = state.cart.find(l => l.key === key);
+      if (+el.dataset.d > 0 && line && isQuote(byId(line.id))) { toast(quoteNote(byId(line.id))); return; }
+      set({ cart: state.cart.map(l => l.key === key ? { ...l, qty: l.qty + +el.dataset.d } : l).filter(l => l.qty > 0) });
+    },
     remove: key => set({ cart: state.cart.filter(l => l.key !== key) }),
     gift: () => set({ gift: !state.gift }),
     express: () => toast('Express checkout isn’t connected in this demo'),
@@ -495,7 +509,7 @@
   };
 
   const FORMS = {
-    newsletter: () => { set({ form: { ...state.form, newsletter: '' } }); toast('You’re on the list ✓'); },
+    newsletter: () => { set({ form: { ...state.form, newsletter: '' } }); toast("You’re on the list — see you next month."); },
     promo: () => toast(state.form.promo ? 'That code isn’t valid' : 'Enter a promo code'),
     checkout: () => { set({ cart: [], gift: false, justAdded: {} }); location.hash = '#/'; toast('Order placed — our team will contact you shortly.'); },
     bespoke: () => set({ submitted: true }),

@@ -3,9 +3,13 @@
 const PIMG = slug => 'assets/web/products/' + slug + '.jpg';
 const PFULL = slug => 'assets/web/products/' + slug + '-full.jpg';
 const PVID = slug => 'assets/web/products/' + slug + '.mp4';
+const PCUT = slug => 'assets/web/products/' + slug + '-cut.jpg';   // piece on the lavender studio backdrop
+const gallery = (slug, video) => video ? [PCUT(slug), PIMG(slug)] : [PCUT(slug), PIMG(slug), PFULL(slug)];
 
 /* Placeholder CAD rates per gram — replace with the live rate (admin setting). */
-const METAL = { gold: { ratePerGram: 152, label: '999.9 fine gold' }, silver: { ratePerGram: 1.95, label: '999 fine silver' } };
+const METAL = { gold: { ratePerGram: 152, label: '999.9 fine gold' }, silver: { ratePerGram: 1.95, label: '999 fine silver' },
+  updated: 'Oct 16, 10:30 a.m. ET', example: true };   // example rate — the admin panel will set the live one
+const QUOTE_ABOVE = 2500;   // bullion over this value is reserved and price-confirmed by the team
 const OZ = 31.1035;
 
 const CARE = {
@@ -38,7 +42,7 @@ const REAL_JEWELLERY = [
   ['midnight-open-ring', 'Moonrise Open Ring', 'Rings', 54, '', 'An open band with a pavé circle and a single round stone.', true]
 ].map(([slug, name, cat, price, tag, desc, video]) => ({
   id: slug, real: true, name, cat, price, tag, desc,
-  img: PIMG(slug), img2: PFULL(slug), gallery: [PIMG(slug), PFULL(slug)], video: video ? PVID(slug) : null,
+  img: PCUT(slug), img2: PIMG(slug), gallery: gallery(slug, video), video: video ? PVID(slug) : null,
   fin: 'plainsilver', sw: ['plainsilver'], material: 'Silver · cubic zirconia', care: CARE.silver,
   sizes: cat === 'Rings' ? RING_SIZES : false, rating: null, reviews: 0
 }));
@@ -56,32 +60,67 @@ const REAL_BULLION = [
 ].map(([slug, name, metal, grams, premium, short, desc]) => ({
   id: slug, real: true, bullion: true, name, short, cat: 'Bullion', metal, grams, premium, desc,
   price: Math.round(grams * METAL[metal].ratePerGram * (1 + premium)),
-  img: PIMG(slug), img2: PFULL(slug), gallery: [PIMG(slug), PFULL(slug)], video: null,
+  img: PCUT(slug), img2: PIMG(slug), gallery: gallery(slug), video: null, confirmed: !/confirm before ordering/.test(desc),
   fin: 'fine' + metal, sw: ['fine' + metal], material: METAL[metal].label, care: CARE.bullion,
   tag: '', sizes: false, rating: null, reviews: 0, taxExempt: true
 }));
 
 /* Real pieces go first, ahead of the sample catalogue. */
-PRODUCTS.unshift(...REAL_JEWELLERY, ...REAL_BULLION);
+/* Bars whose weight isn't confirmed stay off the site until the owner verifies them. */
+PRODUCTS.unshift(...REAL_JEWELLERY, ...REAL_BULLION.filter(b => b.confirmed));
 SW.finegold = '#d4af37'; SW.finesilver = '#c9ccd3'; SW.plainsilver = '#cfd3e5';
 FINISH_OF.finegold = '999.9 fine gold'; FINISH_OF.finesilver = 'Fine silver'; FINISH_OF.plainsilver = 'Silver';
 CATS.push('Bullion');
 BLURB.Bullion = 'Royal Canadian Mint coins and bars in gold and silver — sealed, serial-numbered and HST-exempt.';
 BLURB.Rings = 'Statement pieces, solitaires and stackers — sizes 5 to 9.';
 
-/* Homepage: feature real pieces. */
+/* Homepage content — EXAMPLE COPY until the owner supplies final wording. */
 GOLD.featured = ['diwali-10g-gold-bars', 'maple-leaf-1oz-coin', 'rcm-1oz-gold-bar', 'rcm-100g-gold-bar'];
-CONTENT.homeTabs.All = ['cluster-halo-ring', 'emerald-halo-studs', 'pink-oval-ring', 'bezel-eternity-band'];
+CONTENT.announce = ['Free insured shipping across Canada over $150', 'Royal Canadian Mint certified gold & silver', '30-day returns on jewellery'];
+CONTENT.homeTabs = { All: ['cluster-halo-ring', 'pink-oval-ring', 'bezel-eternity-band', 'twist-solitaire-ring'], Rings: null, Earrings: null };
 CONTENT.categories = [
-  { name: 'Rings', ph: 'stacked rings', filter: 'Rings' },
-  { name: 'Earrings', ph: 'earrings on model', filter: 'Earrings' },
-  { name: 'Necklaces', ph: 'layered necklaces', filter: 'Necklaces' },
-  { name: 'Bracelets', ph: 'bracelets on wrist', filter: 'Bracelets' },
-  { name: 'Gold & silver bullion', ph: 'bullion', filter: 'Bullion' }
+  { name: 'Rings', img: PCUT('pear-crown-ring'), href: '#/shop/Rings' },
+  { name: 'Earrings', img: PCUT('emerald-halo-studs'), href: '#/shop/Earrings' },
+  { name: 'Gold bars', img: PCUT('rcm-100g-gold-bar'), href: '#/shop/Bullion' },
+  { name: 'Gold coins', img: PCUT('maple-leaf-1oz-coin'), href: '#/product/maple-leaf-1oz-coin' },
+  { name: 'Silver bars', img: PCUT('rcm-100oz-silver-bar'), href: '#/shop/Bullion' }
+];
+CONTENT.promises = [
+  { title: 'Certified, never guessed', body: 'Every coin and bar comes from the Royal Canadian Mint, sealed in its assay with a serial number you can check.' },
+  { title: 'Set and checked by hand', body: 'Each silver piece is inspected stone by stone and polished before it is boxed.' },
+  { title: 'Insured to your door', body: 'Orders ship fully insured with signature on delivery, anywhere in Canada.' }
+];
+CONTENT.reviews = [
+  { q: 'The Cluster Halo Ring catches the light from across the room. Sized perfectly and arrived in two days.', n: 'Priya S.', i: 'PS', c: 'Brampton, ON', p: 'Cluster Halo Ring' },
+  { q: 'Bought a Gold Maple Leaf for my son’s first birthday. Sealed, certified, and the team called to confirm the price.', n: 'Daniel K.', i: 'DK', c: 'Calgary, AB', p: 'Gold Maple Leaf · 1 oz' },
+  { q: 'The Diwali bar in its festive card was the gift of the evening. Already planning next year’s.', n: 'Anjali M.', i: 'AM', c: 'Surrey, BC', p: 'RCM Diwali Gold Bar · 10 g' }
+];
+CONTENT.footerCols = [
+  { h: 'Shop', links: [['Rings', '#/shop/Rings'], ['Earrings', '#/shop/Earrings'], ['Gold & silver', '#/shop/Bullion'], ['Diwali gifts', '#/gift']] },
+  { h: 'Avya', links: [['Our story', '#/studio'], ['Visit the studio', '#/studio'], ['Bespoke', '#/custom']] },
+  { h: 'Help', links: [['Shipping & returns', '#/bag'], ['Ring size guide', '#/product/pear-crown-ring'], ['Care', '#/product/cluster-halo-ring'], ['Contact', '#/studio']] }
 ];
 Object.assign(LABEL_IMG, {
-  'stacked rings': PIMG('cluster-halo-ring'),
-  'bullion': PIMG('maple-leaf-1oz-coin'),
-  'category banner — Rings': PIMG('pear-crown-ring'),
-  'category banner — Bullion': PIMG('rcm-100g-gold-bar')
+  'category banner — Rings': PCUT('pear-crown-ring'),
+  'category banner — Earrings': PCUT('emerald-halo-studs'),
+  'category banner — Bullion': PCUT('rcm-100g-gold-bar'),
+  'category banner — All': PCUT('cluster-halo-ring')
+});
+
+/* Product-page small print for the real pieces — EXAMPLE COPY. */
+const JEWELLERY_PERKS = [{ t: 'Free shipping', b: 'Over $150 CAD' }, { t: '30-day returns', b: 'Unworn, in original box' }, { t: 'Free resizing', b: 'Within 60 days' }];
+const BULLION_PERKS = [{ t: 'HST-exempt', b: '999.9 investment grade' }, { t: 'Sealed & serialised', b: 'Original RCM assay' }, { t: 'Insured delivery', b: 'Signature required' }];
+const JEWELLERY_DETAILS = [
+  { title: 'Materials & care', body: '' },
+  { title: 'Shipping & returns', body: 'Free insured shipping across Canada over $150 CAD, otherwise $12. Return unworn pieces in their original box within 30 days.' },
+  { title: 'Sizing', body: 'Rings come in Canadian sizes 5–9. Not sure? Order your usual size — we resize free within 60 days.' }
+];
+const BULLION_DETAILS = [
+  { title: 'Certification & packaging', body: '' },
+  { title: 'How pricing works', body: 'Prices follow today’s gold and silver rate. Pieces over $2,500 are reserved, not charged — we call to confirm the final price before you pay.' },
+  { title: 'Shipping', body: 'Every bullion order ships fully insured with signature on delivery. Studio pick-up in Toronto is available by appointment.' }
+];
+PRODUCTS.filter(p => p.real).forEach(p => {
+  p.perks = p.bullion ? BULLION_PERKS : JEWELLERY_PERKS;
+  p.accordions = p.bullion ? BULLION_DETAILS : JEWELLERY_DETAILS;
 });

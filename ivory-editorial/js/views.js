@@ -121,7 +121,6 @@
     const tab = tabs[state.homeTab] !== undefined ? state.homeTab : 'Bestsellers';
     const picks = (tabs[tab] ? tabs[tab].map(byId) : REAL().filter(p => tab === 'Rings' ? p.cat === 'Rings' : p.bullion).slice(0, 4)).filter(Boolean);
     const steps = [{ n: '01', t: 'Consult', b: 'In the studio or by video, free.' }, { n: '02', t: 'Sketch & quote', b: 'Drawings and a price within a week.' }, { n: '03', t: 'Craft', b: 'Set and polished in 3–4 weeks.' }];
-    const r = CONTENT.reviews[state.review % CONTENT.reviews.length];
     const promises = [...CONTENT.promises.map(x => ({ t: x.title, b: x.body })), { t: '30-day returns', b: 'Unworn jewellery, in its original box.' }];
     const bespoke = byId('pear-crown-ring');
     return `
@@ -168,13 +167,6 @@
         <div class="iv-steps">${steps.map(s => `<div><span class="n">${s.n}</span><span class="t">${s.t}</span><span class="b">${s.b}</span></div>`).join('')}</div>
         <a href="#/custom" class="iv-btn lilac">Book a consultation</a>
       </div>
-    </section>
-
-    <section class="iv-testimonial">
-      ${stars(5)}
-      <blockquote>“${r.q}”</blockquote>
-      <span class="iv-label">${r.n} · ${r.c}</span>
-      <div class="iv-dots" role="group" aria-label="Choose a review">${CONTENT.reviews.map((x, i) => `<button class="${i === state.review % CONTENT.reviews.length ? 'on' : ''}" data-act="review" data-arg="${i}" aria-label="Review ${i + 1}"></button>`).join('')}</div>
     </section>
 
     <section class="iv-promises">${promises.map(v => `<div><span class="iv-serif-22">${v.t}</span><span class="iv-muted">${v.b}</span></div>`).join('')}</section>`;
@@ -234,7 +226,7 @@
         <div class="stack" style="gap:12px">
           <span class="iv-label accent">${p.bullion ? 'Royal Canadian Mint · Sealed' : catLabel(p.cat) + ' · Ready to ship'}</span>
           <h1 class="iv-h1 title">${esc(p.name)}</h1>
-          <div class="iv-price-row"><span class="iv-price">${money(price)}</span><span class="iv-muted">${p.rating ? stars(5) + ' ' + p.rating + ' · ' + p.reviews + ' reviews' : (p.bullion ? 'HST-exempt · insured delivery' : 'New in · no reviews yet')}</span></div>
+          <div class="iv-price-row"><span class="iv-price">${money(price)}</span><span class="iv-muted">${(p.bullion ? 'HST-exempt · insured delivery' : 'New in')}</span></div>
           <p class="iv-body">${esc(p.desc)}</p>
         </div>
         ${fins.length ? `<div class="iv-opt"><div class="iv-opt-head"><span>Metal</span><span>${finish}</span></div>

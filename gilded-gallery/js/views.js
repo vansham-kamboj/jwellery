@@ -145,12 +145,7 @@
       <div class="gg-diwali-picks">${gifts.map(p => productCard(p)).join('')}</div>
     </section>` : ''}
 
-    <section class="gg-promises">${promises.map(([ic, t, b]) => `<div><span class="gg-promise-ic">${GG_ICONS[ic]}</span><span class="gg-promise-t">${t}</span><span class="gg-promise-b">${b}</span></div>`).join('')}</section>
-
-    <section class="gg-sec">
-      <div class="gg-sec-head center"><span class="gg-small-caps gold">Kind words</span><h2 class="gg-h2">Worn and gifted across Canada</h2></div>
-      <div class="gg-quotes">${CONTENT.reviews.map(r => `<figure class="gg-quote"><span class="gg-quote-mark" aria-hidden="true">“</span>${stars(5)}<blockquote>${r.q}</blockquote><figcaption><b>${r.n}</b> · ${r.c}<br><span>${r.p}</span></figcaption></figure>`).join('')}</div>
-    </section>`;
+    <section class="gg-promises">${promises.map(([ic, t, b]) => `<div><span class="gg-promise-ic">${GG_ICONS[ic]}</span><span class="gg-promise-t">${t}</span><span class="gg-promise-b">${b}</span></div>`).join('')}</section>`;
   }
 
   function shop() {
@@ -192,7 +187,7 @@
       <div class="gg-buy">
         <span class="gg-small-caps gold">${p.bullion ? 'Royal Canadian Mint · Sealed' : catLabel(p.cat) + ' · Ready to ship'}</span>
         <h1 class="gg-h1 title">${esc(p.name)}</h1>
-        <div class="gg-price-line"><span class="gg-price lg">${money(price)}</span><span class="gg-muted">${p.rating ? '★ ' + p.rating + ' · ' + p.reviews + ' reviews' : (p.bullion ? 'HST-exempt · insured delivery' : 'New in · no reviews yet')}</span></div>
+        <div class="gg-price-line"><span class="gg-price lg">${money(price)}</span><span class="gg-muted">${(p.bullion ? 'HST-exempt · insured delivery' : 'New in')}</span></div>
         <p class="gg-body">${esc(p.desc)}</p>
         ${fins.length ? `<div class="gg-opt"><span class="gg-small-caps">Metal — <b>${finish}</b></span><div class="gg-chips">${fins.map(f => `<label class="gg-chip"><input type="radio" name="pfin" data-pdp="finish" value="${esc(f.name)}" ${finish === f.name ? 'checked' : ''}><span class="sw" style="background:${f.swatch}"></span>${f.name}</label>`).join('')}</div></div>` : ''}
         ${sz ? `<div class="gg-opt"><span class="gg-small-caps">${sz.label} — <b>${size}</b> <a href="#/studio" class="gg-textlink sm">Size guide</a></span><div class="gg-chips">${sz.opts.map(v => `<label class="gg-chip round"><input type="radio" name="psize" data-pdp="size" value="${v}" ${size === v ? 'checked' : ''}>${v}</label>`).join('')}</div></div>` : ''}
