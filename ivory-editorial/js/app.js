@@ -468,6 +468,38 @@
   Object.assign(state, { metal: null, review: 0 });
   const addLabel = id => state.justAdded[id] ? 'Added' : (isQuote(byId(id)) ? 'Reserve' : 'Add to bag');
 
+  /* Contact & social — replace the placeholder profile links with the client's real accounts. */
+  const WHATSAPP = '918320495754';
+  const waLink = (msg = 'Hi Avya Jewels, I have a question.') => 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg);
+  const SOCIAL = [
+    ['Instagram', 'https://www.instagram.com/', svg('<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" fill="currentColor" stroke="none"/>', 16)],
+    ['YouTube', 'https://www.youtube.com/', svg('<rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor" stroke="none"/>', 16)],
+    ['X (Twitter)', 'https://x.com/', svg('<path d="M4 4l16 16M20 4L4 20"/>', 14)],
+    ['WhatsApp', waLink(), svg('<path d="M20 11.6a8.4 8.4 0 0 1-12.4 7.4L3.5 20.5l1.5-4A8.4 8.4 0 1 1 20 11.6z"/><path d="M9 8.6c.2 2.9 2.6 5.3 5.5 5.6l1.2-1.4 1.8.9-.5 1.6c-4 .3-8-3.6-7.7-7.6l1.6-.5.9 1.8z" fill="currentColor" stroke="none"/>', 16)]
+  ];
+  const WA_ICON = svg('<path d="M20 11.6a8.4 8.4 0 0 1-12.4 7.4L3.5 20.5l1.5-4A8.4 8.4 0 1 1 20 11.6z"/><path d="M9 8.6c.2 2.9 2.6 5.3 5.5 5.6l1.2-1.4 1.8.9-.5 1.6c-4 .3-8-3.6-7.7-7.6l1.6-.5.9 1.8z" fill="currentColor" stroke="none"/>', 28);
+  const CART_ICON = svg('<path d="M3 4h2.4l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.1a1.6 1.6 0 0 0 1.6-1.2L20.6 8H6.2"/><circle cx="9.6" cy="20" r="1.3"/><circle cx="17.4" cy="20" r="1.3"/>', 22);
+  const SEARCH_ICON = svg('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>', 18);
+
+  /* Search: every word must appear in the piece's name, material, category or keywords. */
+  const haystack = p => (p.name + ' ' + p.material + ' ' + catLabel(p.cat) + ' ' + p.cat + ' ' + (p.desc || '') + ' '
+    + (p.bullion ? 'gold silver coin bar bullion investment rcm royal canadian mint ' + (p.metal || '') : 'jewellery jewelry')
+    + (p.sw.includes('rosetone') ? ' rose gold' : '') + (/diwali/.test(p.id) ? ' diwali gift' : '')).toLowerCase();
+  const matchQ = (p, q) => q.toLowerCase().split(/\s+/).filter(Boolean).every(w => haystack(p).includes(w));
+  const searchHits = q => (q || '').trim() ? REAL().filter(p => matchQ(p, q.trim())) : [];
+  function searchResults(q) {
+    const hits = searchHits(q);
+    if (!(q || '').trim()) {
+      return `<div class="iv-search-sugg"><span class="iv-label">Popular searches</span>
+        <div>${['Rose gold', 'Solitaire', 'Statement', 'Gold coin', 'Gold bar', 'Silver', 'Diwali'].map(t => `<button type="button" data-act="searchFor" data-arg="${t}">${t}</button>`).join('')}</div></div>`;
+    }
+    if (!hits.length) return `<p class="iv-search-empty">No pieces match “${esc(q.trim())}”. Try “ring”, “rose gold” or “gold bar”.</p>`;
+    return `<ul class="iv-search-list">${hits.slice(0, 6).map(p => `<li><a href="#/product/${p.id}"><span class="iv-search-thumb">${photo(p.img, p.name)}</span>
+        <span class="stack"><span class="iv-serif-20">${esc(p.name)}</span><span class="iv-muted">${esc(p.material)}</span></span><span class="iv-price-sm">${cad(p.price)}</span></a></li>`).join('')}</ul>
+      <button type="submit" class="iv-btn ghost block sm">See all ${hits.length} result${hits.length === 1 ? '' : 's'}</button>`;
+  }
+  Object.assign(state, { searchOpen: false, q: '', zoom: null });
+
   function header() {
     const t = totals();
     if (state.route === 'checkout') {
@@ -478,14 +510,23 @@
     const inShop = state.route === 'shop';
     const nav = [['Shop', '#/shop', inShop && state.filter !== 'Bullion'], ['Gold & silver', '#/shop/Bullion', inShop && state.filter === 'Bullion'],
       ['Diwali gifts', '#/product/diwali-10g-gold-bars', false], ['Bespoke', '#/custom', state.route === 'custom']];
-    return `<div class="iv-top"><span>Complimentary insured shipping across Canada</span><span>Book a private viewing · Toronto</span></div>
+    return `<div class="iv-top"><span class="iv-top-msg">Complimentary insured shipping across Canada</span>
+        <span class="iv-top-right"><span class="iv-top-msg">Book a private viewing · Toronto</span><span class="iv-social" aria-label="Follow Avya Jewels">${SOCIAL.map(([n, h, ic]) => `<a href="${h}" target="_blank" rel="noopener" aria-label="${n}" title="${n}">${ic}</a>`).join('')}</span></span></div>
       <header class="iv-head">
         <nav class="iv-nav ${state.navOpen ? 'open' : ''}" id="nav-links" aria-label="Main">
           ${nav.map(([l, h, on]) => `<a href="${h}" ${on ? 'aria-current="page"' : ''}>${l}</a>`).join('')}<a href="#/studio" class="iv-only-m">Studio</a></nav>
         <a href="#/" class="iv-logo" aria-label="Avya Jewels home">${logo('')}</a>
-        <div class="iv-right"><a href="#/studio" class="iv-hide-m" ${state.route === 'studio' ? 'aria-current="page"' : ''}>Studio</a><a href="#/bag">Bag (${t.count})</a>
+        <div class="iv-right"><button class="iv-iconbtn" data-act="openSearch" aria-label="Search" aria-haspopup="dialog">${SEARCH_ICON}<span class="iv-hide-m">Search</span></button><a href="#/studio" class="iv-hide-m" ${state.route === 'studio' ? 'aria-current="page"' : ''}>Studio</a><a href="#/bag" class="iv-cart" aria-label="Bag, ${t.count} item${t.count === 1 ? '' : 's'}" title="Bag">${CART_ICON}${t.count ? `<span class="iv-cart-count">${t.count}</span>` : ''}</a>
           <button class="iv-burger" data-act="toggleNav" aria-label="Menu" aria-expanded="${state.navOpen}" aria-controls="nav-links">${state.navOpen ? ICON.close : ICON.menu}</button></div>
-      </header>`;
+      </header>
+      ${state.searchOpen ? `<div class="iv-search" role="dialog" aria-modal="true" aria-label="Search the collection">
+        <div class="iv-search-backdrop" data-act="closeSearch"></div>
+        <form class="iv-search-panel" data-form="search" role="search">
+          <div class="iv-search-row">${SEARCH_ICON}<input id="iv-q" type="search" placeholder="Search rings, coins, bars…" aria-label="Search" autocomplete="off" data-model="q" value="${esc(state.form.q || '')}">
+            <button type="button" class="iv-search-close" data-act="closeSearch" aria-label="Close search">${ICON.close}</button></div>
+          <div id="iv-search-results">${searchResults(state.form.q)}</div>
+        </form></div>` : ''}
+      <a class="iv-wa" href="${waLink()}" target="_blank" rel="noopener" aria-label="Chat with Avya Jewels on WhatsApp" title="Chat on WhatsApp">${WA_ICON}</a>`;
   }
 
   function footer() {
@@ -546,11 +587,11 @@
         </div>
         <div class="iv-stats"><div><strong>RCM</strong><span>Certified gold</span></div><div><strong>$48</strong><span>Silver from</span></div><div><strong>Insured</strong><span>Across Canada</span></div></div>
       </div>
-      <a href="#/product/${big.id}" class="iv-img iv-hero-main" aria-label="${esc(big.name)}">${photo(big.purple ? big.img2 : big.img, big.name, true)}</a>
-      <div class="iv-hero-side">
-        <a href="#/product/${side.id}" class="iv-img iv-hero-small" aria-label="${esc(side.name)}">${photo(side.img, side.name, true)}</a>
-        <span class="iv-quote">“The ${esc(side.name.replace(' · 1 oz', ''))} — single-mine Canadian gold, sealed in its assay.”</span>
-        <a href="#/product/${side.id}" class="iv-link">Discover · ${cad(side.price)}</a>
+      <div class="iv-hero-duo">
+        ${[[big, 'Fine jewellery', big.purple ? big.img2 : big.img], [side, 'Certified gold', side.img]].map(([p, kicker, src]) => `<a href="#/product/${p.id}" class="iv-feature">
+          <div class="iv-img iv-feature-img">${photo(src, p.name, true)}</div>
+          <div class="iv-feature-cap"><span class="iv-label accent">${kicker}</span><span class="iv-serif-24">${esc(p.name)}</span>
+            <span class="iv-feature-row"><span class="iv-muted">${esc(p.material)}</span><span class="iv-price-sm">${cad(p.price)}</span></span></div></a>`).join('')}
       </div>
     </section>
 
@@ -594,21 +635,37 @@
   function shop() {
     const cats = shopCats();
     if (!cats.includes(state.filter)) state.filter = 'All';
-    const list = REAL().filter(p => (state.filter === 'All' || p.cat === state.filter) && (!state.metal || metalOf(p).includes(state.metal)));
+    const q = (state.q || '').trim();
+    const list = REAL().filter(p => (state.filter === 'All' || p.cat === state.filter) && (!state.metal || metalOf(p).includes(state.metal)) && (!q || matchQ(p, q)));
     const cards = list.map(productCard);
     const promo = `<a href="#/custom" class="iv-promo"><span class="iv-label lilac">Bespoke</span><span class="iv-promo-title">Can’t find it?<br><i>We’ll make it.</i></span><span class="iv-link lilac">Start a design</span></a>`;
-    if (cards.length >= 3 && state.filter !== 'Bullion') cards.splice(3, 0, promo);
+    if (cards.length >= 4 && state.filter !== 'Bullion' && !q) cards.splice(4, 0, promo);
     return `
     <section class="iv-shop-head">
-      <div class="stack" style="gap:14px"><span class="iv-label">Home / Shop / ${catLabel(state.filter)}</span><h1 class="iv-h1 shop">${state.filter === 'All' ? 'All pieces' : catLabel(state.filter)}</h1></div>
-      <p class="iv-lead">${BLURB[state.filter] || BLURB.All}</p>
+      <div class="stack" style="gap:14px"><span class="iv-label">Home / Shop / ${catLabel(state.filter)}</span><h1 class="iv-h1 shop">${q ? 'Results for “' + esc(q) + '”' : state.filter === 'All' ? 'All pieces' : catLabel(state.filter)}</h1></div>
+      <p class="iv-lead">${q ? list.length + ' piece' + (list.length === 1 ? '' : 's') + ' found. <button class="iv-underline" data-act="clearSearch">Clear search</button>' : BLURB[state.filter] || BLURB.All}</p>
     </section>
     <div class="iv-filterbar">
       <div class="iv-tabs">${cats.map(c => `<button class="${state.filter === c ? 'on' : ''}" data-act="filter" data-arg="${c}">${catLabel(c)} <span>${countIn(c)}</span></button>`).join('')}</div>
       <div class="iv-metals"><span>Metal</span>${Object.keys(METALS).map(m => `<button class="iv-sw ${state.metal === m ? 'on' : ''}" style="background:${METAL_SW[m]}" data-act="metal" data-arg="${m}" title="${m}" aria-label="${m}" aria-pressed="${state.metal === m}"></button>`).join('')}<span class="iv-sort">Sort: Featured</span></div>
     </div>
     <section class="iv-grid">${cards.join('')}</section>
-    ${list.length ? '' : `<div class="iv-empty"><span class="iv-serif-28">Nothing in that metal yet.</span><button class="iv-btn ghost" data-act="metal" data-arg="${state.metal}">Clear metal</button></div>`}`;
+    ${list.length ? '' : q ? `<div class="iv-empty"><span class="iv-serif-28">No pieces match “${esc(q)}”.</span><button class="iv-btn ghost" data-act="clearSearch">Clear search</button></div>`
+      : `<div class="iv-empty"><span class="iv-serif-28">Nothing in that metal yet.</span><button class="iv-btn ghost" data-act="metal" data-arg="${state.metal}">Clear metal</button></div>`}`;
+  }
+
+  const ZOOM_ICON = svg('<path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/>', 16);
+  /* Full-screen image viewer for the product page. */
+  function lightbox(p, imgs) {
+    const n = imgs.length, i = ((state.zoom % n) + n) % n;
+    return `<div class="iv-lightbox" role="dialog" aria-modal="true" aria-label="${esc(p.name)} images">
+      <div class="iv-lb-backdrop" data-act="unzoom"></div>
+      <figure class="iv-lb-stage"><img src="${imgs[i]}" alt="${esc(p.name)} — image ${i + 1} of ${n}"><figcaption>${esc(p.name)} <span>${i + 1} / ${n}</span></figcaption></figure>
+      <button type="button" class="iv-lb-btn close" data-act="unzoom" aria-label="Close">${ICON.close}</button>
+      ${n > 1 ? `<button type="button" class="iv-lb-btn prev" data-act="zoomStep" data-arg="-1" aria-label="Previous image">${svg('<path d="M15 5l-7 7 7 7"/>', 24)}</button>
+      <button type="button" class="iv-lb-btn next" data-act="zoomStep" data-arg="1" aria-label="Next image">${svg('<path d="M9 5l7 7-7 7"/>', 24)}</button>
+      <div class="iv-lb-thumbs">${imgs.map((src, j) => `<button type="button" class="${j === i ? 'on' : ''}" data-act="zoom" data-arg="${j}" aria-label="Image ${j + 1}">${photo(src, '')}</button>`).join('')}</div>` : ''}
+    </div>`;
   }
 
   function product() {
@@ -622,7 +679,7 @@
     return `
     <section class="iv-pdp">
       <div class="iv-gallery">
-        ${imgs.map((s, i) => `<div class="iv-img ${i ? 'half' : 'main'}">${!i && p.tag ? `<span class="iv-tag">${p.tag}</span>` : ''}${photo(s, p.name + (i ? ' — view ' + (i + 1) : ''), !i)}</div>`).join('')}
+        ${imgs.map((s, i) => `<button type="button" class="iv-img iv-zoomable ${i ? 'half' : 'main'}" data-act="zoom" data-arg="${i}" aria-label="View ${esc(p.name)} image ${i + 1} full screen">${!i && p.tag ? `<span class="iv-tag">${p.tag}</span>` : ''}${photo(s, p.name + (i ? ' — view ' + (i + 1) : ''), !i)}<span class="iv-zoom-hint" aria-hidden="true">${ZOOM_ICON}</span></button>`).join('')}
         ${p.video ? `<div class="iv-img half"><video src="${p.video}" poster="${p.img}" autoplay muted loop playsinline aria-label="${esc(p.name)} video"></video></div>` : ''}
       </div>
       <div class="iv-buy">
@@ -647,7 +704,8 @@
     <section class="iv-band">
       <div class="iv-band-head"><h2 class="iv-h2 sm">Wear it with</h2><a href="#/shop" class="iv-link dark">Shop all</a></div>
       <div class="iv-pairs">${pairs.map(x => `<a href="#/product/${x.id}" class="iv-pair"><div class="iv-img square on-ivory">${photo(x.img, x.name)}</div><div class="iv-pair-row"><span class="iv-serif-20">${esc(x.name)}</span><span>${cad(x.price)}</span></div></a>`).join('')}</div>
-    </section>`;
+    </section>
+    ${state.zoom !== null && state.zoom !== undefined ? lightbox(p, imgs) : ''}`;
   }
 
   const PAGES = { home, shop, product, bag, checkout, custom, studio };
@@ -741,6 +799,51 @@
       toast(isQuote(p) ? p.name + ' reserved at today’s rate' : p.name + ' added to your bag');
     }
   });
+
+  /* Search overlay */
+  let fromSearch = false;
+  const focusSearch = () => { const i = document.getElementById('iv-q'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } };
+  Object.assign(ACTIONS, {
+    openSearch: () => { set({ searchOpen: true, navOpen: false }); focusSearch(); },
+    closeSearch: () => { set({ searchOpen: false }); document.querySelector('[data-act="openSearch"]')?.focus(); },
+    searchFor: t => { state.form.q = t; const i = document.getElementById('iv-q'); if (i) i.value = t; const box = document.getElementById('iv-search-results'); if (box) box.innerHTML = searchResults(t); focusSearch(); },
+    clearSearch: () => { state.form.q = ''; set({ q: '' }); }
+  });
+  FORMS.search = () => {
+    const q = (state.form.q || '').trim();
+    if (!q) return;
+    state.q = q; state.metal = null;
+    if (location.hash === '#/shop') set({ q, filter: 'All', searchOpen: false });
+    else { fromSearch = true; state.filter = 'All'; state.searchOpen = false; location.hash = '#/shop'; }
+  };
+  document.addEventListener('input', e => {
+    if (e.target.id !== 'iv-q') return;
+    const box = document.getElementById('iv-search-results');
+    if (box) box.innerHTML = searchResults(e.target.value);
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && state.searchOpen) ACTIONS.closeSearch(); });
+  /* Registered before the router: leaving via any link closes search; only a search keeps the query. */
+  window.addEventListener('hashchange', () => {
+    state.searchOpen = false;
+    if (!fromSearch) state.q = '';
+    fromSearch = false;
+  });
+
+  /* Full-screen product images */
+  const lockScroll = () => { document.body.style.overflow = state.zoom !== null && state.zoom !== undefined ? 'hidden' : ''; };
+  Object.assign(ACTIONS, {
+    zoom: i => { set({ zoom: +i }); lockScroll(); document.querySelector('.iv-lb-btn.close')?.focus(); },
+    zoomStep: d => { set({ zoom: (state.zoom || 0) + +d }); lockScroll(); document.querySelector(`.iv-lb-btn.${+d > 0 ? 'next' : 'prev'}`)?.focus(); },
+    unzoom: () => { const i = state.zoom; set({ zoom: null }); lockScroll(); document.querySelector(`.iv-zoomable[data-arg="${i}"]`)?.focus(); }
+  });
+  document.addEventListener('keydown', e => {
+    if (state.zoom === null || state.zoom === undefined) return;
+    if (e.key === 'Escape') ACTIONS.unzoom();
+    else if (e.key === 'ArrowRight') ACTIONS.zoomStep(1);
+    else if (e.key === 'ArrowLeft') ACTIONS.zoomStep(-1);
+  });
+  window.addEventListener('hashchange', () => { state.zoom = null; document.body.style.overflow = ''; });
+
 
   document.addEventListener('click', e => {
     const el = e.target.closest('[data-act]');
