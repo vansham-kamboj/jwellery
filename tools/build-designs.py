@@ -63,7 +63,7 @@ DARK_NAV = """
 VARIANTS = {
     'ivory-editorial-dark': {'swap': [], 'dark_nav': True, 'studio': 'purple'},
     'ivory-editorial-teal': {'swap': TEAL, 'dark_nav': False, 'studio': 'ivory'},
-    'ivory-editorial-teal-dark': {'swap': TEAL, 'dark_nav': True, 'studio': 'ivory'},
+    'ivory-editorial-teal-dark': {'swap': TEAL, 'dark_nav': True, 'studio': 'ivory', 'hero_picker': True},
 }
 SRC = 'ivory-editorial'
 
@@ -86,8 +86,12 @@ for v, cfg in VARIANTS.items():
     html = read(f'{SRC}/index.html')
     if cfg['studio'] == 'ivory':
         html = html.replace('  <script src="js/catalog-purple.js"></script>', '  <script>var STUDIO_SET = \'ivory\';</script>\n  <script src="js/catalog-purple.js"></script>')
+    if cfg.get('hero_picker'):   # client trial of hero background colours (tools/hero-picker.*)
+        html = html.replace('  <script src="js/app.js"></script>', '  <script src="js/app.js"></script>\n  <script src="js/hero-picker.js"></script>')
+        write(f'{v}/js/hero-picker.js', read('tools/hero-picker.js'))
     write(f'{v}/index.html', html)
     base = '\n'.join(l for l in read('css/styles.css').split('\n') if not l.startswith('@import'))
     theme = read(f'{SRC}/css/theme.css') + (DARK_NAV if cfg['dark_nav'] else '')
-    write(f'{v}/css/styles.css', f'/* Built by tools/build-designs.py from {SRC}: do not edit. */\n' + base + '\n' + swap(theme, cfg['swap']))
+    write(f'{v}/css/styles.css', f'/* Built by tools/build-designs.py from {SRC}: do not edit. */\n' + base + '\n' + swap(theme, cfg['swap'])
+          + (read('tools/hero-picker.css') if cfg.get('hero_picker') else ''))
     print('built', v)

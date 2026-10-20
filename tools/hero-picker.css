@@ -1,0 +1,31 @@
+
+/* ── Hero colour trial: tints the hero + category strip (see js/hero-picker.js). Remove once a colour is chosen. ── */
+html[data-hero] .iv-hero, html[data-hero] .iv-cats { background: var(--hero-bg); }
+html[data-hero] .iv-cats, html[data-hero] .iv-stats, html[data-hero] .iv-feature-cap { border-color: var(--hero-line); }
+html[data-hero] .iv-cats { border-top: 0; }
+
+html[data-hero-tone="dark"] .iv-hero .iv-h1, html[data-hero-tone="dark"] .iv-hero .iv-stats strong,
+html[data-hero-tone="dark"] .iv-hero .iv-serif-24, html[data-hero-tone="dark"] .iv-hero .iv-price-sm,
+html[data-hero-tone="dark"] .iv-feature, html[data-hero-tone="dark"] .iv-cats a { color: #f6f1e6; }
+html[data-hero-tone="dark"] .iv-hero .iv-h1 i, html[data-hero-tone="dark"] .iv-hero .iv-label.accent,
+html[data-hero-tone="dark"] .iv-cats a:hover, html[data-hero-tone="dark"] .iv-feature:hover .iv-serif-24 { color: #dcbd7a; }
+html[data-hero-tone="dark"] .iv-hero .iv-lead, html[data-hero-tone="dark"] .iv-hero .iv-muted { color: #c3d6d6; }
+html[data-hero-tone="dark"] .iv-hero .iv-stats span { color: #9fc4c6; }
+html[data-hero-tone="dark"] .iv-hero .iv-btn { background: #dcbd7a; border-color: #dcbd7a; color: #0d3d45; }
+html[data-hero-tone="dark"] .iv-hero .iv-btn:hover { background: #e8cf98; border-color: #e8cf98; }
+html[data-hero-tone="dark"] .iv-hero .iv-btn.ghost { background: transparent; border-color: rgba(246, 241, 230, .7); color: #f6f1e6; }
+html[data-hero-tone="dark"] .iv-hero .iv-btn.ghost:hover { background: #f6f1e6; color: #0d3d45; }
+html[data-hero-tone="dark"] .iv-cats .iv-gem { background: #dcbd7a; }
+
+.hp { position: fixed; left: 22px; bottom: 22px; z-index: 65; font: 400 12px Jost, sans-serif; color: #0d3d45; }
+.hp-toggle { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid rgba(13, 61, 69, .2); background: #fbfbfe; color: inherit; font: inherit; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; box-shadow: 0 10px 24px -12px rgba(13, 61, 69, .5); }
+.hp-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(13, 61, 69, .3); background: var(--hero-bg, #fbfbfe); }
+.hp-panel { position: absolute; left: 0; bottom: calc(100% + 8px); width: 236px; padding: 14px; background: #fbfbfe; border: 1px solid rgba(13, 61, 69, .15); box-shadow: 0 20px 40px -16px rgba(13, 61, 69, .45); display: flex; flex-direction: column; gap: 10px; }
+.hp-panel[hidden] { display: none; }
+.hp-title { letter-spacing: .16em; text-transform: uppercase; color: #5f6374; font-size: 11px; }
+.hp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.hp-sw { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 0; border: 0; background: none; cursor: pointer; font: 400 10.5px/1.2 Jost, sans-serif; color: #474a5a; text-align: center; }
+.hp-sw span:first-child { width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(13, 61, 69, .2); background: var(--c); }
+.hp-sw[aria-pressed="true"] span:first-child { outline: 2px solid #1b7c86; outline-offset: 2px; }
+.hp-sw[aria-pressed="true"] { color: #0d3d45; font-weight: 500; }
+@media (max-width: 520px) { .hp { left: 16px; bottom: 16px; } .hp-toggle .hp-label { display: none; } }
