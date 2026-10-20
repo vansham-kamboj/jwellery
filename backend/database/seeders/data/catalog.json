@@ -1,0 +1,1972 @@
+{
+ "studio": "ivory",
+ "categories": [
+  {
+   "slug": "silver-pendant-sets",
+   "name": "Pendant sets & necklaces",
+   "group": "Women",
+   "kind": "jewellery",
+   "description": "Pendant sets and necklaces in 925 sterling silver, hallmarked and stamped.",
+   "sort_order": 0
+  },
+  {
+   "slug": "silver-earrings",
+   "name": "Silver earrings",
+   "group": "Women",
+   "kind": "jewellery",
+   "description": "Studs, drops and hoops in 925 sterling silver — easy to wear from morning to evening.",
+   "sort_order": 1
+  },
+  {
+   "slug": "silver-bracelets",
+   "name": "Bracelets",
+   "group": "Women",
+   "kind": "jewellery",
+   "description": "Silver bracelets for every day and every occasion.",
+   "sort_order": 2
+  },
+  {
+   "slug": "silver-rings",
+   "name": "Rings",
+   "group": "Women",
+   "kind": "jewellery",
+   "description": "Solitaires, halos and statement rings in 925 sterling silver. Canadian sizes 5 to 14.",
+   "sort_order": 3
+  },
+  {
+   "slug": "gold-earrings",
+   "name": "Gold earrings",
+   "group": "Women",
+   "kind": "jewellery",
+   "description": "Gold earrings for festive days and the moments worth remembering.",
+   "sort_order": 4
+  },
+  {
+   "slug": "mens-gold-chains",
+   "name": "Gold chains",
+   "group": "Men",
+   "kind": "jewellery",
+   "description": "Gold chains for men, in classic and everyday weights.",
+   "sort_order": 5
+  },
+  {
+   "slug": "kids-nazariya",
+   "name": "Nazariya",
+   "group": "Kids",
+   "kind": "jewellery",
+   "description": "Traditional nazariya bracelets for little ones — a blessing to wear.",
+   "sort_order": 6
+  },
+  {
+   "slug": "kids-kada",
+   "name": "Kada",
+   "group": "Kids",
+   "kind": "jewellery",
+   "description": "Silver kada for babies and children.",
+   "sort_order": 7
+  },
+  {
+   "slug": "silver-bowls",
+   "name": "Silver bowls",
+   "group": "Silver utensils",
+   "kind": "jewellery",
+   "description": "Pure silver bowls for gifting, ceremonies and first feeds.",
+   "sort_order": 8
+  },
+  {
+   "slug": "silver-spoons",
+   "name": "Silver spoons",
+   "group": "Silver utensils",
+   "kind": "jewellery",
+   "description": "Silver spoons — a classic gift for a new arrival.",
+   "sort_order": 9
+  },
+  {
+   "slug": "gold-bars",
+   "name": "Gold bars",
+   "group": "Gold & silver",
+   "kind": "bullion",
+   "description": "99.99% pure gold bars from RCM, PAMP and Valcambi, plus Lakshmi Diwali bars — 1 g to 100 g and 1 oz.",
+   "sort_order": 10
+  },
+  {
+   "slug": "gold-coins",
+   "name": "Gold coins",
+   "group": "Gold & silver",
+   "kind": "bullion",
+   "description": "99.99% pure gold coins, sealed with the mint’s serial number and certificate.",
+   "sort_order": 11
+  },
+  {
+   "slug": "silver-bars",
+   "name": "Silver bars",
+   "group": "Gold & silver",
+   "kind": "bullion",
+   "description": "Royal Canadian Mint 99.99% pure silver bars in 1 kg and 100 oz.",
+   "sort_order": 12
+  },
+  {
+   "slug": "silver-coins",
+   "name": "Silver coins",
+   "group": "Gold & silver",
+   "kind": "bullion",
+   "description": "99.99% pure silver coins — 1 oz, and 5 g and 10 g Lakshmi Ganpati coins.",
+   "sort_order": 13
+  }
+ ],
+ "finishes": {
+  "plainsilver": {
+   "name": "925 sterling silver",
+   "swatch": "#cfd3e5"
+  },
+  "rosetone": {
+   "name": "Rose gold tone",
+   "swatch": "#d8a08f"
+  },
+  "finegold": {
+   "name": "99.99% fine gold",
+   "swatch": "#d9b56a"
+  },
+  "finesilver": {
+   "name": "99.99% fine silver",
+   "swatch": "#dfe2ea"
+  }
+ },
+ "products": [
+  {
+   "slug": "starflower-ring",
+   "name": "Starflower Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver · rose gold tone",
+   "description": "Marquise and pear stones open like a flower around a round centre, on a pavé band.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 112,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": true,
+   "finishes": [
+    "rosetone"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-17.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-17-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 0
+  },
+  {
+   "slug": "floral-halo-ring",
+   "name": "Floral Halo Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver · rose gold tone",
+   "description": "A round centre stone in a halo, with leaves of pavé winding along both shoulders.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 108,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "rosetone"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-13.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-13-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 1
+  },
+  {
+   "slug": "ribbon-solitaire-ring",
+   "name": "Ribbon Solitaire Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver · rose gold tone",
+   "description": "A round solitaire held where two pavé ribbons cross.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 96,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": true,
+   "finishes": [
+    "rosetone"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-22.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-22-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 2
+  },
+  {
+   "slug": "ivy-halo-band",
+   "name": "Ivy Halo Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver · rose gold tone",
+   "description": "A haloed centre stone on a band of trailing pavé ivy.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 106,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "rosetone"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-21.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-21-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 3
+  },
+  {
+   "slug": "laurel-halo-ring",
+   "name": "Laurel Halo Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver · rose gold tone",
+   "description": "A soft halo framed by laurel leaves set with tiny stones.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 104,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "rosetone"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-15.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-15-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 4
+  },
+  {
+   "slug": "pear-laurel-ring",
+   "name": "Pear Laurel Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver · rose gold tone",
+   "description": "A pear-cut centre stone crowned with a wreath of pavé leaves.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 98,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "rosetone"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-04.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-04-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 5
+  },
+  {
+   "slug": "pear-branch-ring",
+   "name": "Pear Branch Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver · rose gold tone",
+   "description": "A pear-cut stone resting on two slender pavé branches.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 96,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "rosetone"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-07.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-07-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 6
+  },
+  {
+   "slug": "laurel-solitaire-ring",
+   "name": "Laurel Solitaire Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver · rose gold tone",
+   "description": "A round solitaire with marquise leaves rising on either side.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 92,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "rosetone"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-03.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-03-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 7
+  },
+  {
+   "slug": "willow-halo-ring",
+   "name": "Willow Halo Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver · rose gold tone",
+   "description": "A round centre stone between sweeping willow-leaf shoulders.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 94,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "rosetone"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-05.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-05-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 8
+  },
+  {
+   "slug": "garden-cluster-ring",
+   "name": "Garden Cluster Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver · rose gold tone",
+   "description": "A round cluster set among pavé leaves on a split band.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 102,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "rosetone"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-10.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-10-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 9
+  },
+  {
+   "slug": "fern-solitaire-ring",
+   "name": "Fern Solitaire Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver · rose gold tone",
+   "description": "A round solitaire on a band that unfurls into pavé fern leaves.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 90,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "rosetone"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-19.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-19-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 10
+  },
+  {
+   "slug": "vine-twist-ring",
+   "name": "Vine Twist Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver · rose gold tone",
+   "description": "A twisting pavé vine that wraps a single round stone.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 88,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "rosetone"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-06.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-06-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 11
+  },
+  {
+   "slug": "leaf-spray-ring",
+   "name": "Leaf Spray Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver · rose gold tone",
+   "description": "An asymmetric spray of marquise leaves beside a round stone.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 84,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "rosetone"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-09.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-09-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 12
+  },
+  {
+   "slug": "twin-pear-wrap-ring",
+   "name": "Twin Pear Wrap Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "Two haloed pear motifs, one with baguettes, wrapping a polished open band.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 86,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-01.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-01-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 13
+  },
+  {
+   "slug": "orbit-pear-ring",
+   "name": "Orbit Pear Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "A pavé circle with a round stone and a small pear accent, on a slim band.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 72,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-11.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-11-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 14
+  },
+  {
+   "slug": "cluster-halo-ring",
+   "name": "Cluster Halo Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "A round centre stone in a halo, set high on a wide band of pavé and marquise-cut stones.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 96,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/products/cluster-halo-ring-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/cluster-halo-ring.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/cluster-halo-ring-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 15
+  },
+  {
+   "slug": "emerald-halo-studs",
+   "name": "Emerald Halo Studs",
+   "short_name": null,
+   "category": "silver-earrings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "Square green-stone studs framed in a fine halo of sparkle. Push backs, everyday size.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 58,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": null,
+   "sizes": [],
+   "default_size": null,
+   "media": [
+    {
+     "src": "assets/web/products/emerald-halo-studs-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/emerald-halo-studs.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/emerald-halo-studs.mp4",
+     "type": "video"
+    }
+   ],
+   "sort_order": 16
+  },
+  {
+   "slug": "pink-oval-ring",
+   "name": "Blush Oval Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "A pink cushion-cut centre stone on a sweeping pavé shank.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 78,
+   "tag": "New",
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/products/pink-oval-ring-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/pink-oval-ring.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/pink-oval-ring-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 17
+  },
+  {
+   "slug": "bezel-eternity-band",
+   "name": "Bezel Eternity Band",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "Round stones in polished bezels all the way around — stacks beautifully.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 68,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/products/bezel-eternity-band-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/bezel-eternity-band.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/bezel-eternity-band.mp4",
+     "type": "video"
+    }
+   ],
+   "sort_order": 18
+  },
+  {
+   "slug": "heart-solitaire-ring",
+   "name": "Heart Solitaire Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "A heart-cut solitaire on a slim, softly tapered band.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 72,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/products/heart-solitaire-ring-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/heart-solitaire-ring.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/heart-solitaire-ring-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 19
+  },
+  {
+   "slug": "ruby-red-statement-ring",
+   "name": "Scarlet Statement Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "A bold red centre stone with baguette shoulders and red enamel detail.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 98,
+   "tag": "Statement",
+   "tax_exempt": false,
+   "featured": true,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-16.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-16-full.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/ruby-red-statement-ring.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 20
+  },
+  {
+   "slug": "pear-crown-ring",
+   "name": "Pear Crown Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "A pear-cut solitaire paired with a matching pavé band for a bridal-set look.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 84,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/products/pear-crown-ring-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/pear-crown-ring.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/pear-crown-ring-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 21
+  },
+  {
+   "slug": "bypass-pave-ring",
+   "name": "Bypass Pear Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "Two pavé pear motifs crossing over a chain-link shank.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 88,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-02.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-02-full.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/bypass-pave-ring.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 22
+  },
+  {
+   "slug": "crossover-statement-ring",
+   "name": "Crossover Statement Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "Ribbed wrap bands finished with pavé bars — big presence, comfortable fit.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 92,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-12.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-12-full.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/crossover-statement-ring.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 23
+  },
+  {
+   "slug": "aria-open-ring",
+   "name": "Aria Open Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "An open double band tipped with two pear-cut stones and a line of pavé.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 64,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/products/aria-open-ring-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/aria-open-ring.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/aria-open-ring-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 24
+  },
+  {
+   "slug": "square-pave-band",
+   "name": "Square Pavé Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "A slim polished band with a square of nine pavé stones at the centre.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 48,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/products/square-pave-band-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/square-pave-band.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/square-pave-band-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 25
+  },
+  {
+   "slug": "twist-wave-band",
+   "name": "Twist Wave Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "An open, wave-shaped twist with a pavé centre.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 52,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/products/twist-wave-band-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/twist-wave-band.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/twist-wave-band-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 26
+  },
+  {
+   "slug": "infinity-bow-ring",
+   "name": "Infinity Bow Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "An infinity loop finished with a pavé heart — a small, sweet everyday ring.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 54,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/products/infinity-bow-ring-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/infinity-bow-ring.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/infinity-bow-ring-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 27
+  },
+  {
+   "slug": "twist-solitaire-ring",
+   "name": "Twist Solitaire Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "A round solitaire held in a twisting pavé band.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 66,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/products/twist-solitaire-ring-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/twist-solitaire-ring.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/twist-solitaire-ring-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 28
+  },
+  {
+   "slug": "geo-link-ring",
+   "name": "Geo Link Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "Open rectangular links outlined in pavé for a modern, architectural look.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 62,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/products/geo-link-ring-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/geo-link-ring.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/geo-link-ring-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 29
+  },
+  {
+   "slug": "baguette-trio-band",
+   "name": "Baguette Trio Band",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "Three baguette stones spaced along a fine pavé band.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 58,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/products/baguette-trio-band-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/baguette-trio-band.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/baguette-trio-band.mp4",
+     "type": "video"
+    }
+   ],
+   "sort_order": 30
+  },
+  {
+   "slug": "wing-ring",
+   "name": "Wing Wrap Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "Two pavé chevrons that wrap the finger like folded wings.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 56,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": true,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-18.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-20.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/wing-ring.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/wing-ring.mp4",
+     "type": "video"
+    }
+   ],
+   "sort_order": 31
+  },
+  {
+   "slug": "swirl-solitaire-ring",
+   "name": "Swirl Halo Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "A round stone circled by a swirl of pavé, on a slim open band.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 58,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-14.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-23.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/swirl-solitaire-ring.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/swirl-solitaire-ring.mp4",
+     "type": "video"
+    }
+   ],
+   "sort_order": 32
+  },
+  {
+   "slug": "midnight-open-ring",
+   "name": "Moonrise Open Ring",
+   "short_name": null,
+   "category": "silver-rings",
+   "kind": "jewellery",
+   "metal": null,
+   "weight_grams": null,
+   "purity": "925",
+   "material": "925 sterling silver",
+   "description": "An open band with a pavé circle and a single round stone.",
+   "care": "925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.",
+   "price": 54,
+   "tag": null,
+   "tax_exempt": false,
+   "featured": false,
+   "finishes": [
+    "plainsilver"
+   ],
+   "size_label": "Ring size",
+   "sizes": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+   ],
+   "default_size": "7",
+   "media": [
+    {
+     "src": "assets/web/ivory/ring-08.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/ivory/ring-08-full.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/midnight-open-ring.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/midnight-open-ring.mp4",
+     "type": "video"
+    }
+   ],
+   "sort_order": 33
+  },
+  {
+   "slug": "maple-leaf-1oz-coin",
+   "name": "Gold Maple Leaf · 1 oz",
+   "short_name": "1 oz coin",
+   "category": "gold-coins",
+   "kind": "bullion",
+   "metal": "gold",
+   "weight_grams": 31.1035,
+   "purity": "99.99",
+   "material": "99.99% fine gold",
+   "description": "Royal Canadian Mint 1 oz Gold Maple Leaf in a sealed assay card — single-mine gold from Newmont Éléonore, Québec.",
+   "care": "Sealed in its original packaging, with the manufacturer’s serial number and assay certificate where applicable. 99.99% pure. Investment-grade gold and silver carries no sales tax in Canada.",
+   "price": 4964,
+   "tag": null,
+   "tax_exempt": true,
+   "featured": true,
+   "finishes": [
+    "finegold"
+   ],
+   "size_label": null,
+   "sizes": [],
+   "default_size": null,
+   "media": [
+    {
+     "src": "assets/web/products/maple-leaf-1oz-coin-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/maple-leaf-1oz-coin.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/maple-leaf-1oz-coin-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 34
+  },
+  {
+   "slug": "rcm-1oz-gold-bar",
+   "name": "RCM Gold Bar · 1 oz",
+   "short_name": "1 oz bar",
+   "category": "gold-bars",
+   "kind": "bullion",
+   "metal": "gold",
+   "weight_grams": 31.1035,
+   "purity": "99.99",
+   "material": "99.99% fine gold",
+   "description": "Royal Canadian Mint 1 oz 99.99% fine gold bar, serial-numbered and sealed in its original assay.",
+   "care": "Sealed in its original packaging, with the manufacturer’s serial number and assay certificate where applicable. 99.99% pure. Investment-grade gold and silver carries no sales tax in Canada.",
+   "price": 4917,
+   "tag": null,
+   "tax_exempt": true,
+   "featured": false,
+   "finishes": [
+    "finegold"
+   ],
+   "size_label": null,
+   "sizes": [],
+   "default_size": null,
+   "media": [
+    {
+     "src": "assets/web/products/rcm-1oz-gold-bar-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/rcm-1oz-gold-bar.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/rcm-1oz-gold-bar-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 35
+  },
+  {
+   "slug": "rcm-100g-gold-bar",
+   "name": "RCM Gold Bar · 100 g",
+   "short_name": "100 g bar",
+   "category": "gold-bars",
+   "kind": "bullion",
+   "metal": "gold",
+   "weight_grams": 100,
+   "purity": "99.99",
+   "material": "99.99% fine gold",
+   "description": "Royal Canadian Mint 100 g 99.99% fine gold bar, serial-numbered in original packaging.",
+   "care": "Sealed in its original packaging, with the manufacturer’s serial number and assay certificate where applicable. 99.99% pure. Investment-grade gold and silver carries no sales tax in Canada.",
+   "price": 15656,
+   "tag": null,
+   "tax_exempt": true,
+   "featured": false,
+   "finishes": [
+    "finegold"
+   ],
+   "size_label": null,
+   "sizes": [],
+   "default_size": null,
+   "media": [
+    {
+     "src": "assets/web/products/rcm-100g-gold-bar-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/rcm-100g-gold-bar.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/rcm-100g-gold-bar-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 36
+  },
+  {
+   "slug": "diwali-10g-gold-bars",
+   "name": "RCM Diwali Gold Bar · 10 g",
+   "short_name": "10 g Diwali",
+   "category": "gold-bars",
+   "kind": "bullion",
+   "metal": "gold",
+   "weight_grams": 10,
+   "purity": "99.99",
+   "material": "99.99% fine gold",
+   "description": "Royal Canadian Mint Diwali 10 g fine gold bar in a festive card — a traditional gift for the Festival of Lights.",
+   "care": "Sealed in its original packaging, with the manufacturer’s serial number and assay certificate where applicable. 99.99% pure. Investment-grade gold and silver carries no sales tax in Canada.",
+   "price": 1611,
+   "tag": null,
+   "tax_exempt": true,
+   "featured": false,
+   "finishes": [
+    "finegold"
+   ],
+   "size_label": null,
+   "sizes": [],
+   "default_size": null,
+   "media": [
+    {
+     "src": "assets/web/products/diwali-10g-gold-bars-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/diwali-10g-gold-bars.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/diwali-10g-gold-bars-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 37
+  },
+  {
+   "slug": "rcm-1kg-silver-bars",
+   "name": "RCM Silver Bar · 1 kg",
+   "short_name": "1 kg silver",
+   "category": "silver-bars",
+   "kind": "bullion",
+   "metal": "silver",
+   "weight_grams": 1000,
+   "purity": "99.99",
+   "material": "99.99% fine silver",
+   "description": "Royal Canadian Mint 1 kilo 99.9% fine silver bar, serial-numbered.",
+   "care": "Sealed in its original packaging, with the manufacturer’s serial number and assay certificate where applicable. 99.99% pure. Investment-grade gold and silver carries no sales tax in Canada.",
+   "price": 2106,
+   "tag": null,
+   "tax_exempt": true,
+   "featured": false,
+   "finishes": [
+    "finesilver"
+   ],
+   "size_label": null,
+   "sizes": [],
+   "default_size": null,
+   "media": [
+    {
+     "src": "assets/web/products/rcm-1kg-silver-bars-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/rcm-1kg-silver-bars.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/rcm-1kg-silver-bars-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 38
+  },
+  {
+   "slug": "rcm-100oz-silver-bar",
+   "name": "RCM Silver Bar · 100 oz",
+   "short_name": "100 oz silver",
+   "category": "silver-bars",
+   "kind": "bullion",
+   "metal": "silver",
+   "weight_grams": 3110.35,
+   "purity": "99.99",
+   "material": "99.99% fine silver",
+   "description": "Royal Canadian Mint 100 oz 99.99% fine silver bar, serial-numbered.",
+   "care": "Sealed in its original packaging, with the manufacturer’s serial number and assay certificate where applicable. 99.99% pure. Investment-grade gold and silver carries no sales tax in Canada.",
+   "price": 6429,
+   "tag": null,
+   "tax_exempt": true,
+   "featured": false,
+   "finishes": [
+    "finesilver"
+   ],
+   "size_label": null,
+   "sizes": [],
+   "default_size": null,
+   "media": [
+    {
+     "src": "assets/web/products/rcm-100oz-silver-bar-cut-cream.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/rcm-100oz-silver-bar.jpg",
+     "type": "image"
+    },
+    {
+     "src": "assets/web/products/rcm-100oz-silver-bar-full.jpg",
+     "type": "image"
+    }
+   ],
+   "sort_order": 39
+  }
+ ]
+}

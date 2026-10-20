@@ -1,0 +1,3 @@
+# The Laravel backend is hosted separately (e.g. Hostinger) — never publish its code on the static site.
+backend/
+.claude/

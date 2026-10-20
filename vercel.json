@@ -1,3 +1,7 @@
 {
-  "trailingSlash": true
+  "buildCommand": "node frontend/build-env.js",
+  "trailingSlash": true,
+  "redirects": [
+    { "source": "/", "destination": "/frontend/", "permanent": false }
+  ]
 }

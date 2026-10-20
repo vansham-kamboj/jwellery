@@ -1,0 +1,10 @@
+# For shared hosting where the domain points at this folder instead of backend/public:
+# every request is passed to public/, so app code, .env and storage are never reachable.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
