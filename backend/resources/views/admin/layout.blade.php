@@ -13,8 +13,9 @@
         'settings' => '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',
     ];
     $icon = fn ($n) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'.$icons[$n].'</svg>';
-    $newOrders = \App\Models\Order::where('status', 'new')->count();
-    $newRequests = \App\Models\CustomRequest::where('status', 'new')->count();
+    $liveCounts = \App\Support\LiveStatus::counts();
+    $newOrders = $liveCounts['orders'];
+    $newRequests = $liveCounts['requests'];
     $nav = [
         'Store' => [['dashboard', 'Dashboard', 'admin.dashboard', 'admin.dashboard', 0], ['orders', 'Orders', 'admin.orders.index', 'admin.orders.*', $newOrders]],
         'Catalogue' => [['products', 'Products', 'admin.products.index', 'admin.products.*', 0], ['categories', 'Categories', 'admin.categories.index', 'admin.categories.*', 0], ['finishes', 'Finishes', 'admin.finishes.index', 'admin.finishes.*', 0], ['offers', 'Offers', 'admin.offers.index', 'admin.offers.*', 0]],
@@ -31,9 +32,9 @@
     <title>@yield('title') · {{ $storeName }} admin</title>
     <link rel="icon" href="{{ asset('admin-assets/logo.png') }}">
     @if (config('store.fonts_url'))<link rel="stylesheet" href="{{ config('store.fonts_url') }}">@endif
-    <link rel="stylesheet" href="{{ asset('admin-assets/admin.css') }}?v=4">
+    <link rel="stylesheet" href="{{ asset('admin-assets/admin.css') }}?v=5">
 </head>
-<body>
+<body data-live-url="{{ route('admin.live') }}" data-latest-order="{{ \App\Support\LiveStatus::latestOrderId() }}" data-signature="{{ \App\Support\LiveStatus::signature() }}">
 <div class="shell">
     <aside class="side" id="side">
         <a href="{{ route('admin.dashboard') }}" class="brand"><img src="{{ asset('admin-assets/logo.png') }}" alt="{{ $storeName }}"><span>Admin</span></a>
@@ -41,7 +42,7 @@
             @foreach ($nav as $group => $items)
                 <span class="nav-group">{{ $group }}</span>
                 @foreach ($items as [$ic, $label, $route, $match, $count])
-                    <a href="{{ route($route) }}" class="{{ request()->routeIs($match) ? 'on' : '' }}" @if (request()->routeIs($match)) aria-current="page" @endif>{!! $icon($ic) !!}{{ $label }}@if ($count)<span class="count">{{ $count }}</span>@endif</a>
+                    <a href="{{ route($route) }}" class="{{ request()->routeIs($match) ? 'on' : '' }}" @if (request()->routeIs($match)) aria-current="page" @endif>{!! $icon($ic) !!}{{ $label }}@if ($ic === 'orders' || $ic === 'requests')<span class="count" data-live-count="{{ $ic }}" @unless ($count) hidden @endunless>{{ $count }}</span>@elseif ($count)<span class="count">{{ $count }}</span>@endif</a>
                 @endforeach
             @endforeach
         </nav>
@@ -59,7 +60,11 @@
                 </button>
                 <span class="crumbs">@yield('crumbs', $storeName)</span>
             </div>
-            <div class="toolbar">@yield('top-actions')</div>
+            <div class="toolbar">
+                <span class="live-dot" title="Updates automatically — new orders appear here within seconds"><i></i>Live</span>
+                <button type="button" class="btn ghost sm" id="alerts-btn" hidden>Turn on order alerts</button>
+                @yield('top-actions')
+            </div>
         </header>
         <main class="content">
             @if (session('ok'))<div class="flash ok" role="status">{{ session('ok') }}</div>@endif
@@ -67,8 +72,10 @@
             @if ($errors->any())
                 <div class="flash error" role="alert">Please fix the highlighted fields.@if ($errors->count() <= 4)<br>{{ implode(' ', $errors->all()) }}@endif</div>
             @endif
-            @yield('content')
+            {{-- List pages declare @section('live') so their content refreshes when orders/requests change. --}}
+            <div id="live-region" @hasSection('live') data-live-region @endif>@yield('content')</div>
         </main>
+        <div class="live-toasts" id="live-toasts" aria-live="polite"></div>
     </div>
 </div>
 <script>
@@ -77,5 +84,6 @@
         if (msg && !confirm(msg)) e.preventDefault();
     });
 </script>
+<script src="{{ asset('admin-assets/live.js') }}?v=1" defer></script>
 </body>
 </html>

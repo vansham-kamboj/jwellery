@@ -2,6 +2,7 @@
 @section('title', 'Custom requests')
 @section('crumbs', 'Custom requests')
 
+@section('live', '1')
 @section('content')
     <div class="page-head"><div><h1>Custom requests</h1><p class="muted">Bespoke pieces customers asked about through the design form.</p></div></div>
     <nav class="tabs" aria-label="Filter by status">

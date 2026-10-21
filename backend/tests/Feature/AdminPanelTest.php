@@ -88,6 +88,25 @@ class AdminPanelTest extends TestCase
         Storage::disk('public')->assertExists($p->images[0]->path);
     }
 
+    public function test_live_check_reports_new_orders_and_changes(): void
+    {
+        $this->getJson('/admin/live')->assertUnauthorized();   // never open to the public
+
+        $this->actingAs($this->admin);
+        $first = $this->getJson('/admin/live?since=0')->assertOk()->assertJsonPath('latest_id', 0)->json();
+
+        $order = Order::create(['code' => 'AVY-1001', 'customer_name' => 'Priya', 'customer_phone' => '4165550182', 'subtotal' => 112, 'total' => 112]);
+        $res = $this->getJson('/admin/live?since=0')->assertOk()
+            ->assertJsonPath('latest_id', $order->id)
+            ->assertJsonPath('new_orders.0.code', 'AVY-1001')
+            ->assertJsonPath('new_orders.0.total', '$112.00')
+            ->assertJsonPath('counts.orders', 1);
+        $this->assertNotSame($first['signature'], $res->json('signature'));
+        $this->getJson('/admin/live?since='.$order->id)->assertJsonCount(0, 'new_orders');
+
+        $this->get('/admin/orders')->assertSee('data-live-region', false)->assertSee('data-live-url', false);
+    }
+
     public function test_status_can_be_changed_from_the_order_list(): void
     {
         $order = Order::create(['code' => 'AVY-1001', 'customer_name' => 'P', 'customer_phone' => '4165550182', 'subtotal' => 50, 'total' => 50, 'admin_notes' => 'keep me']);

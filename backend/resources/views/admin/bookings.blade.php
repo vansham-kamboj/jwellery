@@ -2,6 +2,7 @@
 @section('title', 'Bookings')
 @section('crumbs', 'Bookings')
 
+@section('live', '1')
 @section('content')
     <div class="page-head"><div><h1>Bookings</h1><p class="muted">Private viewings and fittings booked from the site. Opening days and times are in Settings.</p></div></div>
     <nav class="tabs"><a href="{{ route('admin.bookings.index') }}" class="{{ $past ? '' : 'on' }}">Upcoming</a><a href="{{ route('admin.bookings.index', ['past' => 1]) }}" class="{{ $past ? 'on' : '' }}">Past</a></nav>

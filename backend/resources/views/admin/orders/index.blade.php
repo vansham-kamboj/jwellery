@@ -2,6 +2,7 @@
 @section('title', 'Orders')
 @section('crumbs', 'Orders')
 
+@section('live', '1')
 @section('content')
     <div class="page-head">
         <div><h1>Orders</h1><p class="muted">Customers send each order on WhatsApp. Change the status right in the list once it’s paid, shipped or done — it saves straight away.</p></div>

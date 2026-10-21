@@ -1160,6 +1160,8 @@
     }
   };
   window.addEventListener('hashchange', () => { if (location.hash !== '#/checkout') state.placed = null; });
+  // Fresh product data from the store API (js/api-loader.js): redraw, except mid-checkout.
+  window.addEventListener('avya:products', () => { if (state.route !== 'checkout' && state.zoom == null) set({}); });
 
   /* Search overlay */
   let fromSearch = false;

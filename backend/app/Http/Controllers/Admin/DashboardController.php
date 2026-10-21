@@ -7,6 +7,9 @@ use App\Models\Booking;
 use App\Models\CustomRequest;
 use App\Models\Order;
 use App\Models\Product;
+use App\Support\LiveStatus;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -23,5 +26,16 @@ class DashboardController extends Controller
             'upcoming' => Booking::where('status', 'booked')->whereDate('date', '>=', today())->orderBy('date')->orderBy('time_slot')->limit(5)->get(),
             'products' => ['total' => Product::count(), 'soldOut' => Product::where('in_stock', false)->count(), 'hidden' => Product::where('is_visible', false)->count()],
         ]);
+    }
+
+    /** Polled by the admin every few seconds: new orders since `since`, badge counts and a change signature. */
+    public function live(Request $request): JsonResponse
+    {
+        return response()->json([
+            'latest_id' => LiveStatus::latestOrderId(),
+            'new_orders' => LiveStatus::newOrdersSince($request->integer('since')),
+            'counts' => LiveStatus::counts(),
+            'signature' => LiveStatus::signature(),
+        ])->header('Cache-Control', 'no-store');
     }
 }

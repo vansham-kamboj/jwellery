@@ -7,7 +7,7 @@
     <title>Sign in · {{ $storeName }} admin</title>
     <link rel="icon" href="{{ asset('admin-assets/logo.png') }}">
     @if (config('store.fonts_url'))<link rel="stylesheet" href="{{ config('store.fonts_url') }}">@endif
-    <link rel="stylesheet" href="{{ asset('admin-assets/admin.css') }}?v=4">
+    <link rel="stylesheet" href="{{ asset('admin-assets/admin.css') }}?v=5">
 </head>
 <body>
 <div class="login-page">

@@ -3,6 +3,7 @@
 @section('crumbs', 'Dashboard')
 @section('top-actions')<a href="{{ route('admin.products.create') }}" class="btn">Add product</a>@endsection
 
+@section('live', '1')
 @section('content')
     <div class="page-head">
         <div><h1>Good {{ now()->hour < 12 ? 'morning' : (now()->hour < 17 ? 'afternoon' : 'evening') }}</h1>

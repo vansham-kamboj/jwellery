@@ -4,7 +4,7 @@
 (() => {
   const startApp = () => {
     const s = document.createElement('script');
-    s.src = 'js/app.js?v=20261023';   // bump with the script tags in index.html after each update
+    s.src = 'js/app.js?v=20261024';   // bump with the script tags in index.html after each update
     document.body.appendChild(s);
   };
 
@@ -31,6 +31,26 @@
     };
   };
 
+  /* Keep products fresh while a page is open: prices, stock and new pieces from the admin appear
+     within about 30 seconds (and as soon as the visitor comes back to the tab). */
+  let lastProducts = '';
+  async function refreshProducts() {
+    if (!window.AVYA_API || document.hidden) return;
+    try {
+      const res = await fetch(window.AVYA_API.base + '/products?full=1&per_page=100', { headers: { Accept: 'application/json' }, cache: 'no-store' });
+      if (!res.ok) return;
+      const list = await res.json();
+      const sig = JSON.stringify(list.data);
+      if (sig === lastProducts) return;
+      lastProducts = sig;
+      PRODUCTS.length = 0;
+      PRODUCTS.push(...list.data.map(toProduct));
+      window.dispatchEvent(new Event('avya:products'));   // js/app.js redraws the page
+    } catch (e) { /* offline for a moment — try again next time */ }
+  }
+  setInterval(refreshProducts, 30000);
+  document.addEventListener('visibilitychange', refreshProducts);
+
   async function connect() {
     const base = ((window.AVYA_ENV || {}).AVYA_API_URL || '').replace(/\/+$/, '');
     if (!base) return;
@@ -43,6 +63,7 @@
       site.finishes.forEach(f => { const k = keyOf(f); SW[k] = f.swatch_hex; FINISH_OF[k] = f.name; });
       PRODUCTS.length = 0;
       PRODUCTS.push(...list.data.map(toProduct));
+      lastProducts = JSON.stringify(list.data);
       window.AVYA_API = { base, site };
     } finally {
       clearTimeout(timer);
