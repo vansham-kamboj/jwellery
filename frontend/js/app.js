@@ -479,7 +479,7 @@
   const GROUP_ORDER = ['Women', 'Men', 'Kids', 'Silver utensils', 'Gold & silver'];
   const keyOfGroup = g => g.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   const CAT_LIST = (window.AVYA_API ? window.AVYA_API.site.categories : CATEGORY_LIST)
-    .map(c => ({ slug: c.slug, name: c.name, kind: c.kind, description: c.description, group: c.group || (c.kind === 'bullion' ? 'Gold & silver' : 'Women') }));
+    .map(c => ({ slug: c.slug, name: c.name, kind: c.kind, description: c.description, image: c.image || null, group: c.group || (c.kind === 'bullion' ? 'Gold & silver' : 'Women') }));
   const rank = g => (GROUP_ORDER.indexOf(g) + 1) || 99;
   const GROUPS = [...new Set(CAT_LIST.map(c => c.group))].sort((a, b) => rank(a) - rank(b))
     .map(name => ({ key: keyOfGroup(name), name, cats: CAT_LIST.filter(c => c.group === name), bullion: CAT_LIST.some(c => c.group === name && c.kind === 'bullion') }));
@@ -645,6 +645,22 @@
       ${when ? `<span class="iv-rates-note">Spot rate in CAD · updated ${esc(when)}. Bar and coin prices are confirmed on WhatsApp.</span>` : ''}`;
   }
 
+  /* Round photo buttons under the hero: one per category that has a photo (set in Admin → Categories,
+     or the first product's photo); a section with no photos yet gets one lettered circle. */
+  function categoryCircles() {
+    const items = GROUPS.flatMap(g => {
+      const withPhoto = g.cats.map(c => {
+        const p = REAL().find(x => x.cat === c.slug);
+        return { href: '#/shop/' + c.slug, name: c.name, img: c.image || (p && p.img) };
+      }).filter(c => c.img);
+      return withPhoto.length ? withPhoto : [{ href: '#/shop/' + g.key, name: g.name, letter: g.name[0] }];
+    });
+    return `<nav class="iv-cats iv-circles" aria-label="Shop by category"><div class="iv-circle-track">
+      ${items.map(c => `<a href="${c.href}" class="iv-circle"><span class="iv-circle-img">${c.img ? photo(c.img, '') : `<span class="iv-circle-letter" aria-hidden="true">${esc(c.letter)}</span>`}</span><span class="iv-circle-name">${esc(c.name)}</span></a>`).join('')}
+      <a href="#/shop" class="iv-circle"><span class="iv-circle-img all"><span class="iv-circle-letter" aria-hidden="true">All</span></span><span class="iv-circle-name">View all</span></a>
+    </div></nav>`;
+  }
+
   function groupCard(g) {
     const pics = REAL().filter(p => inFilter(p, g.key));
     const cover = pics.find(p => !p.bullion && p.sw.includes('rosetone')) || pics[0];
@@ -689,7 +705,7 @@
       </div>
     </section>
 
-    <nav class="iv-cats" aria-label="Shop by section">${GROUPS.map(g => `<a href="#/shop/${g.key}"><span>${esc(g.name)}</span><span class="iv-gem" aria-hidden="true"></span></a>`).join('')}</nav>
+    ${categoryCircles()}
 
     <section class="iv-sec" id="categories">
       <div class="iv-sec-head"><div class="stack" style="gap:10px"><span class="iv-label accent">Shop by category</span><h2 class="iv-h2">Silver to wear, <i>gold to keep</i></h2></div><a href="#/shop" class="iv-link dark">View everything</a></div>

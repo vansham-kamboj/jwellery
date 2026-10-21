@@ -27,6 +27,22 @@ class ReviewsAndImagesTest extends TestCase
         $this->getJson('/api/site')->assertJsonCount(1, 'reviews')->assertJsonPath('reviews.0.name', 'Priya S.');
     }
 
+    public function test_category_photo_upload_reaches_the_api(): void
+    {
+        Storage::fake('public');
+        $cat = Category::create(['name' => 'Kada', 'slug' => 'kids-kada', 'group' => 'Kids']);
+
+        $this->actingAs(User::factory()->create())->patch('/admin/categories/'.$cat->id, [
+            'name' => 'Kada', 'slug' => 'kids-kada', 'kind' => 'jewellery', 'group' => 'Kids', 'is_visible' => 1,
+            'image' => UploadedFile::fake()->image('kada.jpg', 900, 900),
+        ])->assertRedirect()->assertSessionHasNoErrors();
+
+        $path = $cat->fresh()->image;
+        $this->assertStringEndsWith('.webp', $path);
+        Storage::disk('public')->assertExists($path);
+        $this->assertStringEndsWith('/uploads/'.$path, $this->getJson('/api/site')->json('categories.0.image'));
+    }
+
     public function test_uploaded_photos_are_resized_to_webp(): void
     {
         Storage::fake('public');

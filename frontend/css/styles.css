@@ -1061,3 +1061,28 @@ html[data-hero-tone="dark"] .iv-cats .iv-gem { background: #dcbd7a; }
 .hp-sw[aria-pressed="true"] span:first-child { outline: 2px solid #1b7c86; outline-offset: 2px; }
 .hp-sw[aria-pressed="true"] { color: #0d3d45; font-weight: 500; }
 @media (max-width: 520px) { .hp { left: 16px; bottom: 16px; } .hp-toggle .hp-label { display: none; } }
+
+/* ── Category selector: round photo buttons under the hero ── */
+.iv-circles { display: block; padding: 28px var(--g) 30px; }
+.iv-circle-track { display: flex; justify-content: center; gap: 28px; overflow-x: auto; scrollbar-width: none; padding: 4px 2px 6px; }
+.iv-circle-track::-webkit-scrollbar { display: none; }
+.iv-circles a.iv-circle { flex: none; width: 112px; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 0; font: inherit; color: #0d3d45; text-align: center; }
+.iv-circle-img { position: relative; width: 104px; height: 104px; border-radius: 50%; overflow: hidden; background: #e1f1f1; box-shadow: 0 0 0 1px #e3e5f0; display: flex; align-items: center; justify-content: center; transition: box-shadow .2s, transform .2s; }
+.iv-circle-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .35s; }
+.iv-circle-img.all { background: #0d3d45; }
+.iv-circle-letter { font: italic 400 40px/1 "Cormorant Garamond", serif; color: #1b7c86; }
+.iv-circle-img.all .iv-circle-letter { font: 500 14px Jost, sans-serif; letter-spacing: .18em; text-transform: uppercase; font-style: normal; color: #f6f1e6; }
+.iv-circle-name { font: 400 13px/1.3 Jost, sans-serif; letter-spacing: .06em; }
+.iv-circles a.iv-circle:hover .iv-circle-img, .iv-circles a.iv-circle:focus-visible .iv-circle-img { box-shadow: 0 0 0 2px #fbfbfe, 0 0 0 4px #1b7c86; }
+.iv-circles a.iv-circle:hover img { transform: scale(1.06); }
+.iv-circles a.iv-circle:hover .iv-circle-name { color: #1b7c86; }
+html[data-hero-tone="dark"] .iv-circles a.iv-circle { color: #f6f1e6; }
+html[data-hero-tone="dark"] .iv-circle-img { box-shadow: 0 0 0 1px rgba(246, 241, 230, .2); }
+@media (max-width: 860px) {
+  .iv-circle-track { justify-content: flex-start; gap: 18px; margin: 0 calc(var(--g) * -1); padding-left: var(--g); padding-right: var(--g); }
+  .iv-circles a.iv-circle { width: 84px; gap: 9px; }
+  .iv-circle-img { width: 76px; height: 76px; }
+  .iv-circle-letter { font-size: 32px; }
+  .iv-circle-name { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .iv-circle-img img { transition: none; } }

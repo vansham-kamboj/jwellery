@@ -20,7 +20,7 @@ class CatalogController extends Controller
         return response()->json([
             'settings' => Settings::public(),
             'categories' => Category::visible()->withCount(['products' => fn ($q) => $q->visible()])->get()
-                ->map(fn ($c) => ['slug' => $c->slug, 'name' => $c->name, 'kind' => $c->kind, 'group' => $c->group, 'description' => $c->description, 'count' => $c->products_count]),
+                ->map(fn ($c) => ['slug' => $c->slug, 'name' => $c->name, 'kind' => $c->kind, 'group' => $c->group, 'description' => $c->description, 'image' => $c->image ? asset('uploads/'.$c->image) : null, 'count' => $c->products_count]),
             'finishes' => Finish::orderBy('sort_order')->get(['slug', 'name', 'swatch_hex']),
             // Home-page reviews; empty until the team adds real ones in Admin → Reviews.
             'reviews' => Review::visible()->where('is_featured', true)->with('product:id,slug,name')->limit(12)->get()->map->toPublic(),

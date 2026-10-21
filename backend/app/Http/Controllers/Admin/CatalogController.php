@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Finish;
+use App\Services\ImageOptimizer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -27,11 +29,22 @@ class CatalogController extends Controller
             'group' => 'nullable|string|max:60',
             'description' => 'nullable|string|max:1000',
             'sort_order' => 'nullable|integer|min:0',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:8192',
         ]);
+        unset($d['image']);
         $category->fill(array_merge($d, ['sort_order' => $d['sort_order'] ?? 0]))->fill([
             'slug' => ($d['slug'] ?? null) ?: Str::slug($d['name']),
             'is_visible' => $request->boolean('is_visible'),
-        ])->save();
+        ]);
+
+        // Photo for the round category button on the home page (resized to WebP like product photos).
+        if ($request->hasFile('image') || $request->boolean('remove_image')) {
+            if ($category->image) {
+                Storage::disk('public')->delete($category->image);
+            }
+            $category->image = $request->hasFile('image') ? app(ImageOptimizer::class)->store($request->file('image'), 'categories') : null;
+        }
+        $category->save();
 
         return back()->with('ok', $category->name.' saved.');
     }
