@@ -36,7 +36,7 @@ The backend's `FRONTEND_URLS` must include the storefront address (`http://local
 
 **Backend → Hostinger** (PHP + MySQL). Upload the `backend/` and `assets/` folders side by side, create a MySQL database in hPanel, then follow *Production* in [backend/README.md](backend/README.md). Use a subdomain such as `api.yourdomain.com`.
 
-**Storefront → Vercel** (or any static host). Import this repository in Vercel; `vercel.json` sends visitors to `/frontend/` and builds `frontend/js/env.js` on every deploy, and `.vercelignore` keeps the backend code off Vercel. In Vercel → Settings → Environment Variables add:
+**Storefront → Vercel** (or any static host). Import this repository in Vercel; `vercel.json` serves the storefront at the site root (no `/frontend/` in the address) and builds `frontend/js/env.js` on every deploy, and `.vercelignore` keeps the backend code off Vercel. In Vercel → Settings → Environment Variables add:
 
 | Name | Value |
 |---|---|
@@ -45,6 +45,6 @@ The backend's `FRONTEND_URLS` must include the storefront address (`http://local
 
 Then add the Vercel address (and your own domain) to `FRONTEND_URLS` in `backend/.env`.
 
-**Storefront on Hostinger instead:** run `node frontend/build-env.js` with the live `AVYA_API_URL` in `frontend/.env`, then upload `index.html`, `frontend/` and `assets/` to `public_html/` (keep them side by side).
+**Storefront on Hostinger instead:** run `node frontend/build-env.js` with the live `AVYA_API_URL` in `frontend/.env`, then upload `.htaccess`, `index.html`, `frontend/` and `assets/` to `public_html/` (keep them side by side). The root `.htaccess` serves the storefront at `https://yourdomain/` — `/frontend/` never shows in the address.
 
 Until `AVYA_API_URL` is set, the storefront still works using its built-in catalogue — orders then go straight to WhatsApp.

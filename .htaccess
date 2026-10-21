@@ -1,0 +1,24 @@
+# Serve the storefront (frontend/) at the site root — the address stays https://avyajewels.ca/
+DirectoryIndex frontend/index.html index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Old /frontend/ links → the clean address
+    RewriteCond %{THE_REQUEST} \s/frontend/?(index\.html)?[\s?]
+    RewriteRule ^frontend/?(index\.html)?$ / [R=301,L]
+
+    # Home page
+    RewriteRule ^$ frontend/index.html [L]
+
+    # Storefront files (css/, js/ …) asked for at the root are served from frontend/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{DOCUMENT_ROOT}/frontend/$1 -f
+    RewriteRule ^(.+)$ frontend/$1 [L]
+</IfModule>
+
+# Never serve settings files
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>

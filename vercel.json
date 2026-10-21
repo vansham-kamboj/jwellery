@@ -2,6 +2,12 @@
   "buildCommand": "node frontend/build-env.js",
   "trailingSlash": true,
   "redirects": [
-    { "source": "/", "destination": "/frontend/", "permanent": false }
+    { "source": "/frontend", "destination": "/", "permanent": true },
+    { "source": "/frontend/index.html", "destination": "/", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/", "destination": "/frontend/index.html" },
+    { "source": "/css/:path*", "destination": "/frontend/css/:path*" },
+    { "source": "/js/:path*", "destination": "/frontend/js/:path*" }
   ]
 }
