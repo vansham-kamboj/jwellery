@@ -1,10 +1,10 @@
 /* Backend connection — loads settings and products from the store API before the app starts.
-   The API address comes from js/env.js, which tools/build-designs.py writes from the project's .env.
+   The API address comes from js/site-env.js, which frontend/build-env.js writes from frontend/.env.
    If there is no address or the API can't be reached, the built-in catalogue is used instead. */
 (() => {
   const startApp = () => {
     const s = document.createElement('script');
-    s.src = 'js/app.js?v=20261021';   // bump with the script tags in index.html after each update
+    s.src = 'js/app.js?v=20261022';   // bump with the script tags in index.html after each update
     document.body.appendChild(s);
   };
 
@@ -50,7 +50,7 @@
   }
 
   const env = document.createElement('script');
-  env.src = 'js/env.js?t=' + Date.now();   // never cached: it holds the API address
+  env.src = 'js/site-env.js?t=' + Date.now();   // never cached: it holds the API address
   env.onload = env.onerror = () => connect()
     .catch(err => console.warn('Store API unavailable — showing the built-in catalogue.', err))
     .finally(startApp);

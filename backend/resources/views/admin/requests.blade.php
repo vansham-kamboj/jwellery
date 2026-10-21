@@ -21,7 +21,7 @@
                         @foreach (['piece_type' => 'Piece', 'metal' => 'Metal', 'budget' => 'Budget'] as $col => $label)@if ($r->{$col})<dt>{{ $label }}</dt><dd>{{ $r->{$col} }}</dd>@endif @endforeach
                     </dl>
                     <p style="margin:0;white-space:pre-line">{{ $r->details }}</p>
-                    @if ($r->reference_image)<a href="{{ Storage::disk('public')->url($r->reference_image) }}" target="_blank" rel="noopener"><img src="{{ Storage::disk('public')->url($r->reference_image) }}" alt="Reference photo" style="max-width:220px;border-radius:8px"></a>@endif
+                    @if ($r->reference_image)<a href="{{ asset('uploads/'.$r->reference_image) }}" target="_blank" rel="noopener"><img src="{{ asset('uploads/'.$r->reference_image) }}" alt="Reference photo" style="max-width:220px;border-radius:8px"></a>@endif
                 </div>
                 <form method="post" action="{{ route('admin.requests.update', $r) }}" class="grid" style="gap:10px">
                     @csrf @method('PATCH')

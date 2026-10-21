@@ -19,6 +19,8 @@ class ProductImage extends Model
 
     public function url(): string
     {
-        return Storage::disk('public')->url($this->path);
+        // Built from the address the site is served at (e.g. https://avyajewels.ca/backend), so links stay right
+        // even if APP_URL in .env is out of date.
+        return asset('uploads/'.$this->path);
     }
 }

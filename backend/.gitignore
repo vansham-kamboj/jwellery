@@ -22,4 +22,4 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-/public/uploads
+# product photos are committed so Git deploys carry them (photos added on the server stay there)

@@ -35,7 +35,7 @@ The backend's `FRONTEND_URLS` must include the storefront address (`http://local
 
 **Backend → Hostinger** (PHP + MySQL). Upload the `backend/` and `assets/` folders side by side, create a MySQL database in hPanel, then follow *Production* in [backend/README.md](backend/README.md). Use a subdomain such as `api.yourdomain.com`.
 
-**Storefront → Vercel** (or any static host). Import this repository in Vercel; `vercel.json` serves the storefront at the site root (no `/frontend/` in the address) and builds `frontend/js/env.js` on every deploy, and `.vercelignore` keeps the backend code off Vercel. In Vercel → Settings → Environment Variables add:
+**Storefront → Vercel** (or any static host). Import this repository in Vercel; `vercel.json` serves the storefront at the site root (no `/frontend/` in the address) and builds `frontend/js/site-env.js` on every deploy, and `.vercelignore` keeps the backend code off Vercel. In Vercel → Settings → Environment Variables add:
 
 | Name | Value |
 |---|---|
