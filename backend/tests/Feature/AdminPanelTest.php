@@ -88,6 +88,20 @@ class AdminPanelTest extends TestCase
         Storage::disk('public')->assertExists($p->images[0]->path);
     }
 
+    public function test_status_can_be_changed_from_the_order_list(): void
+    {
+        $order = Order::create(['code' => 'AVY-1001', 'customer_name' => 'P', 'customer_phone' => '4165550182', 'subtotal' => 50, 'total' => 50, 'admin_notes' => 'keep me']);
+        $this->actingAs($this->admin);
+        $this->get('/admin/orders')->assertOk()->assertSee('class="status-select new"', false);
+        $this->get('/admin')->assertOk()->assertSee('aria-label="Status of order AVY-1001"', false);
+
+        $this->from('/admin/orders?status=new')->patch('/admin/orders/'.$order->id, ['status' => 'shipped'])->assertRedirect('/admin/orders?status=new');
+        $order->refresh();
+        $this->assertSame('shipped', $order->status);
+        $this->assertNotNull($order->shipped_at);
+        $this->assertSame('keep me', $order->admin_notes);   // notes untouched by a list change
+    }
+
     public function test_order_status_change_is_timestamped(): void
     {
         $order = Order::create(['code' => 'AVY-1001', 'customer_name' => 'P', 'customer_phone' => '4165550182', 'subtotal' => 50, 'total' => 56.5]);

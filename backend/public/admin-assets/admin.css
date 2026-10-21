@@ -187,3 +187,13 @@ pre.msg { white-space: pre-wrap; background: var(--teal-50); border-radius: 8px;
   .form-grid.ship-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .finish-row .stock { grid-column: 2 / -1; }
 }
+
+/* Status picker in order lists — coloured like the status badges, saves on change */
+.status-form { margin: 0; }
+select.status-select { width: auto; min-width: 128px; padding: 5px 30px 5px 12px; border-radius: 999px; border: 1px solid transparent; font: 500 12px Jost, sans-serif; cursor: pointer; appearance: none;
+  background: var(--teal-100) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23155763' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 12px center; color: var(--teal-700); }
+select.status-select:hover { border-color: currentColor; }
+select.status-select.new { background-color: var(--gold-soft); color: var(--warn); }
+select.status-select.shipped { background-color: #e4ecfb; color: #2f5596; }
+select.status-select.completed { background-color: var(--ok-bg); color: var(--ok); }
+select.status-select.cancelled { background-color: var(--bad-bg); color: var(--bad); }

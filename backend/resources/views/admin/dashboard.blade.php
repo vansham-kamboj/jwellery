@@ -34,7 +34,7 @@
                         <tr>
                             <td><a href="{{ route('admin.orders.show', $o) }}" class="mono">{{ $o->code }}</a></td>
                             <td>{{ $o->customer_name }}</td>
-                            <td><span class="badge {{ $o->status }}">{{ \App\Models\Order::STATUSES[$o->status] }}</span></td>
+                            <td>@include('admin.orders._status', ['order' => $o])</td>
                             <td class="num">${{ number_format($o->total, 2) }}</td>
                             <td class="muted">{{ $o->created_at->diffForHumans() }}</td>
                         </tr>

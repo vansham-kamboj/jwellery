@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="page-head">
-        <div><h1>Orders</h1><p class="muted">Customers send each order on WhatsApp. Update the status here once it’s paid, shipped or done.</p></div>
+        <div><h1>Orders</h1><p class="muted">Customers send each order on WhatsApp. Change the status right in the list once it’s paid, shipped or done — it saves straight away.</p></div>
         <form method="get" class="inline-form">
             @if ($status)<input type="hidden" name="status" value="{{ $status }}">@endif
             <input type="search" name="q" value="{{ $search }}" placeholder="Code, name or phone" aria-label="Search orders" style="width:240px">
@@ -32,7 +32,7 @@
                         <td>{{ $o->customer_name }}</td>
                         <td class="muted">{{ $o->customer_phone }}</td>
                         <td>{{ $o->items_count }}</td>
-                        <td><span class="badge {{ $o->status }}">{{ \App\Models\Order::STATUSES[$o->status] }}</span></td>
+                        <td>@include('admin.orders._status', ['order' => $o])</td>
                         <td class="num">${{ number_format($o->total, 2) }}</td>
                         <td class="muted">{{ $o->created_at->format('j M Y, H:i') }}</td>
                     </tr>
