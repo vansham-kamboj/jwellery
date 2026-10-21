@@ -11,3 +11,4 @@ assets/ivory/
 
 # Upload-ready copy for Hostinger (contains the live .env)
 /live/
+.env.local
