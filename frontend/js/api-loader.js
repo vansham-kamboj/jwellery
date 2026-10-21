@@ -4,7 +4,7 @@
 (() => {
   const startApp = () => {
     const s = document.createElement('script');
-    s.src = 'js/app.js?v=20261025';   // bump with the script tags in index.html after each update
+    s.src = 'js/app.js?v=20261027';   // bump with the script tags in index.html after each update
     document.body.appendChild(s);
   };
 

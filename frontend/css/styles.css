@@ -1086,3 +1086,62 @@ html[data-hero-tone="dark"] .iv-circle-img { box-shadow: 0 0 0 1px rgba(246, 241
   .iv-circle-name { font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .iv-circle-img img { transition: none; } }
+
+/* ── Home hero carousel: full-width photos that slide by themselves ── */
+.iv-hero-car { position: relative; overflow: hidden; height: calc(100vh - 110px); height: calc(100svh - 110px); min-height: 520px; max-height: 920px; background: #0a3038; }
+.iv-car-track { display: flex; height: 100%; transition: transform 1s cubic-bezier(.65, 0, .35, 1); will-change: transform; }
+.iv-slide { position: relative; flex: 0 0 100%; height: 100%; overflow: hidden; }
+.iv-slide picture, .iv-slide img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.iv-slide img { object-fit: cover; transform: scale(1.08); transition: transform 7s ease-out; }
+.iv-slide.on img { transform: scale(1); }
+.iv-slide::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(10, 48, 56, .86) 0%, rgba(10, 48, 56, .6) 34%, rgba(10, 48, 56, .1) 62%, rgba(10, 48, 56, 0) 75%); }
+.iv-slide-copy { position: absolute; z-index: 1; left: calc(var(--g) + 40px); top: 50%; max-width: 540px; display: flex; flex-direction: column; gap: 18px; color: #f6f1e6;
+  opacity: 0; transform: translateY(calc(-50% + 18px)); transition: opacity .7s .4s, transform .7s .4s; }
+.iv-slide.on .iv-slide-copy { opacity: 1; transform: translateY(-50%); }
+.iv-slide-copy .iv-label { color: #dcbd7a; }
+.iv-slide-title { margin: 0; font: 400 66px/1.02 "Cormorant Garamond", serif; color: #fff; letter-spacing: -.01em; text-wrap: balance; }
+.iv-slide-title i { color: #dcbd7a; }
+.iv-slide-copy p { margin: 0; font: 300 17px/1.65 Jost, sans-serif; color: #d6e6e6; max-width: 440px; }
+.iv-btn.on-dark { background: #dcbd7a; border-color: #dcbd7a; color: #0a3038; }
+.iv-btn.on-dark:hover { background: #e8cf98; border-color: #e8cf98; color: #0a3038; }
+.iv-btn.on-dark.ghost { background: transparent; border-color: rgba(246, 241, 230, .7); color: #f6f1e6; }
+.iv-btn.on-dark.ghost:hover { background: #f6f1e6; color: #0a3038; }
+.iv-car-btn { position: absolute; top: 50%; z-index: 2; width: 52px; height: 52px; margin-top: -26px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
+  border: 1px solid rgba(246, 241, 230, .45); background: rgba(10, 48, 56, .35); color: #fff; cursor: pointer; backdrop-filter: blur(4px); transition: background-color .2s, color .2s, border-color .2s; }
+.iv-car-btn:hover, .iv-car-btn:focus-visible { background: #dcbd7a; border-color: #dcbd7a; color: #0a3038; }
+.iv-car-btn.prev { left: 22px; }
+.iv-car-btn.next { right: 22px; }
+.iv-car-dots { position: absolute; z-index: 2; left: 50%; bottom: 26px; transform: translateX(-50%); display: flex; gap: 10px; }
+.iv-car-dots button { width: 26px; height: 19px; padding: 8px 0; border: 0; background: rgba(255, 255, 255, .45); background-clip: content-box; cursor: pointer; transition: width .3s, background-color .3s; }
+.iv-car-dots button.on { width: 50px; background-color: #dcbd7a; }
+
+/* category circles: icons instead of photos */
+.iv-circle-img svg { width: 36px; height: 36px; transition: transform .3s; }
+.iv-circle-img.tone-teal { background: #e1f1f1; color: #0d3d45; }
+.iv-circle-img.tone-gold { background: #f4ead6; color: #9a6b12; box-shadow: 0 0 0 1px #ead9b4; }
+.iv-circle-img.tone-silver { background: #eef0f3; color: #5d6470; box-shadow: 0 0 0 1px #dde1e7; }
+.iv-circle-img.tone-dark { background: #0d3d45; color: #dcbd7a; }
+.iv-circles a.iv-circle:hover .iv-circle-img svg { transform: scale(1.12); }
+
+@media (max-width: 1180px) { .iv-slide-title { font-size: 54px; } }
+@media (max-width: 760px) {
+  .iv-hero-car { height: calc(100svh - 120px); min-height: 560px; max-height: 760px; }
+  .iv-slide::after { background: linear-gradient(0deg, rgba(10, 48, 56, .92) 0%, rgba(10, 48, 56, .66) 38%, rgba(10, 48, 56, 0) 68%); }
+  .iv-slide-copy { left: 16px; right: 16px; top: auto; bottom: 64px; gap: 12px; transform: translateY(18px); }
+  .iv-slide.on .iv-slide-copy { transform: none; }
+  .iv-slide-title { font-size: 40px; }
+  .iv-slide-copy p { font-size: 15px; }
+  .iv-car-btn { display: none; }
+  .iv-car-dots { bottom: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .iv-car-track, .iv-slide img, .iv-slide-copy { transition: none; }
+  .iv-slide img { transform: none; }
+}
+
+/* Desktop: the photo fills the right of the slide, the copy sits on the teal panel to its left (no text over the piece). */
+@media (min-width: 761px) {
+  .iv-slide picture { left: 30%; }
+  .iv-slide::after { background: linear-gradient(90deg, #0a3038 0%, #0a3038 30%, rgba(10, 48, 56, .7) 37%, rgba(10, 48, 56, .15) 50%, rgba(10, 48, 56, 0) 60%); }
+  .iv-slide-copy { max-width: min(500px, 40vw); }
+}

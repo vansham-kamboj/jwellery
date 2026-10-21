@@ -645,20 +645,73 @@
       ${when ? `<span class="iv-rates-note">Spot rate in CAD · updated ${esc(when)}. Bar and coin prices are confirmed on WhatsApp.</span>` : ''}`;
   }
 
-  /* Round photo buttons under the hero: one per category that has a photo (set in Admin → Categories,
-     or the first product's photo); a section with no photos yet gets one lettered circle. */
+  /* Round category buttons under the hero: a line icon per category (chosen from its name),
+     gold-toned for gold, silver-toned for silver bullion, teal for jewellery. */
+  const CAT_ICONS = {
+    ring: '<circle cx="12" cy="15" r="5.5"/><path d="M9.2 4.5h5.6l1.7 2.4L12 10.3 7.5 6.9z"/><path d="M7.5 6.9h9"/>',
+    earring: '<circle cx="12" cy="4.6" r="1.6"/><path d="M12 6.2v2.4"/><path d="M12 8.6c-2.4 2.9-3.6 5-3.6 6.9a3.6 3.6 0 0 0 7.2 0c0-1.9-1.2-4-3.6-6.9z"/>',
+    pendant: '<path d="M3.5 3.5c1.6 5.6 4.6 8.5 8.5 8.5s6.9-2.9 8.5-8.5"/><path d="M12 12v1.4"/><path d="M12 13.4l-2.7 3.3 2.7 3.8 2.7-3.8z"/>',
+    bracelet: '<circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="4.5" r="1.6"/><circle cx="19.5" cy="12" r="1.6"/><circle cx="12" cy="19.5" r="1.6"/><circle cx="4.5" cy="12" r="1.6"/>',
+    beads: '<circle cx="12" cy="4.8" r="1.7"/><circle cx="17.1" cy="6.9" r="1.7"/><circle cx="19.2" cy="12" r="1.7"/><circle cx="17.1" cy="17.1" r="1.7"/><circle cx="12" cy="19.2" r="1.7" fill="currentColor"/><circle cx="6.9" cy="17.1" r="1.7"/><circle cx="4.8" cy="12" r="1.7"/><circle cx="6.9" cy="6.9" r="1.7"/>',
+    kada: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="5.5"/><path d="M12 4v2.5M12 17.5V20M4 12h2.5M17.5 12H20"/>',
+    chain: '<rect x="2.5" y="9" width="8.5" height="6" rx="3"/><rect x="13" y="9" width="8.5" height="6" rx="3"/><path d="M9 12h6"/>',
+    bowl: '<path d="M3 10.5h18c0 4.6-4 8-9 8s-9-3.4-9-8z"/><path d="M9 20.5h6"/><path d="M8.5 7c.8-1 .8-2 0-3M12 7c.8-1 .8-2 0-3M15.5 7c.8-1 .8-2 0-3"/>',
+    spoon: '<ellipse cx="12" cy="6.8" rx="3.4" ry="4.3"/><path d="M12 11.1V21"/>',
+    bar: '<path d="M3.5 17.5l3-8.5h11l3 8.5z"/><path d="M8.5 13.5h7"/><path d="M6.5 9l1-2.5h9l1 2.5"/>',
+    coin: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="6"/><path d="M12 8.6l1 2.1 2.3.3-1.7 1.6.4 2.3-2-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3z"/>',
+    diamond: '<path d="M6.5 4h11l3.5 5-9 11L3 9z"/><path d="M3 9h18M9.5 4L12 9l2.5-5M8 9l4 11 4-11"/>',
+    all: '<rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/>'
+  };
+  const iconOf = c => {
+    const t = (c.name + ' ' + c.slug).toLowerCase();
+    return /spoon/.test(t) ? 'spoon' : /bowl|utensil/.test(t) ? 'bowl' : /coin/.test(t) ? 'coin' : /\bbars?\b|bullion/.test(t) ? 'bar'
+      : /nazar/.test(t) ? 'beads' : /kada|bangle/.test(t) ? 'kada' : /chain/.test(t) ? 'chain' : /bracelet/.test(t) ? 'bracelet'
+        : /pendant|necklace/.test(t) ? 'pendant' : /earring|stud|hoop/.test(t) ? 'earring' : /ring/.test(t) ? 'ring' : 'diamond';
+  };
+  const toneOf = c => /gold/i.test(c.name + ' ' + c.slug) ? 'gold' : (c.kind === 'bullion' && /silver/i.test(c.name + ' ' + c.slug)) ? 'silver' : 'teal';
   function categoryCircles() {
-    const items = GROUPS.flatMap(g => {
-      const withPhoto = g.cats.map(c => {
-        const p = REAL().find(x => x.cat === c.slug);
-        return { href: '#/shop/' + c.slug, name: c.name, img: c.image || (p && p.img) };
-      }).filter(c => c.img);
-      return withPhoto.length ? withPhoto : [{ href: '#/shop/' + g.key, name: g.name, letter: g.name[0] }];
-    });
+    const cats = GROUPS.flatMap(g => g.cats);
+    const circle = (href, name, icon, tone) => `<a href="${href}" class="iv-circle"><span class="iv-circle-img tone-${tone}">${svg(CAT_ICONS[icon], 34)}</span><span class="iv-circle-name">${esc(name)}</span></a>`;
     return `<nav class="iv-cats iv-circles" aria-label="Shop by category"><div class="iv-circle-track">
-      ${items.map(c => `<a href="${c.href}" class="iv-circle"><span class="iv-circle-img">${c.img ? photo(c.img, '') : `<span class="iv-circle-letter" aria-hidden="true">${esc(c.letter)}</span>`}</span><span class="iv-circle-name">${esc(c.name)}</span></a>`).join('')}
-      <a href="#/shop" class="iv-circle"><span class="iv-circle-img all"><span class="iv-circle-letter" aria-hidden="true">All</span></span><span class="iv-circle-name">View all</span></a>
+      ${cats.map(c => circle('#/shop/' + c.slug, c.name, iconOf(c), toneOf(c))).join('')}
+      ${circle('#/shop', 'View all', 'all', 'dark')}
     </div></nav>`;
+  }
+
+  /* ── Home hero: full-width photo carousel — slides by itself, arrows, dots and swipe ── */
+  const HERO_IMG = f => '../assets/web/hero/' + f;
+  const heroSlides = () => [
+    { img: 'jewellery', kicker: 'Avya · First rays of the sun', title: 'Silver to wear, <i>gold to keep.</i>',
+      text: 'Jewellery for the moments you’ll always remember, and gold and silver that hold their value for years.',
+      ctas: [['Shop jewellery', '#/shop/' + jewelleryKey], ['Shop gold & silver', '#/shop/' + bullionKey]] },
+    { img: 'gold-bar', kicker: '99.99% pure gold', title: 'Gold bars, <i>at today’s rate.</i>',
+      text: 'RCM, PAMP and Valcambi bars from 1 g to 100 g — sealed, serial-numbered and certified.',
+      ctas: [['Shop gold bars', '#/shop/gold-bars'], ['Ask today’s price', waLink('Hi Avya Jewels, could you share today’s gold price?')]] },
+    { img: 'diwali', kicker: 'Diwali & festive gifting', title: 'Lakshmi gold <i>for the Festival of Lights.</i>',
+      text: 'Lakshmi Diwali gold bars and Ganpati silver coins — a blessing that keeps its value.',
+      ctas: [['Shop festive gold', '#/shop/gold-bars'], ['Silver coins', '#/shop/silver-coins']] },
+    { img: 'silver-ring', kicker: '925 sterling silver', title: 'Rings that <i>catch the light.</i>',
+      text: 'Hallmarked, stamped and set by hand — in Canadian sizes 5 to 14.',
+      ctas: [['Shop rings', '#/shop/silver-rings'], ['All jewellery', '#/shop/' + jewelleryKey]] },
+    { img: 'silver-bars', kicker: '99.99% pure silver', title: 'Silver bars <i>and coins.</i>',
+      text: 'Royal Canadian Mint 1 kg and 100 oz bars, plus 1 oz coins. We buy bullion too.',
+      ctas: [['Shop silver bars', '#/shop/silver-bars'], ['Ask today’s price', waLink('Hi Avya Jewels, could you share today’s silver price?')]] }
+  ];
+  let heroAt = 0;
+  function heroCarousel() {
+    const slides = heroSlides(), n = slides.length;
+    return `<section class="iv-hero-car" aria-roledescription="carousel" aria-label="Featured at Avya Jewels">
+      <div class="iv-car-track" style="transform:translateX(-${heroAt * 100}%)">
+        ${slides.map((s, i) => { const on = i === heroAt, h = i ? 'h2' : 'h1'; return `<div class="iv-slide ${on ? 'on' : ''}" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${n}" ${on ? '' : 'aria-hidden="true"'}>
+          <picture><source media="(max-width: 760px)" srcset="${HERO_IMG(s.img + '-m.webp')}"><img src="${HERO_IMG(s.img + '.webp')}" alt="" ${i ? 'loading="lazy"' : 'fetchpriority="high"'} decoding="async"></picture>
+          <div class="iv-slide-copy"><span class="iv-label">${s.kicker}</span><${h} class="iv-slide-title">${s.title}</${h}><p>${s.text}</p>
+            <div class="iv-ctas">${s.ctas.map(([l, href], j) => `<a href="${href}" class="iv-btn on-dark ${j ? 'ghost' : ''}" ${href.startsWith('http') ? 'target="_blank" rel="noopener"' : ''} ${on ? '' : 'tabindex="-1"'}>${l}</a>`).join('')}</div></div>
+        </div>`; }).join('')}
+      </div>
+      <button type="button" class="iv-car-btn prev" data-act="heroStep" data-arg="-1" aria-label="Previous slide">${svg('<path d="M15 5l-7 7 7 7"/>', 22)}</button>
+      <button type="button" class="iv-car-btn next" data-act="heroStep" data-arg="1" aria-label="Next slide">${svg('<path d="M9 5l7 7-7 7"/>', 22)}</button>
+      <div class="iv-car-dots">${slides.map((s, i) => `<button type="button" class="${i === heroAt ? 'on' : ''}" data-act="heroGo" data-arg="${i}" aria-label="Show slide ${i + 1}" ${i === heroAt ? 'aria-current="true"' : ''}></button>`).join('')}</div>
+    </section>`;
   }
 
   function groupCard(g) {
@@ -687,30 +740,9 @@
       { t: 'Quick replies', b: 'On WhatsApp, usually within 15 to 30 minutes.' }
     ];
     return `
-    <section class="iv-hero">
-      <div class="iv-hero-copy">
-        <div class="stack" style="gap:22px">
-          <span class="iv-label accent">Avya · First rays of the sun</span>
-          <h1 class="iv-h1">Silver to wear, <i>gold to keep.</i></h1>
-          <p class="iv-lead">Jewellery that makes a special moment unforgettable, and gold and silver that hold their value for years. Discover 925 sterling silver jewellery and 99.99% pure gold and silver bars and coins — chosen with care by our family in Mississauga.</p>
-          <div class="iv-ctas"><a href="#/shop/${jewelleryKey}" class="iv-btn">Shop jewellery</a><a href="#/shop/${bullionKey}" class="iv-btn ghost">Shop gold &amp; silver</a></div>
-        </div>
-        <div class="iv-stats"><div><strong>925</strong><span>Hallmarked silver</span></div><div><strong>99.99%</strong><span>Pure gold &amp; silver</span></div><div><strong>10+</strong><span>Years of experience</span></div></div>
-      </div>
-      <div class="iv-hero-duo">
-        ${[[big, 'Silver jewellery', big.purple ? big.img2 : big.img], [side, 'Gold & silver bullion', side.img]].map(([p, kicker, src]) => `<a href="#/product/${p.id}" class="iv-feature">
-          <div class="iv-img iv-feature-img">${photo(src, p.name, true)}</div>
-          <div class="iv-feature-cap"><span class="iv-label accent">${kicker}</span><span class="iv-serif-24">${esc(p.name)}</span>
-            <span class="iv-feature-row"><span class="iv-muted">${esc(p.material)}</span><span class="iv-price-sm">${priceHtml(p)}</span></span></div></a>`).join('')}
-      </div>
-    </section>
+    ${heroCarousel()}
 
     ${categoryCircles()}
-
-    <section class="iv-sec" id="categories">
-      <div class="iv-sec-head"><div class="stack" style="gap:10px"><span class="iv-label accent">Shop by category</span><h2 class="iv-h2">Jewellery, gold &amp; silver — <i>all in one place</i></h2></div><a href="#/shop" class="iv-link dark">View everything</a></div>
-      <div class="iv-groups">${GROUPS.map(groupCard).join('')}</div>
-    </section>
 
     <section class="iv-band">
       <div class="iv-band-head"><div class="stack" style="gap:10px"><span class="iv-label accent">Most loved</span><h2 class="iv-h2">Our bestsellers</h2></div>
@@ -1160,6 +1192,44 @@
     }
   };
   window.addEventListener('hashchange', () => { if (location.hash !== '#/checkout') state.placed = null; });
+
+  /* Hero carousel: moves the track directly (no page redraw), slides every 6 s, pauses while hovered,
+     focused or hidden, and for a while after someone uses the arrows, dots or a swipe. */
+  const HERO_EVERY = 6000;
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let heroTouched = 0;
+  function heroShow(i) {
+    const car = document.querySelector('.iv-hero-car');
+    if (!car) return;
+    const slides = car.querySelectorAll('.iv-slide');
+    heroAt = ((i % slides.length) + slides.length) % slides.length;
+    car.querySelector('.iv-car-track').style.transform = 'translateX(-' + heroAt * 100 + '%)';
+    slides.forEach((el, j) => {
+      const on = j === heroAt;
+      el.classList.toggle('on', on);
+      el.toggleAttribute('aria-hidden', !on);
+      el.querySelectorAll('a').forEach(a => { a.tabIndex = on ? 0 : -1; });
+    });
+    car.querySelectorAll('.iv-car-dots button').forEach((b, j) => { b.classList.toggle('on', j === heroAt); b.toggleAttribute('aria-current', j === heroAt); });
+  }
+  Object.assign(ACTIONS, {
+    heroStep: d => { heroTouched = Date.now(); heroShow(heroAt + Number(d)); },
+    heroGo: i => { heroTouched = Date.now(); heroShow(Number(i)); }
+  });
+  setInterval(() => {
+    const car = document.querySelector('.iv-hero-car');
+    if (!car || reduceMotion || document.hidden || car.matches(':hover') || car.contains(document.activeElement)) return;
+    if (Date.now() - heroTouched < HERO_EVERY * 1.5) return;
+    heroShow(heroAt + 1);
+  }, HERO_EVERY);
+  let heroX = null;
+  document.addEventListener('touchstart', e => { heroX = e.target.closest('.iv-hero-car') ? e.touches[0].clientX : null; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (heroX === null) return;
+    const dx = e.changedTouches[0].clientX - heroX;
+    heroX = null;
+    if (Math.abs(dx) > 45) { heroTouched = Date.now(); heroShow(heroAt + (dx < 0 ? 1 : -1)); }
+  });
   // Fresh product data from the store API (js/api-loader.js): redraw, except mid-checkout.
   window.addEventListener('avya:products', () => { if (state.route !== 'checkout' && state.zoom == null) set({}); });
 
