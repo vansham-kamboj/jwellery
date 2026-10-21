@@ -4,7 +4,7 @@
 (() => {
   const startApp = () => {
     const s = document.createElement('script');
-    s.src = 'js/app.js';
+    s.src = 'js/app.js?v=20261021';   // bump with the script tags in index.html after each update
     document.body.appendChild(s);
   };
 
@@ -50,7 +50,7 @@
   }
 
   const env = document.createElement('script');
-  env.src = 'js/env.js';
+  env.src = 'js/env.js?t=' + Date.now();   // never cached: it holds the API address
   env.onload = env.onerror = () => connect()
     .catch(err => console.warn('Store API unavailable — showing the built-in catalogue.', err))
     .finally(startApp);

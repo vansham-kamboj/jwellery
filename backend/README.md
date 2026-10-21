@@ -22,7 +22,6 @@ composer install
 cp .env.example .env          # then fill in DB_*, APP_URL, FRONTEND_URLS, ADMIN_*, STORE_*
 php artisan key:generate
 php artisan migrate --seed    # tables + first admin + the 40-piece catalogue with photos
-php artisan storage:link
 php artisan serve             # local: http://127.0.0.1:8000/admin
 ```
 
@@ -41,7 +40,7 @@ php artisan store:optimize-images                        # shrink any stored pho
 
 1. Point the (sub)domain at `backend/public`. If the host won't let you, point it at `backend/` — the included `.htaccess` forwards everything into `public/`.
 2. In `.env`: `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://<backend domain>`, the database details, `FRONTEND_URLS=https://<storefront domain>`, `SESSION_SECURE_COOKIE=true`, and a hard-to-guess `ADMIN_PATH`.
-3. `composer install --no-dev --optimize-autoloader`, `php artisan key:generate` (first time only), `php artisan migrate --seed --force`, `php artisan storage:link`, then `php artisan config:cache`, `php artisan route:cache` and `php artisan view:cache` (run these again after every update).
+3. `composer install --no-dev --optimize-autoloader`, `php artisan key:generate` (first time only), `php artisan migrate --seed --force`, then `php artisan config:cache`, `php artisan route:cache` and `php artisan view:cache` (run these again after every update).
 4. Folders `storage/` and `bootstrap/cache/` must be writable by the web server.
 
 ## API

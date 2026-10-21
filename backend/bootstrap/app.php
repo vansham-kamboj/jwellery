@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
         $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
         $middleware->appendToGroup('web', SecurityHeaders::class);
+        $middleware->trustProxies(at: '*');   // Hostinger's CDN sits in front of the site
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // API callers always get JSON errors.

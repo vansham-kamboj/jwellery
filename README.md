@@ -21,7 +21,6 @@ composer install
 cp .env.example .env            # fill in DB_*, ADMIN_EMAIL, ADMIN_PASSWORD, STORE_WHATSAPP …
 php artisan key:generate
 php artisan migrate --seed      # tables, first admin, 40-piece catalogue with photos
-php artisan storage:link
 php artisan serve               # http://127.0.0.1:8000/admin
 
 # 2. frontend — in a second terminal, from the project root

@@ -8,3 +8,6 @@ assets/ivory/
 
 # Upload bundles made for hosting
 *.zip
+
+# Upload-ready copy for Hostinger (contains the live .env)
+/live/
