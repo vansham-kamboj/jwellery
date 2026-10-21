@@ -604,7 +604,7 @@
     return `<footer class="iv-foot">
       <div class="iv-foot-grid">
         <div class="iv-foot-brand">${logo('iv-foot-logo')}
-          <span><i>First rays of the sun.</i> 925 sterling silver jewellery and 99.99% pure gold and silver, from our family in Mississauga.</span>
+          <span><i>First rays of the sun.</i> 925 sterling silver jewellery and 99.99% pure gold and silver bars and coins, from our family in Mississauga.</span>
           <span class="iv-foot-contact"><a href="${waLink()}" target="_blank" rel="noopener">WhatsApp ${esc(STORE.phone)}</a><a href="mailto:${esc(STORE.email)}">${esc(STORE.email)}</a><span>${esc(STORE.hours)}</span></span></div>
         ${cols.map(col => `<div class="iv-foot-col"><span class="iv-label light">${col.h}</span>${col.links.map(([l, h]) => `<a href="${h}" ${h.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}>${esc(l)}</a>`).join('')}</div>`).join('')}
       </div>
@@ -691,9 +691,9 @@
       <div class="iv-hero-copy">
         <div class="stack" style="gap:22px">
           <span class="iv-label accent">Avya · First rays of the sun</span>
-          <h1 class="iv-h1">Jewellery for moments <i>worth remembering.</i></h1>
-          <p class="iv-lead">Every time you wear it, you remember the moment. Discover 925 sterling silver jewellery and 99.99% pure gold and silver bars and coins — premium, elegant and within reach.</p>
-          <div class="iv-ctas"><a href="#/shop/${jewelleryKey}" class="iv-btn">Shop jewellery</a><a href="#/shop/${bullionKey}" class="iv-btn ghost">Gold &amp; silver bars</a></div>
+          <h1 class="iv-h1">Silver to wear, <i>gold to keep.</i></h1>
+          <p class="iv-lead">Jewellery that makes a special moment unforgettable, and gold and silver that hold their value for years. Discover 925 sterling silver jewellery and 99.99% pure gold and silver bars and coins — chosen with care by our family in Mississauga.</p>
+          <div class="iv-ctas"><a href="#/shop/${jewelleryKey}" class="iv-btn">Shop jewellery</a><a href="#/shop/${bullionKey}" class="iv-btn ghost">Shop gold &amp; silver</a></div>
         </div>
         <div class="iv-stats"><div><strong>925</strong><span>Hallmarked silver</span></div><div><strong>99.99%</strong><span>Pure gold &amp; silver</span></div><div><strong>10+</strong><span>Years of experience</span></div></div>
       </div>
@@ -708,7 +708,7 @@
     ${categoryCircles()}
 
     <section class="iv-sec" id="categories">
-      <div class="iv-sec-head"><div class="stack" style="gap:10px"><span class="iv-label accent">Shop by category</span><h2 class="iv-h2">Silver to wear, <i>gold to keep</i></h2></div><a href="#/shop" class="iv-link dark">View everything</a></div>
+      <div class="iv-sec-head"><div class="stack" style="gap:10px"><span class="iv-label accent">Shop by category</span><h2 class="iv-h2">Jewellery, gold &amp; silver — <i>all in one place</i></h2></div><a href="#/shop" class="iv-link dark">View everything</a></div>
       <div class="iv-groups">${GROUPS.map(groupCard).join('')}</div>
     </section>
 
@@ -741,7 +741,7 @@
     <section class="iv-story-teaser">
       <div class="stack" style="gap:14px"><span class="iv-label accent">Our story</span>
         <h2 class="iv-h2">From India to Canada, <i>a journey of passion</i></h2>
-        <p class="iv-body">Avya Jewels is rooted in more than ten years of gold and silver jewellery, a journey that began in India alongside our founder’s father. Today it is a family venture in Mississauga — because jewellery is more than a luxury. It celebrates love, milestones and the moments worth keeping.</p>
+        <p class="iv-body">Avya Jewels is rooted in more than ten years in gold and silver, a journey that began in India alongside our founder’s father. Today it is a family venture in Mississauga — fine jewellery for life’s milestones, and pure gold and silver bars and coins to save, invest and gift.</p>
         <a href="#/studio" class="iv-link dark">Read our story &amp; visit us</a></div>
     </section>
 
@@ -966,7 +966,7 @@
         <p class="iv-lead">Avya means <i>the first rays of the sun</i> — the light that starts every new day.</p>
         <p class="iv-body">Avya Jewels is rooted in more than ten years of experience in gold and silver jewellery. Our founder’s journey began in India with the support of her father, where she developed a deep appreciation for craftsmanship and for the memories each piece can hold.</p>
         <p class="iv-body">Today she is building a new chapter in Canada alongside her husband, bringing that experience and passion to Avya Jewels. As a family venture, we believe jewellery is more than a luxury — it is a celebration of love, milestones and moments to cherish.</p>
-        <p class="iv-body">Every piece we choose is premium, elegant and affordable: 925 sterling silver, hallmarked and stamped, and 99.99% pure gold and silver from trusted mints.</p>
+        <p class="iv-body">Every piece we choose is premium, elegant and affordable: 925 sterling silver jewellery, hallmarked and stamped — and 99.99% pure gold and silver bars and coins from RCM, PAMP and Valcambi, for saving, investing and gifting. We buy bullion too.</p>
       </div>
       <div class="iv-img iv-page-img">${photo(cover.img2 || cover.img, 'Avya Jewels in the studio', true)}</div>
     </section>
@@ -1096,7 +1096,7 @@
 
   /* ══ Ivory Editorial actions — spliced into app.js after ACTIONS/FORMS. ══ */
   Object.assign(PAGES, { studio, custom: studio, policies });   // no custom orders — the old link shows our story
-  Object.assign(TITLES, { home: 'Avya Jewels — 925 silver jewellery & 99.99% gold and silver, Mississauga', shop: 'Shop', studio: 'Our story & visits', custom: 'Our story & visits', policies: 'Delivery, returns & privacy', checkout: 'Checkout' });
+  Object.assign(TITLES, { home: 'Avya Jewels — Silver jewellery & gold and silver bullion, Mississauga', shop: 'Shop', studio: 'Our story & visits', custom: 'Our story & visits', policies: 'Delivery, returns & privacy', checkout: 'Checkout' });
 
   Object.assign(ACTIONS, {
     metal: m => set({ metal: state.metal === m ? null : m }),
