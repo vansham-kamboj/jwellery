@@ -107,12 +107,17 @@
                 </section>
 
                 <section class="card card-pad grid" style="gap:12px">
-                    <h3>Bullion details</h3>
+                    <h3>Metal &amp; bullion details</h3>
                     <label class="field"><span>Metal</span>
                         <select name="metal"><option value="">—</option>@foreach (['gold' => 'Gold', 'silver' => 'Silver', 'platinum' => 'Platinum'] as $k => $v)<option value="{{ $k }}" @selected(old('metal', $product->metal) === $k)>{{ $v }}</option>@endforeach</select></label>
                     <label class="field"><span>Weight (grams)</span><input type="number" step="0.0001" min="0" name="weight_grams" value="{{ old('weight_grams', $product->weight_grams) }}"></label>
                     <label class="field"><span>Purity</span><input type="text" name="purity" value="{{ old('purity', $product->purity) }}" placeholder="999.9"></label>
-                    <span class="hint">Bullion priced at or above the reserve limit in Settings is reserved one at a time.</span>
+                    <label class="field"><span>Product code (SKU)</span><input type="text" name="sku" value="{{ old('sku', $product->sku) }}" placeholder="AV-1023"></label>
+                    <label class="field"><span>Brand / mint</span><input type="text" name="brand" value="{{ old('brand', $product->brand) }}" placeholder="Royal Canadian Mint"></label>
+                    <label class="field"><span>Design</span><input type="text" name="design" value="{{ old('design', $product->design) }}" placeholder="Maple leaf"></label>
+                    <label class="field"><span>Packaging</span><input type="text" name="packaging" value="{{ old('packaging', $product->packaging) }}" placeholder="Sealed assay card"></label>
+                    <label class="check"><input type="hidden" name="certificate" value="0"><input type="checkbox" name="certificate" value="1" @checked(old('certificate', $product->certificate))> Comes with an assay certificate</label>
+                    <span class="hint">The product page shows metal, purity and product code for jewellery, and weight, purity, brand, design, packaging and certificate for bullion. Gold jewellery always shows “price on request”. Bullion priced at or above the reserve limit in Settings is reserved one at a time.</span>
                 </section>
             </div>
         </div>

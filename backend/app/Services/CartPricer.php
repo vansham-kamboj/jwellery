@@ -49,7 +49,7 @@ class CartPricer
                 continue;
             }
             if ($p->priceHidden()) {
-                $problems[] = ['line' => $i, 'message' => 'Gold and silver prices change daily — message us for today’s price on '.$p->name.'.'];
+                $problems[] = ['line' => $i, 'message' => 'Gold prices change daily — message us for today’s price on '.$p->name.'.'];
 
                 continue;
             }

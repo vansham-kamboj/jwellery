@@ -14,7 +14,7 @@ const OZ = 31.1035;
 
 const CARE = {
   silver: '925 sterling silver, hallmarked and stamped. Care instructions come with every piece: keep it in its pouch, wipe it with a soft polishing cloth, and keep it away from perfume, chlorine and salt water.',
-  bullion: 'Sealed in its original packaging, with the manufacturer’s serial number and assay certificate where applicable. 99.99% pure. Investment-grade gold and silver carries no sales tax in Canada.'
+  bullion: 'Sealed in its original packaging, with its assay certificate where applicable. 99.99% pure. Investment-grade gold and silver carries no sales tax in Canada.'
 };
 
 const RING_SIZES = { label: 'Ring size', opts: ['5', '6', '7', '8', '9', '10', '11', '12', '13', '14'], def: '7' };
@@ -50,13 +50,13 @@ const REAL_JEWELLERY = [
 /* Bullion — [slug, name, metal, grams, premium, short label, description] */
 const REAL_BULLION = [
   ['maple-leaf-1oz-coin', 'Gold Maple Leaf · 1 oz', 'gold', OZ, .05, '1 oz coin', 'Royal Canadian Mint 1 oz Gold Maple Leaf in a sealed assay card — single-mine gold from Newmont Éléonore, Québec.'],
-  ['rcm-1oz-gold-bar', 'RCM Gold Bar · 1 oz', 'gold', OZ, .04, '1 oz bar', 'Royal Canadian Mint 1 oz 99.99% fine gold bar, serial-numbered and sealed in its original assay.'],
-  ['rcm-100g-gold-bar', 'RCM Gold Bar · 100 g', 'gold', 100, .03, '100 g bar', 'Royal Canadian Mint 100 g 99.99% fine gold bar, serial-numbered in original packaging.'],
+  ['rcm-1oz-gold-bar', 'RCM Gold Bar · 1 oz', 'gold', OZ, .04, '1 oz bar', 'Royal Canadian Mint 1 oz 99.99% fine gold bar and sealed in its original assay.'],
+  ['rcm-100g-gold-bar', 'RCM Gold Bar · 100 g', 'gold', 100, .03, '100 g bar', 'Royal Canadian Mint 100 g 99.99% fine gold bar in original packaging.'],
   ['diwali-10g-gold-bars', 'RCM Diwali Gold Bar · 10 g', 'gold', 10, .06, '10 g Diwali', 'Royal Canadian Mint Diwali 10 g fine gold bar in a festive card — a traditional gift for the Festival of Lights.'],
   ['diwali-lakshmi-gold-bar', 'Diwali Lakshmi Gold Bar', 'gold', 10, .06, 'Lakshmi bar', 'A Lakshmi gold bar in a Diwali “Festival of Lights” card. Weight shown as 10 g — please confirm before ordering.'],
   ['bmo-gold-bar', 'BMO Gold Bar', 'gold', OZ, .04, 'BMO bar', 'BMO Capital Markets fine gold bar, sealed. Weight shown as 1 oz — please confirm before ordering.'],
-  ['rcm-1kg-silver-bars', 'RCM Silver Bar · 1 kg', 'silver', 1000, .08, '1 kg silver', 'Royal Canadian Mint 1 kilo 99.9% fine silver bar, serial-numbered.'],
-  ['rcm-100oz-silver-bar', 'RCM Silver Bar · 100 oz', 'silver', 100 * OZ, .06, '100 oz silver', 'Royal Canadian Mint 100 oz 99.99% fine silver bar, serial-numbered.']
+  ['rcm-1kg-silver-bars', 'RCM Silver Bar · 1 kg', 'silver', 1000, .08, '1 kg silver', 'Royal Canadian Mint 1 kilo 99.9% fine silver bar.'],
+  ['rcm-100oz-silver-bar', 'RCM Silver Bar · 100 oz', 'silver', 100 * OZ, .06, '100 oz silver', 'Royal Canadian Mint 100 oz 99.99% fine silver bar.']
 ].map(([slug, name, metal, grams, premium, short, desc]) => ({
   id: slug, real: true, bullion: true, name, short, cat: 'Bullion', metal, grams, premium, desc,
   price: Math.round(grams * METAL[metal].ratePerGram * (1 + premium)),
@@ -71,7 +71,7 @@ PRODUCTS.unshift(...REAL_JEWELLERY, ...REAL_BULLION.filter(b => b.confirmed));
 SW.finegold = '#d4af37'; SW.finesilver = '#c9ccd3'; SW.plainsilver = '#cfd3e5';
 FINISH_OF.finegold = '999.9 fine gold'; FINISH_OF.finesilver = 'Fine silver'; FINISH_OF.plainsilver = 'Silver';
 CATS.push('Bullion');
-BLURB.Bullion = 'Royal Canadian Mint coins and bars in gold and silver — sealed, serial-numbered and HST-exempt.';
+BLURB.Bullion = 'Royal Canadian Mint coins and bars in gold and silver — sealed and HST-exempt.';
 BLURB.Rings = 'Statement pieces, solitaires and stackers — sizes 5 to 9.';
 
 /* Homepage content — EXAMPLE COPY until the owner supplies final wording. */
@@ -86,7 +86,7 @@ CONTENT.categories = [
   { name: 'Silver bars', img: PCUT('rcm-100oz-silver-bar'), href: '#/shop/Bullion' }
 ];
 CONTENT.promises = [
-  { title: 'Certified, never guessed', body: 'Every coin and bar comes from the Royal Canadian Mint, sealed in its assay with a serial number you can check.' },
+  { title: 'Certified, never guessed', body: 'Every coin and bar comes from the Royal Canadian Mint, sealed in its assay you can check.' },
   { title: 'Set and checked by hand', body: 'Each silver piece is inspected stone by stone and polished before it is boxed.' },
   { title: 'Insured to your door', body: 'Orders ship fully insured with signature on delivery, anywhere in Canada.' }
 ];
@@ -109,7 +109,7 @@ Object.assign(LABEL_IMG, {
 
 /* Product-page small print for the real pieces — EXAMPLE COPY. */
 const JEWELLERY_PERKS = [{ t: '925 sterling silver', b: 'Hallmarked & stamped' }, { t: 'Free GTA delivery', b: 'On orders over $200' }, { t: 'Pick up', b: 'Mississauga, by appointment' }];
-const BULLION_PERKS = [{ t: '99.99% pure', b: 'Serial-numbered' }, { t: 'No sales tax', b: 'Investment-grade' }, { t: 'We buy bullion', b: 'Sealed or purity-tested' }];
+const BULLION_PERKS = [{ t: '99.99% pure', b: 'Assay certified' }, { t: 'No sales tax', b: 'Investment-grade' }, { t: 'Pick up', b: 'Mississauga, by appointment' }];
 const JEWELLERY_DETAILS = [
   { title: 'Materials & care', body: '' },
   { title: 'Delivery & pick-up', body: 'Free home delivery across the GTA on orders over $200, usually within 3–5 days. Or pick up from us in Mississauga, Monday to Sunday, 11 am – 7 pm.' },
@@ -118,8 +118,7 @@ const JEWELLERY_DETAILS = [
 const BULLION_DETAILS = [
   { title: 'Certification & packaging', body: '' },
   { title: 'How pricing works', body: 'Gold and silver follow the live market, so we share today’s price on WhatsApp — usually within 15 to 30 minutes. Pay in full by e-Transfer or cash to confirm your order.' },
-  { title: 'Delivery & pick-up', body: 'Free delivery across the GTA on orders over $200, or pick up from us in Mississauga. We don’t ship bullion outside the GTA yet.' },
-  { title: 'Selling your gold or silver', body: 'We buy bullion in its sealed packaging. Uncarded bars and coins are welcome too — we test their purity first.' }
+  { title: 'Delivery & pick-up', body: 'Free delivery across the GTA on orders over $200, or pick up from us in Mississauga. We don’t ship bullion outside the GTA yet.' }
 ];
 PRODUCTS.filter(p => p.real).forEach(p => {
   p.perks = p.bullion ? BULLION_PERKS : JEWELLERY_PERKS;

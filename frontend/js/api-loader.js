@@ -4,7 +4,7 @@
 (() => {
   const startApp = () => {
     const s = document.createElement('script');
-    s.src = 'js/app.js?v=20261027';   // bump with the script tags in index.html after each update
+    s.src = 'js/app.js?v=20261030';   // bump with the script tags in index.html after each update
     document.body.appendChild(s);
   };
 
@@ -25,7 +25,8 @@
       tag: d.in_stock ? (d.offer_badge || d.tag || '') : 'Sold out', desc: d.description || '',
       img: d.image || pics[0], img2: d.image_alt || d.image || pics[0], gallery: pics.length ? pics : [d.image], video: video ? video.url : null,
       fin: sw[0] || 'plainsilver', sw: sw.length ? sw : ['plainsilver'], material: d.material || '', care: d.care || '',
-      sizes, rating: null, reviews: 0, bullion, short: d.short_name, metal: d.metal, grams: d.weight_grams,
+      sizes, rating: null, reviews: 0, bullion, short: d.short_name, metal: d.metal, grams: d.weight_grams, purity: d.purity, sku: d.sku,
+      brand: d.brand, design: d.design, packaging: d.packaging, certificate: d.certificate,
       taxExempt: d.tax_exempt, confirmed: true, customerReviews: d.reviews || [],
       perks: bullion ? BULLION_PERKS : JEWELLERY_PERKS, accordions: bullion ? BULLION_DETAILS : JEWELLERY_DETAILS
     };

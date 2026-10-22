@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Support\Settings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
@@ -12,7 +13,27 @@ class SettingsController extends Controller
 {
     public function edit()
     {
-        return view('admin.settings', ['s' => Settings::all()]);
+        return view('admin.settings', ['s' => Settings::all(), 'pending' => $this->pendingUpdates()]);
+    }
+
+    /** Applies new database updates after a deploy — the live server has no command line. */
+    public function migrate()
+    {
+        $count = count($this->pendingUpdates());
+        Artisan::call('migrate', ['--force' => true]);
+
+        return back()->with('ok', $count ? "Database updated ($count update".($count === 1 ? '' : 's').').' : 'The database is already up to date.');
+    }
+
+    private function pendingUpdates(): array
+    {
+        $migrator = app('migrator');
+        if (! $migrator->repositoryExists()) {
+            return [];
+        }
+        $files = $migrator->getMigrationFiles(database_path('migrations'));
+
+        return array_values(array_diff(array_keys($files), $migrator->getRepository()->getRan()));
     }
 
     public function update(Request $request)

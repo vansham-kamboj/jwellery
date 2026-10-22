@@ -16,13 +16,13 @@ class Product extends Model
 
     protected $fillable = [
         'category_id', 'name', 'slug', 'short_name', 'material', 'description', 'care', 'price', 'tag', 'kind',
-        'metal', 'weight_grams', 'purity', 'tax_exempt', 'size_label', 'default_size', 'in_stock', 'stock_qty', 'is_visible',
+        'metal', 'weight_grams', 'purity', 'sku', 'brand', 'design', 'packaging', 'certificate', 'tax_exempt', 'size_label', 'default_size', 'in_stock', 'stock_qty', 'is_visible',
         'is_featured', 'sort_order',
     ];
 
     protected $casts = [
         'price' => 'decimal:2', 'weight_grams' => 'decimal:4', 'tax_exempt' => 'boolean', 'in_stock' => 'boolean',
-        'is_visible' => 'boolean', 'is_featured' => 'boolean', 'sort_order' => 'integer', 'stock_qty' => 'integer',
+        'is_visible' => 'boolean', 'is_featured' => 'boolean', 'certificate' => 'boolean', 'sort_order' => 'integer', 'stock_qty' => 'integer',
     ];
 
     public function category(): BelongsTo
@@ -63,7 +63,8 @@ class Product extends Model
     /** Bars and coins can be set to "price on request" (Admin → Settings). */
     public function priceHidden(): bool
     {
-        return $this->isBullion() && ! Settings::get('show_bullion_prices');
+        // Bullion follows the market (unless prices are switched on); gold jewellery always follows the gold rate.
+        return ($this->isBullion() && ! Settings::get('show_bullion_prices')) || (! $this->isBullion() && $this->metal === 'gold');
     }
 
     /** High-value bullion is reserved (price confirmed by the team) and limited to one per order. */

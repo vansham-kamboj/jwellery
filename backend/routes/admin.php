@@ -53,4 +53,5 @@ Route::middleware('auth')->group(function () {
     Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::put('account', [SettingsController::class, 'password'])->name('account.password');
+    Route::post('database-updates', [SettingsController::class, 'migrate'])->name('settings.migrate');
 });

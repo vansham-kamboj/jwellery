@@ -131,6 +131,12 @@ class AdminPanelTest extends TestCase
         $this->assertSame('Paid by e-transfer', $order->admin_notes);
     }
 
+    public function test_database_updates_button_runs_migrations(): void
+    {
+        $this->actingAs($this->admin)->get('/admin/settings')->assertOk()->assertSee('The database is up to date.');
+        $this->actingAs($this->admin)->post('/admin/database-updates')->assertRedirect()->assertSessionHas('ok', 'The database is already up to date.');
+    }
+
     public function test_settings_save_and_reach_the_api(): void
     {
         $this->actingAs($this->admin)->put('/admin/settings', [

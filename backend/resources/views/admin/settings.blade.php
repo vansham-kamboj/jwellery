@@ -93,6 +93,16 @@
         <div class="form-actions"><button class="btn">Save settings</button></div>
     </form>
 
+    <section class="card card-pad grid" style="gap:12px;max-width:560px">
+        <h3>Database updates</h3>
+        @if (count($pending))
+            <p class="muted">{{ count($pending) }} update{{ count($pending) === 1 ? '' : 's' }} waiting after the last deploy. Run {{ count($pending) === 1 ? 'it' : 'them' }} once so new features work on the site.</p>
+        @else
+            <p class="muted">The database is up to date.</p>
+        @endif
+        <form method="post" action="{{ route('admin.settings.migrate') }}">@csrf<button class="btn {{ count($pending) ? '' : 'ghost' }}">Run database updates</button></form>
+    </section>
+
     <section class="card card-pad grid" style="gap:14px;max-width:560px">
         <h3>Your password</h3>
         <form method="post" action="{{ route('admin.account.password') }}" class="grid" style="gap:12px">

@@ -48,6 +48,11 @@ class ProductResource extends JsonResource
                 'care' => $p->care,
                 'weight_grams' => $p->weight_grams !== null ? (float) $p->weight_grams : null,
                 'purity' => $p->purity,
+                'sku' => $p->sku,
+                'brand' => $p->brand,
+                'design' => $p->design,
+                'packaging' => $p->packaging,
+                'certificate' => (bool) $p->certificate,
                 'reviews' => Review::visible()->where('product_id', $p->id)->limit(10)->get()->map->toPublic(),
                 'gallery' => $media->map(fn ($m) => ['url' => $m->url(), 'type' => $m->type, 'alt' => $m->alt ?: $p->name])->values(),
                 'sizes' => $p->sizes->isEmpty() ? null : [

@@ -194,7 +194,7 @@
     ${bar ? `<section class="gold-bars" id="gold-bars">
       <div class="stack" style="gap:24px">
         <h2>Royal Canadian Mint gold, priced at today’s rate.</h2>
-        <p>999.9 fine gold coins and bars, sealed in their original assay with a serial number. Choose a size to see today’s price.</p>
+        <p>999.9 fine gold coins and bars, sealed in their original assay. Choose a size to see today’s price.</p>
         <div class="weights" role="group" aria-label="Choose a coin or bar">${GOLD.featured.map(byId).filter(Boolean).map(b => `<button class="weight" data-act="barPick" data-arg="${b.id}" aria-pressed="${b.id === bar.id}">${b.short}</button>`).join('')}</div>
         <div class="bar-buy">
           <div class="bar-price"><span class="bar-name">${esc(bar.name)}</span><strong>$${bar.price.toLocaleString('en-CA')}</strong>
@@ -475,20 +475,23 @@
   const waLink = (msg = 'Hi Avya Jewels, I have a question.') => WA_BASE + '/' + STORE.whatsapp + '?text=' + encodeURIComponent(msg);
   const telLink = 'tel:' + STORE.phone.replace(/[^0-9+]/g, '');
 
-  /* ── Categories: sections (Women, Men, Kids, Silver utensils, Gold & silver) and their shop categories ── */
-  const GROUP_ORDER = ['Women', 'Men', 'Kids', 'Silver utensils', 'Gold & silver'];
+  /* ── Categories: menu sections (Silver Jewellery, Gold Jewellery, Bullion, Silver Utensils, Kids) and their shop categories ── */
+  const GROUP_ORDER = ['silver jewellery', 'gold jewellery', 'bullion', 'silver utensils', 'kids'];
   const keyOfGroup = g => g.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  // Sections before Oct 2026 (Women, Men…) are mapped to the new menu until Admin → Settings → Run database updates.
+  const OLD_SECTIONS = ['Women', 'Men', 'Gold & silver', 'Silver utensils'];
+  const sectionOf = c => (!c.group || OLD_SECTIONS.includes(c.group)) ? ((CATEGORY_LIST.find(x => x.slug === c.slug) || {}).group || (c.kind === 'bullion' ? 'Bullion' : 'Silver Jewellery')) : c.group;
   const CAT_LIST = (window.AVYA_API ? window.AVYA_API.site.categories : CATEGORY_LIST)
-    .map(c => ({ slug: c.slug, name: c.name, kind: c.kind, description: c.description, image: c.image || null, group: c.group || (c.kind === 'bullion' ? 'Gold & silver' : 'Women') }));
-  const rank = g => (GROUP_ORDER.indexOf(g) + 1) || 99;
+    .map(c => ({ slug: c.slug, name: c.name, kind: c.kind, description: c.description, image: c.image || null, group: sectionOf(c) }));
+  const rank = g => (GROUP_ORDER.indexOf(g.toLowerCase()) + 1) || 99;
   const GROUPS = [...new Set(CAT_LIST.map(c => c.group))].sort((a, b) => rank(a) - rank(b))
     .map(name => ({ key: keyOfGroup(name), name, cats: CAT_LIST.filter(c => c.group === name), bullion: CAT_LIST.some(c => c.group === name && c.kind === 'bullion') }));
   const GROUP_COPY = {
-    women: 'Pendant sets, necklaces, earrings, bracelets and rings in 925 sterling silver — plus gold earrings.',
-    men: 'Gold chains for men, in classic and everyday weights.',
-    kids: 'Silver nazariya and kada for little ones — a blessing to wear and a gift to keep.',
+    'silver-jewellery': 'Pendant sets, necklaces, earrings, bracelets and rings in 925 sterling silver, hallmarked and stamped.',
+    'gold-jewellery': 'Gold earrings and chains. Gold jewellery follows today’s gold rate — ask us for the price.',
+    bullion: '99.99% pure gold and silver bars and coins from RCM, PAMP and Valcambi. Prices follow the live market — ask us for today’s rate.',
     'silver-utensils': 'Pure silver bowls and spoons for ceremonies, first feeds and gifting.',
-    'gold-and-silver': '99.99% pure gold and silver bars and coins from RCM, PAMP and Valcambi. Prices follow the live market — ask us for today’s rate.'
+    kids: 'Silver nazariya and kada for little ones — a blessing to wear and a gift to keep.'
   };
   // Without the API, the built-in pieces carry simple categories — map them to the shop categories.
   if (!window.AVYA_API) {
@@ -505,15 +508,15 @@
   const inFilter = (p, f) => f === 'All' || p.cat === f || !!(groupOf(f) && groupOf(f).cats.some(c => c.slug === p.cat));
   const catLabel = f => f === 'All' ? 'Everything' : (catOf(f) || groupOf(f) || { name: f }).name;
   const countIn = f => REAL().filter(p => inFilter(p, f)).length;
-  const bullionKey = (GROUPS.find(g => g.bullion) || { key: 'gold-and-silver' }).key;
+  const bullionKey = (GROUPS.find(g => g.bullion) || { key: 'bullion' }).key;
   const jewelleryKey = (GROUPS.find(g => !g.bullion) || { key: 'All' }).key;
 
   /* ── Prices, stock and actions per piece ── */
-  const onRequest = p => p.priceOnRequest || (p.bullion && !STORE.showBullionPrices);
+  const onRequest = p => p.priceOnRequest || (p.bullion ? !STORE.showBullionPrices : p.metal === 'gold');
   const soldOut = p => p.inStock === false || p.stock === 0;
   const priceHtml = p => onRequest(p) ? 'Price on request'
     : (p.wasPrice && p.wasPrice > p.price ? `<s class="iv-was">${cad(p.wasPrice)}</s> ` : '') + cad(p.price);
-  const stockNote = p => soldOut(p) ? 'Sold out' : (p.stock != null && p.stock <= 5 ? 'Only ' + p.stock + ' left' : 'In stock');
+  const stockNote = p => soldOut(p) ? 'Sold out' : 'In stock';
   const askLink = p => waLink(`Hi Avya Jewels, could you share today’s price for the ${p.name}?`);
   /* Customer reviews come only from Admin → Reviews; with none, no reviews section is shown. */
   const REVIEWS = window.AVYA_API ? (window.AVYA_API.site.reviews || []) : [];
@@ -532,13 +535,15 @@
   const perGram = oz => oz / 31.1035;
   function pdpPrice(p) { return p.price; }   // finishes and sizes don't change the price
 
-  const svgWA = s => svg('<path d="M20 11.6a8.4 8.4 0 0 1-12.4 7.4L3.5 20.5l1.5-4A8.4 8.4 0 1 1 20 11.6z"/><path d="M9 8.6c.2 2.9 2.6 5.3 5.5 5.6l1.2-1.4 1.8.9-.5 1.6c-4 .3-8-3.6-7.7-7.6l1.6-.5.9 1.8z" fill="currentColor" stroke="none"/>', s);
+  const WA_PATH = 'M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.19 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.83 9.83 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.88 9.88m8.41-18.3A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.17-3.48-8.41z';
+  const svgWA = size => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${WA_PATH}"/></svg>`;
   const SOCIAL = [
     ['Instagram', STORE.instagram, svg('<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" fill="currentColor" stroke="none"/>', 16)],
     ['WhatsApp', waLink(), svgWA(16)],
     ['Call ' + STORE.phone, telLink, svg('<path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16.5 16.5 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/>', 15)]
   ].filter(s => s[1]);
-  const WA_ICON = svgWA(28);
+  const WA_ICON = svgWA(30);
+  const PHONE_ICON = svg('<path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16.5 16.5 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/>', 18);
   const CART_ICON = svg('<path d="M3 4h2.4l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.1a1.6 1.6 0 0 0 1.6-1.2L20.6 8H6.2"/><circle cx="9.6" cy="20" r="1.3"/><circle cx="17.4" cy="20" r="1.3"/>', 22);
   const SEARCH_ICON = svg('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>', 18);
   const METALS = { Silver: ['silver', 'plainsilver', 'finesilver'], Gold: ['gold', 'finegold'], 'Rose gold': ['rose', 'rosetone'] };
@@ -567,6 +572,21 @@
       <button type="submit" class="iv-btn ghost block sm">See all ${hits.length} result${hits.length === 1 ? '' : 's'}</button>`;
   }
 
+  /* Top bar messages take turns: delivery offer, then today's gold & silver rate (per ounce) when set in the admin. */
+  let topAt = 0;
+  function topMessages() {
+    const sp = STORE.spot || {};
+    const rate = [sp.gold_oz && 'Gold ' + cad(Math.round(sp.gold_oz)) + ' / oz', sp.silver_oz && 'Silver ' + money(sp.silver_oz) + ' / oz'].filter(Boolean);
+    return [STORE.announcement, rate.length ? 'Today’s rate · ' + rate.join(' · ') : null].filter(Boolean);
+  }
+  setInterval(() => {
+    const el = document.getElementById('iv-top-msg'), msgs = topMessages();
+    if (!el || msgs.length < 2 || document.hidden) return;
+    topAt = (topAt + 1) % msgs.length;
+    el.classList.add('swap');
+    setTimeout(() => { el.textContent = msgs[topAt]; el.classList.remove('swap'); }, 300);
+  }, 5000);
+
   function header() {
     const t = totals();
     if (state.route === 'checkout') {
@@ -576,13 +596,18 @@
     }
     const inShop = state.route === 'shop';
     const active = g => inShop && (state.filter === g.key || g.cats.some(c => c.slug === state.filter));
-    return `<div class="iv-top"><span class="iv-top-msg">${esc(STORE.announcement)}</span>
-        <span class="iv-top-right"><span class="iv-top-msg">Visits by appointment · ${esc(STORE.area.split(',')[0])}</span><span class="iv-social" aria-label="Contact Avya Jewels">${SOCIAL.map(([n, h, ic]) => `<a href="${h}" ${h.startsWith('http') ? 'target="_blank" rel="noopener"' : ''} aria-label="${esc(n)}" title="${esc(n)}">${ic}</a>`).join('')}</span></span></div>
+    const msgs = topMessages();
+    return `<div class="iv-top"><span class="iv-top-msg" id="iv-top-msg" aria-live="polite">${esc(msgs[topAt % msgs.length])}</span>
+        <span class="iv-top-right"><a class="iv-top-phone" href="${telLink}">${esc(STORE.phone)}</a><span class="iv-social" aria-label="Contact Avya Jewels">${SOCIAL.map(([n, h, ic]) => `<a href="${h}" ${h.startsWith('http') ? 'target="_blank" rel="noopener"' : ''} aria-label="${esc(n)}" title="${esc(n)}">${ic}</a>`).join('')}</span></span></div>
       <header class="iv-head">
         <nav class="iv-nav ${state.navOpen ? 'open' : ''}" id="nav-links" aria-label="Main">
-          ${GROUPS.map(g => `<a href="#/shop/${g.key}" ${active(g) ? 'aria-current="page"' : ''}>${esc(g.name)}</a>`).join('')}<a href="#/studio" class="iv-only-m">Our story</a><a href="#/policies" class="iv-only-m">Delivery &amp; returns</a></nav>
+          ${GROUPS.map(g => `<div class="iv-nav-item ${g.bullion ? 'is-gold' : ''}"><a href="#/shop/${g.key}" ${active(g) ? 'aria-current="page"' : ''}>${esc(g.name)}</a>
+            <div class="iv-drop">${g.cats.map(c => `<a href="#/shop/${c.slug}">${esc(c.name)}</a>`).join('')}</div></div>`).join('')}</nav>
         <a href="#/" class="iv-logo" aria-label="Avya Jewels home">${logo('')}</a>
-        <div class="iv-right"><button class="iv-iconbtn" data-act="openSearch" aria-label="Search" aria-haspopup="dialog">${SEARCH_ICON}<span class="iv-hide-m">Search</span></button><a href="#/studio" class="iv-hide-m" ${state.route === 'studio' ? 'aria-current="page"' : ''}>Our story</a><a href="#/bag" class="iv-cart" aria-label="Bag, ${t.count} item${t.count === 1 ? '' : 's'}" title="Bag">${CART_ICON}${t.count ? `<span class="iv-cart-count">${t.count}</span>` : ''}</a>
+        <div class="iv-right"><button class="iv-iconbtn" data-act="openSearch" aria-label="Search" aria-haspopup="dialog">${SEARCH_ICON}<span class="iv-hide-m">Search</span></button>
+          <a href="${waLink()}" class="iv-iconbtn iv-hide-m" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp">${svgWA(19)}</a>
+          <a href="${telLink}" class="iv-iconbtn iv-call" aria-label="Call ${esc(STORE.phone)}">${PHONE_ICON}</a>
+          <a href="#/bag" class="iv-cart" aria-label="Bag, ${t.count} item${t.count === 1 ? '' : 's'}" title="Bag">${CART_ICON}${t.count ? `<span class="iv-cart-count">${t.count}</span>` : ''}</a>
           <button class="iv-burger" data-act="toggleNav" aria-label="Menu" aria-expanded="${state.navOpen}" aria-controls="nav-links">${state.navOpen ? ICON.close : ICON.menu}</button></div>
       </header>
       ${state.searchOpen ? `<div class="iv-search" role="dialog" aria-modal="true" aria-label="Search the collection">
@@ -598,17 +623,17 @@
   function footer() {
     const cols = [
       { h: 'Shop', links: GROUPS.map(g => [g.name, '#/shop/' + g.key]) },
-      { h: 'Avya', links: [['Our story', '#/studio'], ['Visit us', '#/studio'], ['Bridal & bulk orders', waLink('Hi Avya Jewels, I’d like to ask about a bridal or bulk order.')], ['Sell your gold & silver', '#/policies']] },
+      { h: 'Avya', links: [['Our story', '#/studio'], ['Visit us', '#/studio'], ['Bridal & bulk orders', waLink('Hi Avya Jewels, I’d like to ask about a bridal or bulk order.')]] },
       { h: 'Help', links: [['Delivery & pick-up', '#/policies'], ['Payment', '#/policies'], ['Returns', '#/policies'], ['Privacy policy', '#/policies']] }
     ];
     return `<footer class="iv-foot">
       <div class="iv-foot-grid">
         <div class="iv-foot-brand">${logo('iv-foot-logo')}
           <span><i>First rays of the sun.</i> 925 sterling silver jewellery and 99.99% pure gold and silver bars and coins, from our family in Mississauga.</span>
-          <span class="iv-foot-contact"><a href="${waLink()}" target="_blank" rel="noopener">WhatsApp ${esc(STORE.phone)}</a><a href="mailto:${esc(STORE.email)}">${esc(STORE.email)}</a><span>${esc(STORE.hours)}</span></span></div>
+          <span class="iv-foot-contact"><a href="${waLink()}" target="_blank" rel="noopener">WhatsApp ${esc(STORE.phone)}</a><a href="mailto:${esc(STORE.email)}">${esc(STORE.email)}</a><span>${esc(STORE.hours)}</span><span>Pay by Interac e-Transfer or cash</span></span></div>
         ${cols.map(col => `<div class="iv-foot-col"><span class="iv-label light">${col.h}</span>${col.links.map(([l, h]) => `<a href="${h}" ${h.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}>${esc(l)}</a>`).join('')}</div>`).join('')}
       </div>
-      <div class="iv-foot-base"><span>© 2026 Avya Jewels Ltd. · ${esc(STORE.area)}</span><span>All prices in CAD${STORE.taxIncluded ? ', taxes included' : ''} · All sales final</span></div>
+      <div class="iv-foot-base"><span>© 2026 Avya Jewels · ${esc(STORE.area)}</span><span>All prices in CAD${STORE.taxIncluded ? ', taxes included' : ''} · All sales final</span></div>
     </footer>`;
   }
 
@@ -636,13 +661,13 @@
   }
 
   /* Today's gold and silver rate, if the team has set it in Admin → Settings. */
-  function rates(light) {
-    const s = STORE.spot;
-    const rate = (label, oz) => `<div><span class="n">${label}</span>${oz ? `<span class="t">${cad(Math.round(oz))} / oz</span><span class="b">${money(perGram(oz))} / gram</span>` : `<span class="t">Ask for today’s rate</span><span class="b">Live market price</span>`}</div>`;
-    const when = s.updated_at ? new Date(s.updated_at).toLocaleString('en-CA', { weekday: 'short', hour: 'numeric', minute: '2-digit' }) : null;
-    return `<div class="iv-steps iv-rates ${light ? 'light' : ''}">${rate('Gold', s.gold_oz)}${rate('Silver', s.silver_oz)}
-      <div><span class="n">We buy</span><span class="t">Gold &amp; silver bullion</span><span class="b">Sealed, or purity-tested first</span></div></div>
-      ${when ? `<span class="iv-rates-note">Spot rate in CAD · updated ${esc(when)}. Bar and coin prices are confirmed on WhatsApp.</span>` : ''}`;
+  function rates(light, buyback) {
+    const sp = STORE.spot;
+    const rate = (label, oz) => `<div><span class="n">${label}</span>${oz ? `<span class="t">${label === 'Gold' ? cad(Math.round(oz)) : money(oz)} / oz</span><span class="b">Spot price, CAD</span>` : `<span class="t">Ask for today’s rate</span><span class="b">Live market price</span>`}</div>`;
+    const when = sp.updated_at ? new Date(sp.updated_at).toLocaleString('en-CA', { weekday: 'short', hour: 'numeric', minute: '2-digit' }) : null;
+    return `<div class="iv-steps iv-rates ${light ? 'light' : ''} ${buyback ? '' : 'two'}">${rate('Gold', sp.gold_oz)}${rate('Silver', sp.silver_oz)}
+      ${buyback ? '<div><span class="n">We buy</span><span class="t">Gold &amp; silver bullion</span><span class="b">Sealed, or purity-tested first</span></div>' : ''}</div>
+      ${when ? `<span class="iv-rates-note">Updated ${esc(when)}. Bar and coin prices are confirmed on WhatsApp.</span>` : ''}`;
   }
 
   /* Round category buttons under the hero: a line icon per category (chosen from its name),
@@ -672,20 +697,24 @@
   function categoryCircles() {
     const cats = GROUPS.flatMap(g => g.cats);
     const circle = (href, name, icon, tone) => `<a href="${href}" class="iv-circle"><span class="iv-circle-img tone-${tone}">${svg(CAT_ICONS[icon], 34)}</span><span class="iv-circle-name">${esc(name)}</span></a>`;
-    return `<nav class="iv-cats iv-circles" aria-label="Shop by category"><div class="iv-circle-track">
+    return `<nav class="iv-cats iv-circles" aria-label="Shop by category"><div class="iv-circle-wrap at-start">
+      <button type="button" class="iv-circle-btn prev" data-act="circleScroll" data-arg="-1" aria-label="Scroll categories left">${svg('<path d="M15 5l-7 7 7 7"/>', 20)}</button>
+      <div class="iv-circle-track">
       ${cats.map(c => circle('#/shop/' + c.slug, c.name, iconOf(c), toneOf(c))).join('')}
       ${circle('#/shop', 'View all', 'all', 'dark')}
+      </div>
+      <button type="button" class="iv-circle-btn next" data-act="circleScroll" data-arg="1" aria-label="Scroll categories right">${svg('<path d="M9 5l7 7-7 7"/>', 20)}</button>
     </div></nav>`;
   }
 
   /* ── Home hero: full-width photo carousel — slides by itself, arrows, dots and swipe ── */
   const HERO_IMG = f => '../assets/web/hero/' + f;
   const heroSlides = () => [
-    { img: 'jewellery', kicker: 'Avya · First rays of the sun', title: 'Silver to wear, <i>gold to keep.</i>',
-      text: 'Jewellery for the moments you’ll always remember, and gold and silver that hold their value for years.',
+    { img: 'jewellery', kicker: 'Avya Jewels · Mississauga', title: 'Silver jewellery. <i>Gold &amp; silver bars.</i>',
+      text: '925 sterling silver jewellery, and 99.99% pure gold and silver bars and coins — all in one place.',
       ctas: [['Shop jewellery', '#/shop/' + jewelleryKey], ['Shop gold & silver', '#/shop/' + bullionKey]] },
     { img: 'gold-bar', kicker: '99.99% pure gold', title: 'Gold bars, <i>at today’s rate.</i>',
-      text: 'RCM, PAMP and Valcambi bars from 1 g to 100 g — sealed, serial-numbered and certified.',
+      text: 'RCM, PAMP and Valcambi bars from 1 g to 100 g — sealed and certified.',
       ctas: [['Shop gold bars', '#/shop/gold-bars'], ['Ask today’s price', waLink('Hi Avya Jewels, could you share today’s gold price?')]] },
     { img: 'diwali', kicker: 'Diwali & festive gifting', title: 'Lakshmi gold <i>for the Festival of Lights.</i>',
       text: 'Lakshmi Diwali gold bars and Ganpati silver coins — a blessing that keeps its value.',
@@ -694,7 +723,7 @@
       text: 'Hallmarked, stamped and set by hand — in Canadian sizes 5 to 14.',
       ctas: [['Shop rings', '#/shop/silver-rings'], ['All jewellery', '#/shop/' + jewelleryKey]] },
     { img: 'silver-bars', kicker: '99.99% pure silver', title: 'Silver bars <i>and coins.</i>',
-      text: 'Royal Canadian Mint 1 kg and 100 oz bars, plus 1 oz coins. We buy bullion too.',
+      text: 'Royal Canadian Mint 1 kg and 100 oz bars, plus 1 oz coins.',
       ctas: [['Shop silver bars', '#/shop/silver-bars'], ['Ask today’s price', waLink('Hi Avya Jewels, could you share today’s silver price?')]] }
   ];
   let heroAt = 0;
@@ -735,7 +764,7 @@
     const bar = byId('rcm-100g-gold-bar') || side;
     const promises = [
       { t: '925 hallmarked silver', b: 'Stamped on every piece of jewellery.' },
-      { t: '99.99% pure bullion', b: 'Serial-numbered, with certificates where applicable.' },
+      { t: '99.99% pure bullion', b: 'Sealed, with assay certificates where applicable.' },
       { t: 'Free GTA delivery', b: 'On orders over $200 — or pick up in Mississauga.' },
       { t: 'Quick replies', b: 'On WhatsApp, usually within 15 to 30 minutes.' }
     ];
@@ -755,9 +784,9 @@
       <div class="iv-bespoke-copy">
         <span class="iv-label lilac">Gold &amp; silver bullion</span>
         <h2 class="iv-h2 light">Pure gold and silver, <i>at today’s rate.</i></h2>
-        <p>99.99% pure bars and coins from RCM, PAMP and Valcambi — plus Lakshmi Diwali gold bars and Lakshmi Ganpati silver coins. Each bar carries the maker’s serial number, with an assay certificate where applicable.</p>
+        <p>99.99% pure bars and coins from RCM, PAMP and Valcambi — plus Lakshmi Diwali gold bars and Lakshmi Ganpati silver coins. Every bar and coin comes sealed, with an assay certificate where applicable.</p>
         <p class="iv-weights"><b>Gold bars</b> 1 g · 2.5 g · 5 g · 10 g · 1 oz · 50 g · 100 g<br><b>Silver</b> 1 kg and 100 oz bars · 1 oz, 5 g and 10 g coins</p>
-        ${rates(false)}
+        ${rates(false, true)}
         <div class="iv-ctas"><a href="${waLink('Hi Avya Jewels, could you share today’s gold and silver prices?')}" target="_blank" rel="noopener" class="iv-btn lilac">Ask today’s price</a><a href="#/shop/${bullionKey}" class="iv-link lilac">Browse bars &amp; coins</a></div>
       </div>
     </section>
@@ -829,14 +858,26 @@
     const { finish, size, added } = state.pdp;
     const imgs = (p.gallery || [p.img, p.img2]).slice(0, p.video ? 2 : 3);
     const group = groupOfCat(p.cat);
-    const pairs = REAL().filter(x => x.id !== p.id && x.bullion !== p.bullion).slice(0, 2).concat(REAL().filter(x => x.id !== p.id && x.bullion === p.bullion).slice(0, 2));
+    const same = REAL().filter(x => x.id !== p.id && x.cat === p.cat).slice(0, 2);
+    const pairs = same.concat(REAL().filter(x => x.id !== p.id && x.cat !== p.cat && x.bullion !== p.bullion).slice(0, 4 - same.length));
     const ask = onRequest(p);
-    const buy = ask
-      ? `<a class="iv-btn block lg" href="${askLink(p)}" target="_blank" rel="noopener">Ask today’s price on WhatsApp</a>
-         <a class="iv-btn ghost block lg" href="#/studio">Visit us in ${esc(STORE.area.split(',')[0])}</a>`
-      : soldOut(p) ? `<button class="iv-btn block lg" disabled>Sold out</button><a class="iv-btn ghost block lg" href="${waLink('Hi Avya Jewels, will the ' + p.name + ' be back in stock?')}" target="_blank" rel="noopener">Ask when it’s back</a>`
-        : `<button class="iv-btn block lg" data-act="addToBag">${added ? 'Added — view bag (' + totals().count + ')' : 'Add to bag · ' + money(p.price)}</button>
-           <a class="iv-btn ghost block lg" href="${waLink('Hi Avya Jewels, I have a question about the ' + p.name + '.')}" target="_blank" rel="noopener">Ask a question on WhatsApp</a>`;
+    const orderMsg = 'Hi Avya Jewels, I’d like to order the ' + p.name + (size ? ' (size ' + size + ')' : '') + (finish && !ask ? ' in ' + finish : '') + '.';
+    const extra = [
+      ...(ask ? [] : [['Order on WhatsApp', waLink(orderMsg)]]),
+      ['Ask a question', waLink('Hi Avya Jewels, I have a question about the ' + p.name + '.')],
+      ['Book a visit', waLink('Hi Avya Jewels, I’d like to book a visit to see the ' + p.name + '.')]
+    ];
+    const buy = (ask
+      ? `<a class="iv-btn block lg" href="${askLink(p)}" target="_blank" rel="noopener">Ask today’s price on WhatsApp</a>`
+      : soldOut(p) ? `<button class="iv-btn block lg" disabled>Sold out</button>`
+        : `<button class="iv-btn block lg" data-act="addToBag">${added ? 'Added — view bag (' + totals().count + ')' : 'Add to bag · ' + money(p.price)}</button>`)
+      + `<div class="iv-pdp-links">${extra.map(([l, h]) => `<a href="${h}" target="_blank" rel="noopener">${l}</a>`).join('')}<button type="button" data-act="share">Share</button></div>`;
+    const weight = g => !g ? null : Math.abs(g / 31.1035 - Math.round(g / 31.1035)) < 0.01 ? Math.round(g / 31.1035) + ' oz' : (g >= 1000 ? g / 1000 + ' kg' : +(+g).toFixed(1) + ' g');
+    const details = (p.bullion
+      ? [['Weight', weight(p.grams)], ['Purity', p.purity ? p.purity + '% pure' : '99.99% pure'], ['Brand / mint', p.brand], ['Design', p.design], ['Packaging', p.packaging], ['Assay certificate', p.certificate ? 'Included' : null], ['Product code', p.sku]]
+      : [['Metal', (p.metal || (/gold/i.test(p.material || '') && !/silver/i.test(p.material || '') ? 'gold' : 'silver')).replace(/^./, m => m.toUpperCase())], ['Purity', p.metal === 'gold' ? (p.purity || 'Hallmarked gold') : (p.purity || '925') + ' · hallmarked & stamped'], ['Product code', p.sku]]
+    ).filter(([, v]) => v);
+    const notes = [p.bullion ? 'Certified 99.99%' : p.metal === 'gold' ? 'Hallmarked gold' : 'Hallmarked 925 silver', 'Free GTA delivery over $200', 'Pick-up in Mississauga', 'All sales final'];
     return `
     <section class="iv-pdp">
       <div class="iv-gallery">
@@ -849,6 +890,7 @@
           <h1 class="iv-h1 title">${esc(p.name)}</h1>
           <div class="iv-price-row"><span class="iv-price">${priceHtml(p)}</span><span class="iv-muted">${ask ? 'Live market price · confirmed on WhatsApp' : stockNote(p) + (STORE.taxIncluded ? ' · tax included' : '')}</span></div>
           <p class="iv-body">${esc(p.desc)}</p>
+          ${details.length ? `<dl class="iv-specs">${details.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>` : ''}
         </div>
         ${fins.length && !ask ? `<div class="iv-opt"><div class="iv-opt-head"><span>Metal</span><span>${esc(finish || '')}</span></div>
           <div class="iv-opt-row">${fins.map(f => `<label class="iv-choice"><input type="radio" name="pfin" data-pdp="finish" value="${esc(f.name)}" ${finish === f.name ? 'checked' : ''}><span class="sw" style="background:${f.swatch}"></span>${esc(f.name)}</label>`).join('')}</div></div>` : ''}
@@ -857,12 +899,11 @@
         ${ask ? rates(true) : ''}
         <div class="stack" style="gap:10px">
           ${buy}
-          <span class="iv-note">${p.bullion ? 'Sealed with its serial number · pay in full by e-Transfer or cash' : 'Free GTA delivery over $200 · pick-up in Mississauga · all sales final'}</span>
+          <span class="iv-note">${notes.join(' · ')}</span>
         </div>
         <div class="iv-acc">${(p.accordions || CONTENT.accordions).map((a, i) => (i === 0 && p.care ? { ...a, body: p.care } : a)).map((a, i) => `<button class="iv-acc-item" data-act="acc" data-arg="${i}" aria-expanded="${state.open === i}"><span class="iv-acc-head"><span>${esc(a.title)}</span><span class="pm">${state.open === i ? '−' : '+'}</span></span>${state.open === i ? `<p>${esc(a.body)}</p>` : ''}</button>`).join('')}</div>
       </div>
     </section>
-    ${reviewsBlock(p.customerReviews || [], 'Reviews')}
     <section class="iv-band">
       <div class="iv-band-head"><h2 class="iv-h2 sm">You may also like</h2><a href="#/shop" class="iv-link dark">Shop all</a></div>
       <div class="iv-pairs">${pairs.map(x => `<a href="#/product/${x.id}" class="iv-pair"><div class="iv-img square on-ivory">${photo(x.img, x.name)}</div><div class="iv-pair-row"><span class="iv-serif-20">${esc(x.name)}</span><span>${priceHtml(x)}</span></div></a>`).join('')}</div>
@@ -909,7 +950,7 @@
         ${t.lines.length ? '' : `<div class="stack" style="gap:16px;align-items:flex-start;padding:24px 0"><p class="soft">Your bag is empty.</p><a href="#/shop" class="btn btn-primary">Continue shopping</a></div>`}
         ${t.lines.map(l => `<div class="line-item fade-rule">
           <a href="${href(l.id)}" class="ph md">${photo(l.p.img, l.p.name)}</a>
-          <div class="stack" style="gap:4px"><a href="${href(l.id)}" style="font-size:17px;font-weight:500">${esc(l.p.name)}</a><span style="font-size:13px" class="muted">${esc(l.variant)}</span>${l.p.stock != null && l.p.stock <= 5 ? `<span class="line-note">Only ${l.p.stock} left</span>` : ''}
+          <div class="stack" style="gap:4px"><a href="${href(l.id)}" style="font-size:17px;font-weight:500">${esc(l.p.name)}</a><span style="font-size:13px" class="muted">${esc(l.variant)}</span>
             <div class="row" style="gap:12px;margin-top:auto;padding-top:8px"><div class="qty"><button class="btn btn-icon" data-act="qty" data-arg="${esc(l.key)}" data-d="-1" aria-label="Decrease">−</button><span>${l.qty}</span><button class="btn btn-icon" data-act="qty" data-arg="${esc(l.key)}" data-d="1" aria-label="Increase">+</button></div>
             <button class="btn btn-ghost" style="font-size:13px" data-act="remove" data-arg="${esc(l.key)}">Remove</button></div></div>
           <span class="price" style="font-size:16px;font-weight:500">${money(l.sum)}</span></div>`).join('')}
@@ -998,11 +1039,11 @@
         <p class="iv-lead">Avya means <i>the first rays of the sun</i> — the light that starts every new day.</p>
         <p class="iv-body">Avya Jewels is rooted in more than ten years of experience in gold and silver jewellery. Our founder’s journey began in India with the support of her father, where she developed a deep appreciation for craftsmanship and for the memories each piece can hold.</p>
         <p class="iv-body">Today she is building a new chapter in Canada alongside her husband, bringing that experience and passion to Avya Jewels. As a family venture, we believe jewellery is more than a luxury — it is a celebration of love, milestones and moments to cherish.</p>
-        <p class="iv-body">Every piece we choose is premium, elegant and affordable: 925 sterling silver jewellery, hallmarked and stamped — and 99.99% pure gold and silver bars and coins from RCM, PAMP and Valcambi, for saving, investing and gifting. We buy bullion too.</p>
+        <p class="iv-body">Every piece we choose is premium, elegant and affordable: 925 sterling silver jewellery, hallmarked and stamped — and 99.99% pure gold and silver bars and coins from RCM, PAMP and Valcambi, for saving, investing and gifting.</p>
       </div>
       <div class="iv-img iv-page-img">${photo(cover.img2 || cover.img, 'Avya Jewels in the studio', true)}</div>
     </section>
-    <section class="iv-info-grid">
+    <section class="iv-info-grid three">
       <div class="iv-info"><span class="iv-label accent">Visit us</span><span class="iv-serif-28">${esc(STORE.area)}</span>
         <p class="iv-body">We welcome you by appointment, or on a video call from anywhere. Message us to choose a time.</p>
         <span class="iv-muted">${esc(STORE.hours)}</span>
@@ -1015,13 +1056,10 @@
       <div class="iv-info"><span class="iv-label accent">Bridal &amp; bulk orders</span><span class="iv-serif-28">For the whole family</span>
         <p class="iv-body">Bridal sets, bridesmaid gifts and corporate or festive gifting in larger quantities — tell us what you need.</p>
         <a class="iv-btn ghost" href="${waLink('Hi Avya Jewels, I’d like to ask about a bridal or bulk order.')}" target="_blank" rel="noopener">Ask about an order</a></div>
-      <div class="iv-info"><span class="iv-label accent">Selling gold or silver?</span><span class="iv-serif-28">We buy bullion</span>
-        <p class="iv-body">Bring bars and coins in their sealed packaging. Uncarded bars and coins are welcome too — we test their purity first.</p>
-        <a class="iv-btn ghost" href="${waLink('Hi Avya Jewels, I’d like to sell some gold or silver.')}" target="_blank" rel="noopener">Get a quote</a></div>
     </section>`;
   }
 
-  /* ── Delivery, payment, returns, privacy and business details ── */
+  /* ── Delivery, payment, returns and privacy ── */
   function policies() {
     const sections = [
       ['delivery', 'Delivery & pick-up', ['Free home delivery across the Greater Toronto Area on orders over $200, usually within 3–5 days.',
@@ -1030,8 +1068,7 @@
       ['payment', 'Payment', ['Pay in full by Interac e-Transfer, or in cash on pick-up. After you place an order, we confirm it on WhatsApp within 15–30 minutes with payment details.',
         STORE.taxIncluded ? 'Listed prices include all taxes. Investment-grade gold and silver bullion carries no sales tax.' : 'Tax is added at checkout. Investment-grade gold and silver bullion carries no sales tax.']],
       ['bullion', 'Gold & silver bullion', ['Bar and coin prices follow the live market, so we share today’s price on WhatsApp before you order.',
-        'Bars and coins have their stated weight and purity, with the manufacturer’s serial number and assay certificate where applicable.',
-        'We buy bullion in its sealed packaging. Uncarded bars and coins are welcome too — we test their purity first.']],
+        'Bars and coins come sealed, with their stated weight and purity and an assay certificate where applicable.']],
       ['returns', 'Returns & exchanges', ['All sales are final — we don’t accept returns or exchanges.',
         'If you experience any issue with your purchase, please reach out. We’re happy to help, and we’ll do our best with any concern.']],
       ['care', 'Care', ['Care instructions are included with every jewellery purchase. Keep silver in its pouch, wipe it with a soft cloth, and keep it away from perfume, chlorine and salt water.']],
@@ -1040,8 +1077,7 @@
         'We use appropriate safeguards to protect your information and keep it only as long as necessary for these purposes or legal requirements.',
         'Promotional messages are sent only with your consent, and you can unsubscribe at any time.',
         `To request access to or correction of your personal information, or to raise a privacy concern, contact us at ${STORE.phone} or ${STORE.email}.`,
-        'Any updates to this policy will be posted on this page. Last updated: October 20, 2026.']],
-      ['company', 'Business details', ['Avya Jewels Ltd., a corporation registered in Ontario, Canada.', 'Business number 766102032 · GST/HST 766102032 RT0001.', `${STORE.area}.`]]
+        'Any updates to this policy will be posted on this page. Last updated: October 20, 2026.']]
     ];
     return `
     <section class="iv-shop-head"><div class="stack" style="gap:14px"><span class="iv-label">Help</span><h1 class="iv-h1 shop">Delivery, returns &amp; privacy</h1></div>
@@ -1192,6 +1228,31 @@
     }
   };
   window.addEventListener('hashchange', () => { if (location.hash !== '#/checkout') state.placed = null; });
+
+  Object.assign(ACTIONS, {
+    share: () => {
+      const data = { title: document.title, url: location.href };
+      if (navigator.share) navigator.share(data).catch(() => {});
+      else navigator.clipboard?.writeText(location.href).then(() => toast('Link copied'), () => toast(location.href));
+    },
+    circleScroll: d => {
+      const track = document.querySelector('.iv-circle-track');
+      if (track) track.scrollBy({ left: Number(d) * Math.max(track.clientWidth * 0.75, 240), behavior: 'smooth' });
+    }
+  });
+  /* Category circles: show the arrows and fade only on the sides that have more to scroll to. */
+  function updateCircles() {
+    const wrap = document.querySelector('.iv-circle-wrap'), track = wrap && wrap.querySelector('.iv-circle-track');
+    if (!track) return;
+    const max = track.scrollWidth - track.clientWidth;
+    wrap.classList.toggle('scrolls', max > 4);
+    wrap.classList.toggle('at-start', track.scrollLeft <= 4);
+    wrap.classList.toggle('at-end', track.scrollLeft >= max - 4);
+  }
+  document.addEventListener('scroll', e => { if (e.target.classList && e.target.classList.contains('iv-circle-track')) updateCircles(); }, true);
+  window.addEventListener('resize', updateCircles);
+  const renderPage = render;
+  render = function () { renderPage(); updateCircles(); };
 
   /* Hero carousel: moves the track directly (no page redraw), slides every 6 s, pauses while hovered,
      focused or hidden, and for a while after someone uses the arrows, dots or a swipe. */
