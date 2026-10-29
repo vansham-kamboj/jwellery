@@ -2,22 +2,23 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "aurelle",
-      "runtimeExecutable": "python",
+      "name": "storefront",
+      "runtimeExecutable": "node",
       "runtimeArgs": [
-        "-m",
-        "http.server",
-        "5173",
-        "--directory",
-        "D:/MY/Demos/Jwellery demo"
+        ".claude/serve.js",
+        "5173"
       ],
       "port": 5173
     },
     {
       "name": "backend",
-      "runtimeExecutable": "php",
+      "runtimeExecutable": "powershell",
       "runtimeArgs": [
-        "D:/MY/Demos/Jwellery demo/backend/artisan",
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        ".claude/backend-local.ps1",
         "serve",
         "--host=127.0.0.1",
         "--port=8000"

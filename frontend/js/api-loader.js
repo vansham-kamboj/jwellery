@@ -4,7 +4,7 @@
 (() => {
   const startApp = () => {
     const s = document.createElement('script');
-    s.src = 'js/app.js?v=20261030';   // bump with the script tags in index.html after each update
+    s.src = 'js/app.js?v=20261101';   // bump with the script tags in index.html after each update
     document.body.appendChild(s);
   };
 
@@ -12,6 +12,7 @@
   const keyOf = f => /rose/i.test(f.name) ? 'rosetone' : /fine gold/i.test(f.name) ? 'finegold'
     : /fine silver/i.test(f.name) ? 'finesilver' : /silver/i.test(f.name) ? 'plainsilver' : /gold/i.test(f.name) ? 'gold' : f.slug;
 
+  const PHOTO_SOON = '../assets/brand/photo-soon.svg';
   const toProduct = d => {
     const bullion = d.kind === 'bullion';
     const pics = (d.gallery || []).filter(m => m.type === 'image').map(m => m.url);
@@ -19,15 +20,16 @@
     const sizes = d.sizes && d.sizes.options.some(o => o.in_stock)
       ? { label: d.sizes.label, opts: d.sizes.options.filter(o => o.in_stock).map(o => o.label), def: d.sizes.default } : false;
     const sw = d.finishes.filter(f => f.in_stock).map(keyOf);
+    const main = d.image || pics[0] || PHOTO_SOON;   // pieces whose photos aren't uploaded yet
     return {
       id: d.slug, real: true, name: d.name, cat: d.category.slug, price: d.price || 0, wasPrice: d.original_price,
       priceOnRequest: !!d.price_on_request, stock: d.stock, inStock: d.in_stock,
-      tag: d.in_stock ? (d.offer_badge || d.tag || '') : 'Sold out', desc: d.description || '',
-      img: d.image || pics[0], img2: d.image_alt || d.image || pics[0], gallery: pics.length ? pics : [d.image], video: video ? video.url : null,
+      tag: d.in_stock ? (d.offer_badge || d.tag || '') : (d.tag || 'Sold out'), desc: d.description || '',
+      img: main, img2: d.image_alt || main, gallery: pics.length ? pics : [main], video: video ? video.url : null,
       fin: sw[0] || 'plainsilver', sw: sw.length ? sw : ['plainsilver'], material: d.material || '', care: d.care || '',
       sizes, rating: null, reviews: 0, bullion, short: d.short_name, metal: d.metal, grams: d.weight_grams, purity: d.purity, sku: d.sku,
       brand: d.brand, design: d.design, packaging: d.packaging, certificate: d.certificate,
-      taxExempt: d.tax_exempt, confirmed: true, customerReviews: d.reviews || [],
+      featured: !!d.is_featured, taxExempt: d.tax_exempt, confirmed: true, customerReviews: d.reviews || [],
       perks: bullion ? BULLION_PERKS : JEWELLERY_PERKS, accordions: bullion ? BULLION_DETAILS : JEWELLERY_DETAILS
     };
   };
@@ -38,7 +40,7 @@
   async function refreshProducts() {
     if (!window.AVYA_API || document.hidden) return;
     try {
-      const res = await fetch(window.AVYA_API.base + '/products?full=1&per_page=100', { headers: { Accept: 'application/json' }, cache: 'no-store' });
+      const res = await fetch(window.AVYA_API.base + '/products?full=1&per_page=500', { headers: { Accept: 'application/json' }, cache: 'no-store' });
       if (!res.ok) return;
       const list = await res.json();
       const sig = JSON.stringify(list.data);
@@ -60,7 +62,7 @@
     const get = path => fetch(base + path, { signal: ctrl.signal, headers: { Accept: 'application/json' } })
       .then(r => { if (!r.ok) throw new Error(path + ' → ' + r.status); return r.json(); });
     try {
-      const [site, list] = await Promise.all([get('/site'), get('/products?full=1&per_page=100')]);
+      const [site, list] = await Promise.all([get('/site'), get('/products?full=1&per_page=500')]);
       site.finishes.forEach(f => { const k = keyOf(f); SW[k] = f.swatch_hex; FINISH_OF[k] = f.name; });
       PRODUCTS.length = 0;
       PRODUCTS.push(...list.data.map(toProduct));

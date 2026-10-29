@@ -487,7 +487,7 @@
   const GROUPS = [...new Set(CAT_LIST.map(c => c.group))].sort((a, b) => rank(a) - rank(b))
     .map(name => ({ key: keyOfGroup(name), name, cats: CAT_LIST.filter(c => c.group === name), bullion: CAT_LIST.some(c => c.group === name && c.kind === 'bullion') }));
   const GROUP_COPY = {
-    'silver-jewellery': 'Pendant sets, necklaces, earrings, bracelets and rings in 925 sterling silver, hallmarked and stamped.',
+    'silver-jewellery': 'Rings and bracelets in 925 sterling silver, hallmarked and stamped.',
     'gold-jewellery': 'Gold earrings and chains. Gold jewellery follows today’s gold rate — ask us for the price.',
     bullion: '99.99% pure gold and silver bars and coins from RCM, PAMP and Valcambi. Prices follow the live market — ask us for today’s rate.',
     'silver-utensils': 'Pure silver bowls and spoons for ceremonies, first feeds and gifting.',
@@ -549,7 +549,7 @@
   const METALS = { Silver: ['silver', 'plainsilver', 'finesilver'], Gold: ['gold', 'finegold'], 'Rose gold': ['rose', 'rosetone'] };
   const METAL_SW = { Silver: '#D8DCDD', Gold: '#D9B46A', 'Rose gold': '#D9A28F' };
   const metalOf = p => Object.keys(METALS).filter(m => p.sw.some(k => METALS[m].includes(k)));
-  Object.assign(state, { review: 0, metal: null, searchOpen: false, q: '', zoom: null, placed: null, placing: false });
+  Object.assign(state, { inStock: false, outStock: false, price: null, drawer: false, sort: 'featured', cols: 4, review: 0, metal: null, searchOpen: false, q: '', zoom: null, placed: null, placing: false });
   Object.assign(state.form, { name: '', phone: '', email: '', address: '', city: '', postal: '', note: '' });
   state.cart = state.cart.filter(l => byId(l.id) && byId(l.id).real && !onRequest(byId(l.id)));
   if (!SHIP.some(o => o.id === state.ship)) state.ship = (SHIP[SHIP.length - 1] || {}).id;
@@ -564,21 +564,42 @@
     const hits = searchHits(q);
     if (!(q || '').trim()) {
       return `<div class="iv-search-sugg"><span class="iv-label">Popular searches</span>
-        <div>${['Rings', 'Earrings', 'Rose gold', 'Gold bar', 'Gold coin', 'Silver bar', 'Diwali'].map(t => `<button type="button" data-act="searchFor" data-arg="${t}">${t}</button>`).join('')}</div></div>`;
+        <div>${['Rings', 'Bracelets', 'Kada', 'Gold bar', 'Gold coin', 'Silver coin', 'Diwali'].map(t => `<button type="button" data-act="searchFor" data-arg="${t}">${t}</button>`).join('')}</div></div>`;
     }
-    if (!hits.length) return `<p class="iv-search-empty">No pieces match “${esc(q.trim())}”. Try “ring”, “earrings” or “gold bar” — or <a href="${waLink('Hi Avya Jewels, do you have ' + q.trim() + '?')}" target="_blank" rel="noopener">ask us on WhatsApp</a>.</p>`;
+    if (!hits.length) return `<p class="iv-search-empty">No pieces match “${esc(q.trim())}”. Try “ring”, “bracelet” or “gold bar” — or <a href="${waLink('Hi Avya Jewels, do you have ' + q.trim() + '?')}" target="_blank" rel="noopener">ask us on WhatsApp</a>.</p>`;
     return `<ul class="iv-search-list">${hits.slice(0, 6).map(p => `<li><a href="#/product/${p.id}"><span class="iv-search-thumb">${photo(p.img, p.name)}</span>
         <span class="stack"><span class="iv-serif-20">${esc(p.name)}</span><span class="iv-muted">${esc(p.material)}</span></span><span class="iv-price-sm">${priceHtml(p)}</span></a></li>`).join('')}</ul>
       <button type="submit" class="iv-btn ghost block sm">See all ${hits.length} result${hits.length === 1 ? '' : 's'}</button>`;
   }
 
-  /* Top bar messages take turns: delivery offer, then today's gold & silver rate (per ounce) when set in the admin. */
+  /* Top bar: the delivery offer on the left, live gold & silver spot price (CAD per troy ounce) on the right. */
   let topAt = 0;
-  function topMessages() {
+  function topMessages() { return [STORE.announcement].filter(Boolean); }
+
+  /* Live spot price: a free price feed (USD per troy ounce) converted to CAD, refreshed every minute.
+     Until it answers — or if it can't be reached — the rate typed in Admin → Settings is shown, if any. */
+  function spotHtml() {
     const sp = STORE.spot || {};
-    const rate = [sp.gold_oz && 'Gold ' + cad(Math.round(sp.gold_oz)) + ' / oz', sp.silver_oz && 'Silver ' + money(sp.silver_oz) + ' / oz'].filter(Boolean);
-    return [STORE.announcement, rate.length ? 'Today’s rate · ' + rate.join(' · ') : null].filter(Boolean);
+    const parts = [sp.gold_oz && `<span>Gold ${cad(Math.round(sp.gold_oz))}<small>/oz</small></span>`, sp.silver_oz && `<span>Silver ${money(sp.silver_oz)}<small>/oz</small></span>`].filter(Boolean);
+    return parts.length ? `<span class="iv-top-spot-label">Live spot · CAD</span>${parts.join('')}` : '';
   }
+  async function refreshSpot() {
+    if (document.hidden) return;
+    try {
+      const get = u => fetch(u, { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(u); return r.json(); });
+      const [gold, silver, fx] = await Promise.all([get('https://api.gold-api.com/price/XAU'), get('https://api.gold-api.com/price/XAG'), get('https://api.frankfurter.dev/v1/latest?base=USD&symbols=CAD')]);
+      const usdCad = fx.rates && fx.rates.CAD;
+      if (!(gold.price > 0 && silver.price > 0 && usdCad > 0)) return;
+      const first = !STORE.spot.live;
+      STORE.spot = { ...STORE.spot, live: true, gold_oz: gold.price * usdCad, silver_oz: silver.price * usdCad, updated_at: new Date().toISOString() };
+      const el = document.getElementById('iv-top-spot');
+      if (el) el.innerHTML = spotHtml();
+      if (first) window.dispatchEvent(new Event('avya:products'));   // redraw pages that show the rate
+    } catch (e) { /* feed unreachable — keep what is shown */ }
+  }
+  refreshSpot();
+  setInterval(refreshSpot, 60000);
+  document.addEventListener('visibilitychange', refreshSpot);
   setInterval(() => {
     const el = document.getElementById('iv-top-msg'), msgs = topMessages();
     if (!el || msgs.length < 2 || document.hidden) return;
@@ -598,7 +619,7 @@
     const active = g => inShop && (state.filter === g.key || g.cats.some(c => c.slug === state.filter));
     const msgs = topMessages();
     return `<div class="iv-top"><span class="iv-top-msg" id="iv-top-msg" aria-live="polite">${esc(msgs[topAt % msgs.length])}</span>
-        <span class="iv-top-right"><a class="iv-top-phone" href="${telLink}">${esc(STORE.phone)}</a><span class="iv-social" aria-label="Contact Avya Jewels">${SOCIAL.map(([n, h, ic]) => `<a href="${h}" ${h.startsWith('http') ? 'target="_blank" rel="noopener"' : ''} aria-label="${esc(n)}" title="${esc(n)}">${ic}</a>`).join('')}</span></span></div>
+        <span class="iv-top-right"><span class="iv-top-spot" id="iv-top-spot" aria-live="off">${spotHtml()}</span><span class="iv-social" aria-label="Avya Jewels on social media">${SOCIAL.filter(s => s[0] === 'Instagram').map(([n, h, ic]) => `<a href="${h}" ${h.startsWith('http') ? 'target="_blank" rel="noopener"' : ''} aria-label="${esc(n)}" title="${esc(n)}">${ic}</a>`).join('')}</span></span></div>
       <header class="iv-head">
         <nav class="iv-nav ${state.navOpen ? 'open' : ''}" id="nav-links" aria-label="Main">
           ${GROUPS.map(g => `<div class="iv-nav-item ${g.bullion ? 'is-gold' : ''}"><a href="#/shop/${g.key}" ${active(g) ? 'aria-current="page"' : ''}>${esc(g.name)}</a>
@@ -613,7 +634,7 @@
       ${state.searchOpen ? `<div class="iv-search" role="dialog" aria-modal="true" aria-label="Search the collection">
         <div class="iv-search-backdrop" data-act="closeSearch"></div>
         <form class="iv-search-panel" data-form="search" role="search">
-          <div class="iv-search-row">${SEARCH_ICON}<input id="iv-q" type="search" placeholder="Search rings, earrings, gold bars…" aria-label="Search" autocomplete="off" data-model="q" value="${esc(state.form.q || '')}">
+          <div class="iv-search-row">${SEARCH_ICON}<input id="iv-q" type="search" placeholder="Search rings, bracelets, gold bars…" aria-label="Search" autocomplete="off" data-model="q" value="${esc(state.form.q || '')}">
             <button type="button" class="iv-search-close" data-act="closeSearch" aria-label="Close search">${ICON.close}</button></div>
           <div id="iv-search-results">${searchResults(state.form.q)}</div>
         </form></div>` : ''}
@@ -629,8 +650,7 @@
     return `<footer class="iv-foot">
       <div class="iv-foot-grid">
         <div class="iv-foot-brand">${logo('iv-foot-logo')}
-          <span><i>First rays of the sun.</i> 925 sterling silver jewellery and 99.99% pure gold and silver bars and coins, from our family in Mississauga.</span>
-          <span class="iv-foot-contact"><a href="${waLink()}" target="_blank" rel="noopener">WhatsApp ${esc(STORE.phone)}</a><a href="mailto:${esc(STORE.email)}">${esc(STORE.email)}</a><span>${esc(STORE.hours)}</span><span>Pay by Interac e-Transfer or cash</span></span></div>
+          <span class="iv-foot-contact"><a href="${waLink()}" target="_blank" rel="noopener">WhatsApp ${esc(STORE.phone)}</a><a href="mailto:${esc(STORE.email)}">${esc(STORE.email)}</a><span>${esc(STORE.hours)}</span><span>Pay by Interac e-Transfer</span></span></div>
         ${cols.map(col => `<div class="iv-foot-col"><span class="iv-label light">${col.h}</span>${col.links.map(([l, h]) => `<a href="${h}" ${h.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}>${esc(l)}</a>`).join('')}</div>`).join('')}
       </div>
       <div class="iv-foot-base"><span>© 2026 Avya Jewels · ${esc(STORE.area)}</span><span>All prices in CAD${STORE.taxIncluded ? ', taxes included' : ''} · All sales final</span></div>
@@ -809,32 +829,88 @@
     <section class="iv-promises">${promises.map(v => `<div><span class="iv-serif-22">${v.t}</span><span class="iv-muted">${v.b}</span></div>`).join('')}</section>`;
   }
 
+  const SORTS = [['featured', 'Featured'], ['best', 'Best selling'], ['price_asc', 'Price, low to high'], ['price_desc', 'Price, high to low']];
+  /* Pieces without a listed price (gold, bullion) go to the end of the price sorts. Best selling = pieces flagged featured in the admin. */
+  function sortList(list, mode) {
+    const idx = p => PRODUCTS.indexOf(p), price = p => onRequest(p) ? Infinity : p.price;
+    const by = { featured: (a, b) => idx(a) - idx(b),
+      best: (a, b) => (+(b.featured || /best/i.test(b.tag || '')) - +(a.featured || /best/i.test(a.tag || ''))) || idx(a) - idx(b),
+      price_asc: (a, b) => (price(a) - price(b)) || idx(a) - idx(b),
+      price_desc: (a, b) => ((onRequest(a) - onRequest(b)) || (price(b) - price(a))) || idx(a) - idx(b) };
+    return [...list].sort(by[mode] || by.featured);
+  }
+  /* Shop filters: availability, metal and price band, on top of the category and search.
+     pass(p, skip) checks every filter except `skip`, so each option in the panel can show how many pieces it would leave. */
+  const PRICES = [['u50', 'Under $50', 0, 50], ['50-100', '$50 – $100', 50, 100], ['100-200', '$100 – $200', 100, 200], ['200+', '$200 and over', 200, Infinity]];
+  const FILTER_ICON2 = svg('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>', 16);
+  const availOk = p => state.inStock === state.outStock || (state.inStock ? !soldOut(p) : soldOut(p));
+  const priceOk = (p, band = state.price) => { const b = PRICES.find(x => x[0] === band); return !b || (!onRequest(p) && p.price >= b[2] && p.price < b[3]); };
+  const pass = (p, skip) => (skip === 'avail' || availOk(p)) && (skip === 'metal' || !state.metal || metalOf(p).includes(state.metal)) && (skip === 'price' || priceOk(p));
+  const activeFilters = () => [
+    state.inStock !== state.outStock && [state.inStock ? 'In stock' : 'Out of stock', 'clearAvail', ''],
+    state.metal && [state.metal, 'metal', state.metal],
+    state.price && [PRICES.find(x => x[0] === state.price)[1], 'price', state.price]
+  ].filter(Boolean);
+
+  function filterPanel(scope, isBullion, tabs) {
+    const n = scope.filter(p => pass(p)).length;
+    const opt = (type, checked, act, arg, label, count, extra = '') => `<label class="iv-fopt ${count ? '' : 'none'}"><input type="${type}" ${checked ? 'checked' : ''} data-act="${act}" data-arg="${arg}" ${count || checked ? '' : 'disabled'}>${extra}<span>${esc(label)}</span><small>${count}</small></label>`;
+    const priced = scope.some(p => !onRequest(p));
+    return `<div class="iv-drawer ${state.drawer === 'opening' ? 'anim' : ''}" role="dialog" aria-modal="true" aria-labelledby="iv-drawer-title">
+      <div class="iv-drawer-backdrop" data-act="drawer"></div>
+      <aside class="iv-drawer-panel">
+        <div class="iv-drawer-head"><h2 id="iv-drawer-title" class="iv-serif-28">Filter &amp; sort</h2><button class="iv-drawer-x" data-act="drawer" aria-label="Close filters">${ICON.close}</button></div>
+        <div class="iv-drawer-body">
+          <fieldset><legend>Sort by</legend>${SORTS.map(([k, l]) => `<label class="iv-fopt"><input type="radio" name="iv-sort" value="${k}" data-set="sort" ${state.sort === k ? 'checked' : ''}><span>${l}</span></label>`).join('')}</fieldset>
+          <fieldset><legend>Category</legend>${tabs.map(([k, l]) => { const c = REAL().filter(p => inFilter(p, k) && pass(p)).length; return `<label class="iv-fopt ${c || state.filter === k ? '' : 'none'}"><input type="radio" name="iv-cat" ${state.filter === k ? 'checked' : ''} data-act="filter" data-arg="${k}"><span>${esc(l)}</span><small>${c}</small></label>`; }).join('')}</fieldset>
+          <fieldset><legend>Availability</legend>
+            ${opt('checkbox', state.inStock, 'avail', 'inStock', 'In stock', scope.filter(p => pass(p, 'avail') && !soldOut(p)).length)}
+            ${opt('checkbox', state.outStock, 'avail', 'outStock', 'Out of stock', scope.filter(p => pass(p, 'avail') && soldOut(p)).length)}</fieldset>
+          ${isBullion ? '' : `<fieldset><legend>Metal</legend>${Object.keys(METALS).map(m => opt('checkbox', state.metal === m, 'metal', m, m, scope.filter(p => pass(p, 'metal') && metalOf(p).includes(m)).length, `<i class="iv-fsw" style="background:${METAL_SW[m]}"></i>`)).join('')}</fieldset>`}
+          ${priced ? `<fieldset><legend>Price</legend>${PRICES.map(([k, l]) => opt('checkbox', state.price === k, 'price', k, l, scope.filter(p => pass(p, 'price') && priceOk(p, k)).length)).join('')}</fieldset>` : ''}
+        </div>
+        <div class="iv-drawer-foot"><button class="iv-btn ghost sm" data-act="clearAll" ${activeFilters().length ? '' : 'disabled'}>Clear all</button><button class="iv-btn sm" data-act="drawer">Show ${n} piece${n === 1 ? '' : 's'}</button></div>
+      </aside></div>`;
+  }
+
   function shop() {
     if (!CATS.includes(state.filter)) state.filter = 'All';
     const f = state.filter;
     const group = groupOf(f) || groupOfCat(f);
     const isBullion = !!(group && group.bullion);
     const q = (state.q || '').trim();
-    const list = REAL().filter(p => inFilter(p, f) && (!state.metal || metalOf(p).includes(state.metal)) && (!q || matchQ(p, q)));
-    const tabs = group ? [[group.key, 'All ' + group.name.toLowerCase()], ...group.cats.map(c => [c.slug, c.name])] : [['All', 'Everything'], ...GROUPS.map(g => [g.key, g.name])];
-    const lead = q ? `${list.length} piece${list.length === 1 ? '' : 's'} found. <button class="iv-underline" data-act="clearSearch">Clear search</button>`
-      : esc((catOf(f) || {}).description || (group && GROUP_COPY[group.key]) || 'Silver jewellery for women, men and kids, silver utensils, and 99.99% pure gold and silver bars and coins.');
-    const crumbs = ['Home', 'Shop', group && group.name, catOf(f) && catOf(f).name].filter(Boolean).join(' / ');
+    const scope = REAL().filter(p => inFilter(p, f) && (!q || matchQ(p, q)));
+    const list = sortList(scope.filter(p => pass(p)), state.sort);
+    const tabs = group ? [[group.key, 'All'], ...group.cats.map(c => [c.slug, c.name])] : [['All', 'Everything'], ...GROUPS.map(g => [g.key, g.name])];
+    const lead = esc((catOf(f) || {}).description || (group && GROUP_COPY[group.key]) || '925 silver rings, bracelets and kids’ jewellery, and 99.99% pure gold and silver bars and coins.');
+    const crumbs = [['Home', '#/'], ['Shop', '#/shop'], group && [group.name, '#/shop/' + group.key], catOf(f) && [catOf(f).name]].filter(Boolean);
+    const chips = activeFilters();
     return `
-    <section class="iv-shop-head">
-      <div class="stack" style="gap:14px"><span class="iv-label">${esc(crumbs)}</span><h1 class="iv-h1 shop">${q ? 'Results for “' + esc(q) + '”' : esc(catLabel(f === 'All' ? 'All' : f))}</h1></div>
-      <p class="iv-lead">${lead}</p>
+    <section class="iv-shop-head compact">
+      <div class="iv-sh-title">
+        <nav class="iv-crumbs" aria-label="Breadcrumb">${crumbs.map(([l, h], i) => i < crumbs.length - 1 ? `<a href="${h}">${esc(l)}</a>` : `<span aria-current="page">${esc(l)}</span>`).join('<i>/</i>')}</nav>
+        <h1 class="iv-h1 shop">${q ? 'Results for “' + esc(q) + '”' : esc(catLabel(f === 'All' ? 'All' : f))}</h1>
+      </div>
+      ${q ? `<p class="iv-lead">${list.length} piece${list.length === 1 ? '' : 's'} found · <button class="iv-underline" data-act="clearSearch">Clear search</button></p>` : `<p class="iv-lead">${lead}</p>`}
     </section>
-    <div class="iv-filterbar">
-      <div class="iv-tabs">${tabs.map(([k, l]) => `<button class="${f === k ? 'on' : ''}" data-act="filter" data-arg="${k}">${esc(l)} <span>${countIn(k)}</span></button>`).join('')}</div>
-      ${isBullion ? `<span class="iv-muted">Prices follow the live market · <a href="${waLink('Hi Avya Jewels, could you share today’s gold and silver prices?')}" target="_blank" rel="noopener">ask on WhatsApp</a></span>`
-        : `<div class="iv-metals"><span>Metal</span>${Object.keys(METALS).map(m => `<button class="iv-sw ${state.metal === m ? 'on' : ''}" style="background:${METAL_SW[m]}" data-act="metal" data-arg="${m}" title="${m}" aria-label="${m}" aria-pressed="${state.metal === m}"></button>`).join('')}</div>`}
+    <div class="iv-shopbar">
+      <div class="iv-catpills" role="tablist" aria-label="Categories">${tabs.map(([k, l]) => `<button role="tab" class="${f === k ? 'on' : ''}" aria-selected="${f === k}" data-act="filter" data-arg="${k}">${esc(l)}<span>${countIn(k)}</span></button>`).join('')}</div>
+      <div class="iv-tools">
+        <button class="iv-fbtn" data-act="drawer" aria-haspopup="dialog">${FILTER_ICON2}<span>Filter</span>${chips.length ? `<b>${chips.length}</b>` : ''}</button>
+        <span class="iv-count">${list.length} piece${list.length === 1 ? '' : 's'}</span>
+        ${chips.length ? `<span class="iv-chips">${chips.map(([l, a, arg]) => `<button class="iv-chip" data-act="${a}" data-arg="${esc(arg)}" aria-label="Remove ${esc(l)}">${esc(l)} ${ICON.close}</button>`).join('')}<button class="iv-underline" data-act="clearAll">Clear all</button></span>` : ''}
+        <span class="iv-tools-right">
+          <label class="iv-sort"><span>Sort</span><select data-set="sort" aria-label="Sort by">${SORTS.map(([k, l]) => `<option value="${k}" ${state.sort === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+          <span class="iv-viewas" role="group" aria-label="View as">${[1, 2, 3, 4, 5].map(n => `<button type="button" class="${state.cols === n ? 'on' : ''}" data-act="cols" data-arg="${n}" aria-label="${n} per row" title="${n} per row" aria-pressed="${state.cols === n}">${'<i></i>'.repeat(n)}</button>`).join('')}</span>
+        </span>
+      </div>
     </div>
     ${isBullion && !q ? `<section class="iv-rate-strip">${rates(true)}</section>` : ''}
-    <section class="iv-grid">${list.map(productCard).join('')}</section>
+    <section class="iv-grid cols-${state.cols}">${list.map(productCard).join('')}</section>
     ${list.length ? '' : q ? `<div class="iv-empty"><span class="iv-serif-28">No pieces match “${esc(q)}”.</span><button class="iv-btn ghost" data-act="clearSearch">Clear search</button></div>`
-      : state.metal ? `<div class="iv-empty"><span class="iv-serif-28">Nothing in that metal yet.</span><button class="iv-btn ghost" data-act="metal" data-arg="${state.metal}">Clear metal</button></div>`
-        : `<div class="iv-empty"><span class="iv-serif-28">New pieces are on their way.</span><p class="iv-body">We’re photographing our ${esc(catLabel(f).toLowerCase())} now. Message us to see what’s in stock today.</p><a class="iv-btn" href="${waLink('Hi Avya Jewels, what do you have in ' + catLabel(f) + '?')}" target="_blank" rel="noopener">Ask on WhatsApp</a></div>`}`;
+      : chips.length ? `<div class="iv-empty"><span class="iv-serif-28">Nothing matches those filters.</span><button class="iv-btn ghost" data-act="clearAll">Clear all filters</button></div>`
+        : `<div class="iv-empty"><span class="iv-serif-28">New pieces are on their way.</span><p class="iv-body">We’re photographing our ${esc(catLabel(f).toLowerCase())} now. Message us to see what’s in stock today.</p><a class="iv-btn" href="${waLink('Hi Avya Jewels, what do you have in ' + catLabel(f) + '?')}" target="_blank" rel="noopener">Ask on WhatsApp</a></div>`}
+    ${state.drawer ? filterPanel(scope, isBullion, tabs) : ''}`;
   }
 
   const ZOOM_ICON = svg('<path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/>', 16);
@@ -965,7 +1041,7 @@
         <div class="rule"></div>
         <div class="between total"><span>Total</span><span>${money(t.total)} <span style="font-size:13px" class="muted">CAD</span></span></div>
         <a href="#/checkout" class="btn btn-primary btn-block ${t.count ? '' : 'disabled'}" style="padding:14px;font-size:15px;${t.count ? '' : 'pointer-events:none;opacity:.45'}">Checkout</a>
-        <div class="assure"><span>${ICON.check} Pay by e-Transfer or cash</span><span>${ICON.check} Confirmed on WhatsApp in 15–30 min</span><span>${ICON.check} ${STORE.taxIncluded ? 'Prices include tax' : 'Bullion carries no tax'}</span><span>${ICON.check} All sales final</span></div>
+        <div class="assure"><span>${ICON.check} Pay by e-Transfer</span><span>${ICON.check} Confirmed on WhatsApp in 15–30 min</span><span>${ICON.check} ${STORE.taxIncluded ? 'Prices include tax' : 'Bullion carries no tax'}</span><span>${ICON.check} All sales final</span></div>
       </aside>
     </section>`;
   }
@@ -977,7 +1053,7 @@
         <span class="eyebrow neutral">${done.code ? 'Order request ' + esc(done.code) : 'Almost done'}</span>
         <h2>Send your order on WhatsApp</h2>
         <p class="soft">${esc(done.message)}</p>
-        <p class="soft">Total ${money(done.total)} CAD · we reply within 15–30 minutes with e-Transfer details, or arrange cash on pick-up.</p>
+        <p class="soft">Total ${money(done.total)} CAD · we reply within 15–30 minutes with e-Transfer details.</p>
         ${done.whatsapp_url ? `<a class="btn btn-primary" style="padding:15px;font-size:15px;align-self:flex-start" href="${esc(done.whatsapp_url)}" target="_blank" rel="noopener">Open WhatsApp to send order</a>` : ''}
         <a href="#/shop" class="btn btn-secondary" style="align-self:flex-start">Keep shopping</a></div></section>`;
     }
@@ -988,7 +1064,7 @@
     return `
     <section class="checkout">
       <form class="checkout-form" data-form="checkout">
-        <div class="stack" style="gap:6px"><h3>Your details</h3><span class="soft" style="font-size:13px">Place your order and WhatsApp opens with it ready to send. We reply within 15–30 minutes to confirm — pay in full by e-Transfer, or cash on pick-up. Nothing is charged here.</span></div>
+        <div class="stack" style="gap:6px"><h3>Your details</h3><span class="soft" style="font-size:13px">Place your order and WhatsApp opens with it ready to send. We reply within 15–30 minutes to confirm — pay in full by e-Transfer. Nothing is charged here.</span></div>
         <div class="grid-2">
           ${field('Full name', 'name', 'required autocomplete="name"')}
           ${field('Phone (WhatsApp)', 'phone', 'required type="tel" autocomplete="tel" pattern="[0-9+()\\-\\s.]{7,}"')}
@@ -1029,6 +1105,7 @@
   }
 
   /* ── Our story & visits ── */
+  const OUR_PHOTO = '../assets/brand/our-photo.jpg';   // bottom half of the Our story picture: drop the family photo here
   function studio() {
     const cover = byId('floral-halo-ring') || REAL()[0];
     return `
@@ -1039,9 +1116,12 @@
         <p class="iv-lead">Avya means <i>the first rays of the sun</i> — the light that starts every new day.</p>
         <p class="iv-body">Avya Jewels is rooted in more than ten years of experience in gold and silver jewellery. Our founder’s journey began in India with the support of her father, where she developed a deep appreciation for craftsmanship and for the memories each piece can hold.</p>
         <p class="iv-body">Today she is building a new chapter in Canada alongside her husband, bringing that experience and passion to Avya Jewels. As a family venture, we believe jewellery is more than a luxury — it is a celebration of love, milestones and moments to cherish.</p>
-        <p class="iv-body">Every piece we choose is premium, elegant and affordable: 925 sterling silver jewellery, hallmarked and stamped — and 99.99% pure gold and silver bars and coins from RCM, PAMP and Valcambi, for saving, investing and gifting.</p>
+        <p class="iv-body">Every piece we choose is premium, elegant and affordable: 925 sterling silver jewellery, Gold jewellery, and 99.99% pure gold and silver bars and coins for saving, investing and gifting.</p>
       </div>
-      <div class="iv-img iv-page-img">${photo(cover.img2 || cover.img, 'Avya Jewels in the studio', true)}</div>
+      <div class="iv-page-img iv-story-photo">
+        <div class="iv-story-logo">${logo('')}</div>
+        <div class="iv-story-pic iv-img"><img src="${OUR_PHOTO}" alt="The Avya Jewels family" fetchpriority="high" decoding="async" onerror="this.onerror=null;this.src='${cover.img2 || cover.img}'"></div>
+      </div>
     </section>
     <section class="iv-info-grid three">
       <div class="iv-info"><span class="iv-label accent">Visit us</span><span class="iv-serif-28">${esc(STORE.area)}</span>
@@ -1065,7 +1145,7 @@
       ['delivery', 'Delivery & pick-up', ['Free home delivery across the Greater Toronto Area on orders over $200, usually within 3–5 days.',
         `Pick up from us in ${STORE.area} during opening hours (${STORE.hours.replace(/ · visits by appointment/, '')}).`,
         'We don’t ship outside the GTA yet — it’s in our plans.']],
-      ['payment', 'Payment', ['Pay in full by Interac e-Transfer, or in cash on pick-up. After you place an order, we confirm it on WhatsApp within 15–30 minutes with payment details.',
+      ['payment', 'Payment', ['Pay in full by Interac e-Transfer. After you place an order, we confirm it on WhatsApp within 15–30 minutes with payment details.',
         STORE.taxIncluded ? 'Listed prices include all taxes. Investment-grade gold and silver bullion carries no sales tax.' : 'Tax is added at checkout. Investment-grade gold and silver bullion carries no sales tax.']],
       ['bullion', 'Gold & silver bullion', ['Bar and coin prices follow the live market, so we share today’s price on WhatsApp before you order.',
         'Bars and coins come sealed, with their stated weight and purity and an assay certificate where applicable.']],
@@ -1076,7 +1156,7 @@
         'We do not sell your personal information. We share it only with service providers needed to operate our website and deliver orders, or where required by law.',
         'We use appropriate safeguards to protect your information and keep it only as long as necessary for these purposes or legal requirements.',
         'Promotional messages are sent only with your consent, and you can unsubscribe at any time.',
-        `To request access to or correction of your personal information, or to raise a privacy concern, contact us at ${STORE.phone} or ${STORE.email}.`,
+        'If you have any questions about this Privacy Policy, please contact us.',
         'Any updates to this policy will be posted on this page. Last updated: October 20, 2026.']]
     ];
     return `
@@ -1092,8 +1172,11 @@
   function render() {
     const app = document.getElementById('app');
     const focusId = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.model : null;
+    const drawerScroll = app.querySelector('.iv-drawer-body')?.scrollTop || 0;   // keep the filter panel's place while options change
     app.innerHTML = `<div class="page">${header()}<main>${PAGES[state.route]()}</main>${state.route === 'checkout' ? '' : footer()}</div>`;
-    document.body.style.overflow = state.filtersOpen ? 'hidden' : '';
+    const drawerBody = app.querySelector('.iv-drawer-body');
+    if (drawerBody) drawerBody.scrollTop = drawerScroll;
+    document.body.style.overflow = state.filtersOpen || state.drawer ? 'hidden' : '';
     if (state.filtersOpen === 'opening') { state.filtersOpen = true; app.querySelector('.sheet [data-act="closeFilters"]').focus(); }
     if (focusId) { const el = app.querySelector(`[data-model="${focusId}"]`); if (el) { el.focus(); const v = el.value; el.value = ''; el.value = v; } }
   }
@@ -1102,7 +1185,7 @@
     const [r, param] = location.hash.replace(/^#\/?/, '').split('/');
     const name = PAGES[r] ? r : 'home';
     const anchor = r === 'gold-bars' || r === 'gift' ? r : null;
-    const patch = { route: name, param: param ? decodeURIComponent(param) : null, navOpen: false, filtersOpen: false };
+    const patch = { route: name, param: param ? decodeURIComponent(param) : null, navOpen: false, filtersOpen: false, drawer: false };
     if (name === 'shop' && param && CATS.includes(param)) patch.filter = param;
     if (name === 'product') {
       const p = byId(param) || byId('halo');
@@ -1168,6 +1251,16 @@
 
   Object.assign(ACTIONS, {
     metal: m => set({ metal: state.metal === m ? null : m }),
+    avail: k => set({ [k]: !state[k] }),
+    clearAvail: () => set({ inStock: false, outStock: false }),
+    price: k => set({ price: state.price === k ? null : k }),
+    clearAll: () => set({ inStock: false, outStock: false, metal: null, price: null }),
+    drawer: () => {
+      set({ drawer: state.drawer ? false : 'opening' });   // 'opening' plays the slide-in once
+      if (state.drawer) state.drawer = true;
+      document.querySelector(state.drawer ? '.iv-drawer-x' : '.iv-fbtn')?.focus();
+    },
+    cols: n => set({ cols: +n }),
     homeTab: t => set({ homeTab: t }),
     review: i => set({ review: +i }),
     jump: id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
@@ -1367,6 +1460,7 @@
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && state.filtersOpen) ACTIONS.closeFilters();
+    if (e.key === 'Escape' && state.drawer) ACTIONS.drawer();
   });
 
   window.addEventListener('hashchange', route);

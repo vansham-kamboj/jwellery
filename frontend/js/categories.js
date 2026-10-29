@@ -2,13 +2,13 @@
    Used by the designs when they run without the store API, and by tools/export-catalog.js to seed the backend
    (after that, categories are managed in Admin → Categories). */
 const CATEGORY_LIST = [
-  { slug: 'silver-pendant-sets', name: 'Pendant sets & necklaces', group: 'Silver Jewellery', kind: 'jewellery',
+  { slug: 'silver-pendant-sets', name: 'Woman Pendant Sets & Necklaces', group: 'Silver Jewellery', kind: 'jewellery',
     description: 'Pendant sets and necklaces in 925 sterling silver, hallmarked and stamped.' },
-  { slug: 'silver-earrings', name: 'Silver earrings', group: 'Silver Jewellery', kind: 'jewellery',
+  { slug: 'silver-earrings', name: 'Woman Earrings', group: 'Silver Jewellery', kind: 'jewellery',
     description: 'Studs, drops and hoops in 925 sterling silver — easy to wear from morning to evening.' },
-  { slug: 'silver-bracelets', name: 'Bracelets', group: 'Silver Jewellery', kind: 'jewellery',
+  { slug: 'silver-bracelets', name: 'Woman Bracelets', group: 'Silver Jewellery', kind: 'jewellery',
     description: 'Silver bracelets for every day and every occasion.' },
-  { slug: 'silver-rings', name: 'Rings', group: 'Silver Jewellery', kind: 'jewellery',
+  { slug: 'silver-rings', name: 'Woman Rings', group: 'Silver Jewellery', kind: 'jewellery',
     description: 'Solitaires, halos and statement rings in 925 sterling silver. Canadian sizes 5 to 14.' },
   { slug: 'gold-earrings', name: 'Gold earrings', group: 'Gold Jewellery', kind: 'jewellery',
     description: 'Gold earrings for festive days and the moments worth remembering.' },

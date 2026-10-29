@@ -8,6 +8,6 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call([AdminSeeder::class, CatalogSeeder::class]);
+        $this->call([AdminSeeder::class, ProductSheetSeeder::class]);   // the client's product sheet (CatalogSeeder holds the older demo catalogue)
     }
 }

@@ -12,3 +12,6 @@ assets/ivory/
 # Upload-ready copy for Hostinger (contains the live .env)
 /live/
 .env.local
+
+# Local backend runner (local database and admin login)
+.claude/backend-local.ps1

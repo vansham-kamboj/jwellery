@@ -33,7 +33,7 @@ class CatalogController extends Controller
         $data = $request->validate([
             'category' => 'nullable|string|max:80', 'kind' => 'nullable|in:jewellery,bullion', 'metal' => 'nullable|string|max:20',
             'finish' => 'nullable|string|max:80', 'q' => 'nullable|string|max:80', 'featured' => 'nullable|boolean',
-            'sort' => 'nullable|in:featured,price_asc,price_desc,newest,name', 'per_page' => 'nullable|integer|min:1|max:100', 'full' => 'nullable|boolean',
+            'sort' => 'nullable|in:featured,price_asc,price_desc,newest,name', 'per_page' => 'nullable|integer|min:1|max:500', 'full' => 'nullable|boolean',
         ]);
 
         $q = Product::visible()->with(['category', 'images', 'finishes', ...(! empty($data['full']) ? ['sizes'] : [])]);
