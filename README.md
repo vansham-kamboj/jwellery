@@ -26,7 +26,7 @@ php artisan serve               # http://127.0.0.1:8000/admin
 # 2. frontend — in a second terminal, from the project root
 cp frontend/.env.example frontend/.env    # AVYA_API_URL=http://127.0.0.1:8000/api
 node frontend/build-env.js
-python -m http.server 5173                # open http://localhost:5173/frontend/
+node .claude/serve.js 5173                # store at http://localhost:5173/ · admin at http://localhost:5173/admin
 ```
 
 The backend's `FRONTEND_URLS` must include the storefront address (`http://localhost:5173` locally).
@@ -44,6 +44,6 @@ The backend's `FRONTEND_URLS` must include the storefront address (`http://local
 
 Then add the Vercel address (and your own domain) to `FRONTEND_URLS` in `backend/.env`.
 
-**Storefront on Hostinger instead:** run `node frontend/build-env.js` with the live `AVYA_API_URL` in `frontend/.env`, then upload `.htaccess`, `index.html`, `frontend/` and `assets/` to `public_html/` (keep them side by side). The root `.htaccess` serves the storefront at `https://yourdomain/` — `/frontend/` never shows in the address.
+**Storefront on Hostinger instead:** run `node frontend/build-env.js` with the live `AVYA_API_URL` in `frontend/.env`, then upload `.htaccess`, `index.html`, `frontend/` and `assets/` to `public_html/` (keep them side by side). The root `.htaccess` serves the storefront at `https://yourdomain/` — `/frontend/` never shows in the address — and, with `backend/` in `public_html/` too, the admin panel at `https://yourdomain/admin` (keep `ADMIN_PATH=admin`).
 
-Until `AVYA_API_URL` is set, the storefront still works using its built-in catalogue — orders then go straight to WhatsApp.
+Until `AVYA_API_URL` is set, the storefront still works using its built-in catalogue — orders then go straight to WhatsApp. Once it is set, the built-in catalogue is never shown: if the API can't be reached, visitors see a short "We'll be right back" notice and the page keeps retrying.

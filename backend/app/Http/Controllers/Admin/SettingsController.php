@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\SpotPrices;
 use App\Support\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
@@ -13,7 +15,7 @@ class SettingsController extends Controller
 {
     public function edit()
     {
-        return view('admin.settings', ['s' => Settings::all(), 'pending' => $this->pendingUpdates()]);
+        return view('admin.settings', ['s' => Settings::all(), 'pending' => $this->pendingUpdates(), 'spotNow' => app(SpotPrices::class)->current()]);
     }
 
     /** Applies new database updates after a deploy — the live server has no command line. */
@@ -53,6 +55,7 @@ class SettingsController extends Controller
             'order_prefix' => 'required|alpha|max:6',
             'gift_wrap_fee' => 'required|numeric|min:0',
             'gift_wrap_min' => 'required|numeric|min:0',
+            'spot_mode' => 'required|in:auto,manual',
             'spot_gold_oz' => 'nullable|numeric|min:0',
             'spot_silver_oz' => 'nullable|numeric|min:0',
             'quote_above' => 'required|numeric|min:0',
@@ -93,6 +96,7 @@ class SettingsController extends Controller
         unset($d['shipping']);
 
         Settings::put($d);
+        Cache::forget('spot.fresh');   // a changed rate or mode shows on the site straight away
 
         return back()->with('ok', 'Settings saved.');
     }

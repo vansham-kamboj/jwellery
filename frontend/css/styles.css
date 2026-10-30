@@ -1358,3 +1358,10 @@ html[data-hero-tone="dark"] .iv-circle-img { box-shadow: 0 0 0 1px rgba(246, 241
   .iv-grid.cols-3, .iv-grid.cols-4, .iv-grid.cols-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .iv-grid.cols-1 { grid-template-columns: minmax(0, 1fr); }
 }
+/* Shown instead of the shop while the store API can't be reached (see api-loader.js). */
+.iv-down { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 32px 20px; text-align: center; background: #0d3d45; color: #e2f3f3; }
+.iv-down img { width: min(220px, 60vw); height: auto; }
+.iv-down h1 { margin: 12px 0 0; font: 400 clamp(32px, 6vw, 48px)/1.1 "Cormorant Garamond", serif; color: #fbfbfe; }
+.iv-down p { margin: 0; max-width: 440px; font: 300 16px/1.7 Jost, sans-serif; }
+.iv-down a { margin-top: 8px; padding: 13px 24px; border: 1px solid #d9b46a; color: #f3d58c; font: 400 12px Jost, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+.iv-down a:hover { background: #d9b46a; color: #0d3d45; }

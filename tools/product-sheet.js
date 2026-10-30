@@ -62,7 +62,7 @@ const JEWELLERY = {
   },
   'Kids Kada': {
     category: 'kids-kada', name: r => `Kids Silver Kada No. ${no(r.SKU)}`,
-    desc: r => `A 925 sterling silver kada for little ones${weightOf(r) ? `, ${weightOf(r)} g` : ''}. A traditional blessing to wear, and a keepsake to treasure.`
+    desc: () => 'A 925 sterling silver kada for little ones. A traditional blessing to wear, and a keepsake to treasure.'   // the weight is a separate field the admin can show or hide
   },
   'Kids Nazariya': {
     category: 'kids-nazariya', name: () => 'Kids Silver Nazariya',
@@ -106,8 +106,8 @@ for (const tab of tabs) {
     products.push({ ...base, kind: 'bullion', category: `${metalWord}-${isBar ? 'bars' : 'coins'}`, name, slug: slug(name),
       metal: metalWord, purity: '99.99', material: `99.99% pure ${metalWord}`, finish: gold ? 'finegold' : 'finesilver', price: priceOf(r) || 0,
       weight_grams: grams ? +grams.toFixed(4) : null, size: null, brand, design, certificate: /pamp|valcambi/i.test(name),
-      description: `${name}${grams ? ` — ${weightLabel(grams)}` : ''} of 99.99% pure ${metalWord}${brand ? ` from ${brand}` : ''}${/collectible/i.test(r['Product type'] || '') ? ', a collector’s coin' : ''}. ` +
-        `${isBar ? 'Sealed as issued by the refiner' : 'In mint condition'}, for saving, investing and gifting. Price follows the live ${metalWord} market — we confirm today’s price on WhatsApp.`,
+      description: `${name} — 99.99% pure ${metalWord}${brand ? ` from ${brand}` : ''}${/collectible/i.test(r['Product type'] || '') ? ', a collector’s coin' : ''}. ` +
+        `${isBar ? 'Sealed as issued by the refiner' : 'In mint condition'}, for saving, investing and gifting.` + (base.tag ? ' Coming soon.' : ` Price follows the live ${metalWord} market — we confirm today’s price on WhatsApp.`),
       care: 'Keep in its original sealed packaging or capsule, and handle by the edges.' });
   }
 }

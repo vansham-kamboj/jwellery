@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\Setting;
+use App\Services\SpotPrices;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
@@ -61,11 +62,7 @@ class Settings
             'gift_wrap_min' => (float) $s['gift_wrap_min'],
             'prices_include_tax' => (bool) $s['prices_include_tax'],
             'show_bullion_prices' => (bool) $s['show_bullion_prices'],
-            'spot' => [
-                'gold_oz' => $s['spot_gold_oz'] !== null ? (float) $s['spot_gold_oz'] : null,
-                'silver_oz' => $s['spot_silver_oz'] !== null ? (float) $s['spot_silver_oz'] : null,
-                'updated_at' => $s['spot_updated_at'],
-            ],
+            'spot' => app(SpotPrices::class)->current(fetch: false),   // never waits on the price feed; the page then asks /api/spot
             'quote_above' => (float) $s['quote_above'],
             'default_province' => $s['default_province'],
             'tax_rates' => $s['tax_rates'],

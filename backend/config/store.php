@@ -14,6 +14,15 @@ return [
     'whatsapp_url' => rtrim((string) env('WHATSAPP_API_URL'), '/'),   // click-to-chat base, e.g. wa.me
     'fonts_url' => env('ADMIN_FONTS_URL'),                            // admin panel web fonts stylesheet
 
+    // Live gold and silver price (see App\Services\SpotPrices). Each address answers with JSON; to change provider,
+    // set these in .env — gold and silver in USD per troy ounce as {"price": …}, and the USD→CAD rate as {"rates": {"CAD": …}}.
+    'spot' => [
+        'gold_url' => env('SPOT_GOLD_URL', 'https://api.gold-api.com/price/XAU'),
+        'silver_url' => env('SPOT_SILVER_URL', 'https://api.gold-api.com/price/XAG'),
+        'fx_url' => env('SPOT_FX_URL', 'https://api.frankfurter.dev/v1/latest?base=USD&symbols=CAD'),
+        'timeout' => (int) env('SPOT_TIMEOUT', 6),
+    ],
+
     // Frontend sites allowed to call the API (CORS), comma-separated.
     'frontend_urls' => $list(env('FRONTEND_URLS')),
 
@@ -46,6 +55,7 @@ return [
         'hours' => 'Mon–Sun · 11 am – 7 pm · visits by appointment',
         'prices_include_tax' => true,   // listed prices already include tax; nothing is added at checkout
         'show_bullion_prices' => false, // bars and coins show "price on request" (today's rate via WhatsApp)
+        'spot_mode' => 'auto',          // auto = live price from the feed below; manual = the two rates typed here
         'spot_gold_oz' => null,         // today's gold rate, CAD per troy ounce (set in Admin → Settings)
         'spot_silver_oz' => null,       // today's silver rate, CAD per troy ounce
         'spot_updated_at' => null,

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\Product;
 use App\Support\Settings;
 use Illuminate\Support\Facades\DB;
 
@@ -18,7 +19,19 @@ class OrderPlacer
             return ['quote' => $quote, 'order' => null];
         }
 
-        $order = DB::transaction(function () use ($quote, $customer, $ip) {
+        $order = DB::transaction(function () use (&$quote, $customer, $ip) {
+            // Two customers can reach this at once: lock the pieces and check again, so a one-of-a-kind piece sells only once.
+            $wanted = collect($quote['items'])->groupBy('product_id')->map(fn ($lines) => $lines->sum('qty'));
+            $soldOut = Product::whereIn('id', $wanted->keys())->lockForUpdate()->get()
+                ->filter(fn ($p) => $p->stock_qty !== null && $wanted[$p->id] > $p->stock_qty);
+            if ($soldOut->isNotEmpty()) {
+                foreach ($soldOut as $p) {
+                    $quote['problems'][] = ['line' => null, 'message' => $p->name.' has just sold out.'];
+                }
+
+                return null;
+            }
+
             $order = Order::create([
                 'code' => 'TEMP-'.bin2hex(random_bytes(4)),
                 'customer_name' => $customer['name'],
@@ -53,6 +66,7 @@ class OrderPlacer
             }
             $order->whatsapp_message = $this->message($order, $quote);
             $order->save();
+            $order->takeStock();
 
             return $order;
         });

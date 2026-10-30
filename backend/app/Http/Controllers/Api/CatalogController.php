@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Finish;
 use App\Models\Product;
 use App\Models\Review;
+use App\Services\SpotPrices;
 use App\Support\Settings;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,6 +26,13 @@ class CatalogController extends Controller
             // Home-page reviews; empty until the team adds real ones in Admin → Reviews.
             'reviews' => Review::visible()->where('is_featured', true)->with('product:id,slug,name')->limit(12)->get()->map->toPublic(),
         ]);
+    }
+
+    /** GET /api/spot — today's gold and silver price (CAD per troy ounce); see App\Services\SpotPrices. */
+    public function spot(SpotPrices $spot): JsonResponse
+    {
+        return response()->json($spot->current() + ['currency' => 'CAD', 'unit' => 'oz'])
+            ->header('Cache-Control', 'public, max-age=60');
     }
 
     /** GET /api/products?category=&kind=&metal=&finish=&q=&featured=1&sort=price_asc|price_desc|newest&per_page=&full=1 (full = include gallery, sizes, description) */

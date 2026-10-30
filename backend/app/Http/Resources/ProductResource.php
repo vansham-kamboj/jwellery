@@ -46,7 +46,8 @@ class ProductResource extends JsonResource
             $this->mergeWhen($detail, fn () => [
                 'description' => $p->description,
                 'care' => $p->care,
-                'weight_grams' => $p->weight_grams !== null ? (float) $p->weight_grams : null,
+                // A hidden weight never leaves the server: it stays in the admin only.
+                'weight_grams' => $p->show_weight && $p->weight_grams !== null ? (float) $p->weight_grams : null,
                 'purity' => $p->purity,
                 'sku' => $p->sku,
                 'brand' => $p->brand,

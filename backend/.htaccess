@@ -2,6 +2,11 @@
 # every request is passed to public/, so app code, .env and storage are never reachable.
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Old /backend/admin links → the clean address, when this folder sits inside the storefront's public_html
+    RewriteCond %{THE_REQUEST} \s/backend/admin(/\S*)?[\s]
+    RewriteRule ^admin(/.*)?$ /admin$1 [R=301,L]
+
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
 

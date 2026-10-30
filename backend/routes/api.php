@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('throttle:api-read')->group(function () {
     Route::get('site', [CatalogController::class, 'site']);
+    Route::get('spot', [CatalogController::class, 'spot']);
     Route::get('products', [CatalogController::class, 'index']);
     Route::get('products/{slug}', [CatalogController::class, 'show']);
     Route::post('cart/quote', [OrderController::class, 'quote']);

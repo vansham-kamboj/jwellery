@@ -8,6 +8,17 @@
   "rewrites": [
     { "source": "/", "destination": "/frontend/index.html" },
     { "source": "/css/:path*", "destination": "/frontend/css/:path*" },
-    { "source": "/js/:path*", "destination": "/frontend/js/:path*" }
+    { "source": "/js/:path*", "destination": "/frontend/js/:path*" },
+    { "source": "/:page(our-story|silver-jewellery|gold-and-silver-bullion|kids|delivery-payment-returns|privacy-policy|contact)", "destination": "/frontend/:page/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
+      ]
+    }
   ]
 }

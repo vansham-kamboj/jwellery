@@ -139,6 +139,7 @@ class ProductController extends Controller
             'tag' => $d['tag'] ?? null,
             'metal' => $d['metal'] ?? null,
             'weight_grams' => $d['weight_grams'] ?? null,
+            'show_weight' => $request->boolean('show_weight') && isset($d['weight_grams']),
             'purity' => $d['purity'] ?? null,
             'sku' => $d['sku'] ?? null,
             'brand' => $d['brand'] ?? null,

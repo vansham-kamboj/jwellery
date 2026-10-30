@@ -1,14 +1,14 @@
-/* Backend connection — loads settings and products from the store API before the app starts.
+/* Backend connection â€” loads settings and products from the store API before the app starts.
    The API address comes from js/site-env.js, which frontend/build-env.js writes from frontend/.env.
    If there is no address or the API can't be reached, the built-in catalogue is used instead. */
 (() => {
   const startApp = () => {
     const s = document.createElement('script');
-    s.src = 'js/app.js?v=20261103';   // bump with the script tags in index.html after each update
+    s.src = 'js/app.js?v=20261108';   // bump with the script tags in index.html after each update
     document.body.appendChild(s);
   };
 
-  // Finish names → the keys the design already understands (colour filters, swatches).
+  // Finish names â†’ the keys the design already understands (colour filters, swatches).
   const keyOf = f => /rose/i.test(f.name) ? 'rosetone' : /fine gold/i.test(f.name) ? 'finegold'
     : /fine silver/i.test(f.name) ? 'finesilver' : /silver/i.test(f.name) ? 'plainsilver' : /gold/i.test(f.name) ? 'gold' : f.slug;
 
@@ -49,7 +49,7 @@
       PRODUCTS.length = 0;
       PRODUCTS.push(...list.data.map(toProduct));
       window.dispatchEvent(new Event('avya:products'));   // js/app.js redraws the page
-    } catch (e) { /* offline for a moment — try again next time */ }
+    } catch (e) { /* offline for a moment â€” try again next time */ }
   }
   setInterval(refreshProducts, 30000);
   document.addEventListener('visibilitychange', refreshProducts);
@@ -58,9 +58,9 @@
     const base = ((window.AVYA_ENV || {}).AVYA_API_URL || '').replace(/\/+$/, '');
     if (!base) return;
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 5000);
+    const timer = setTimeout(() => ctrl.abort(), 15000);
     const get = path => fetch(base + path, { signal: ctrl.signal, headers: { Accept: 'application/json' } })
-      .then(r => { if (!r.ok) throw new Error(path + ' → ' + r.status); return r.json(); });
+      .then(r => { if (!r.ok) throw new Error(path + ' â†’ ' + r.status); return r.json(); });
     try {
       const [site, list] = await Promise.all([get('/site'), get('/products?full=1&per_page=500')]);
       site.finishes.forEach(f => { const k = keyOf(f); SW[k] = f.swatch_hex; FINISH_OF[k] = f.name; });
@@ -75,8 +75,22 @@
 
   const env = document.createElement('script');
   env.src = 'js/site-env.js?t=' + Date.now();   // never cached: it holds the API address
-  env.onload = env.onerror = () => connect()
-    .catch(err => console.warn('Store API unavailable — showing the built-in catalogue.', err))
-    .finally(startApp);
+  /* If the store can't be reached, never show the built-in catalogue (its pieces and prices may be out of date):
+     show a short notice and keep trying. The built-in catalogue is only for running without any API address. */
+  const showDown = () => {
+    const wa = ((window.AVYA_ENV || {}).WHATSAPP_API_URL || 'https://wa.me').replace(/\/+$/, '');
+    document.getElementById('app').innerHTML = `<main class="iv-down" role="status">
+      <img src="../assets/brand/avya-logo.png" alt="Avya Jewels" width="420" height="191">
+      <h1>Weâ€™ll be right back</h1>
+      <p>Our shop is taking a short break. This page will open by itself as soon as itâ€™s ready.</p>
+      <a href="${wa}/16477185454" target="_blank" rel="noopener">Message us on WhatsApp</a></main>`;
+  };
+  const boot = () => connect().then(startApp, err => {
+    console.warn('Store API unavailable â€” trying again shortly.', err);
+    showDown();
+    setTimeout(boot, 15000);
+  });
+  env.onload = boot;
+  env.onerror = () => { showDown(); setTimeout(() => location.reload(), 15000); };
   document.head.appendChild(env);
 })();

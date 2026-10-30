@@ -1,0 +1,51 @@
+/* Crawlable pages (tools/build-pages.js) and the text shown while the store loads.
+   Same look as the shop: deep teal, pale mint, ivory, a little gold. */
+.sp { --teal: #0d3d45; --mint: #e1f1f1; --ivory: #fbfbfe; --ink: #474a5a; --gold: #d9b46a; margin: 0; background: var(--ivory); color: var(--ink); font: 300 16px/1.7 Jost, "Helvetica Neue", Arial, sans-serif; }
+body.sp { min-height: 100vh; display: flex; flex-direction: column; }
+.sp *, .sp *::before, .sp *::after { box-sizing: border-box; }
+.sp-shell { min-height: 100vh; display: flex; flex-direction: column; background: var(--ivory); color: var(--ink); font: 300 16px/1.7 Jost, "Helvetica Neue", Arial, sans-serif; }
+.sp a { color: #1b7c86; text-decoration: none; }
+.sp a:hover { text-decoration: underline; }
+
+.sp-head { display: flex; align-items: center; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; padding: 14px clamp(16px, 4vw, 48px); background: var(--teal); }
+.sp-logo { display: block; line-height: 0; }
+.sp-logo img { height: 46px; width: auto; }
+.sp-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 22px; font: 400 12px Jost, Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+.sp-nav a { color: #eff8f7; padding: 6px 0; }
+.sp-nav a:hover { color: #f3d58c; text-decoration: none; }
+.sp-nav .sp-shop { color: var(--teal); background: var(--gold); padding: 8px 16px; }
+.sp-nav .sp-shop:hover { background: #f3d58c; color: var(--teal); }
+
+.sp-main { flex: 1; width: 100%; max-width: 920px; margin: 0 auto; padding: clamp(28px, 5vw, 64px) clamp(16px, 4vw, 32px) clamp(40px, 6vw, 80px); }
+.sp-main h1 { margin: 6px 0 14px; font: 400 clamp(34px, 5.4vw, 58px)/1.05 "Cormorant Garamond", Georgia, serif; color: var(--teal); }
+.sp-main h2 { margin: 36px 0 8px; font: 400 clamp(24px, 3vw, 30px)/1.2 "Cormorant Garamond", Georgia, serif; color: var(--teal); }
+.sp-main p { margin: 0 0 14px; max-width: 680px; }
+.sp-lead { font-size: clamp(17px, 2vw, 20px); color: #353847; max-width: 680px; }
+.sp-crumbs { font: 400 11px Jost, Arial, sans-serif; letter-spacing: .18em; text-transform: uppercase; color: #9397ab; }
+.sp-crumbs a { color: #5f6374; }
+.sp-list { margin: 0 0 14px; padding-left: 20px; max-width: 680px; }
+.sp-list li { margin: 0 0 8px; }
+
+.sp-btn { display: inline-block; margin: 4px 10px 4px 0; padding: 13px 26px; background: var(--teal); color: #fbfbfe !important; font: 400 12px Jost, Arial, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+.sp-btn:hover { background: #1b7c86; text-decoration: none !important; }
+.sp-btn.sp-ghost { background: transparent; color: var(--teal) !important; border: 1px solid var(--teal); }
+.sp-btn.sp-ghost:hover { background: var(--mint); }
+
+.sp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 28px 0; }
+.sp-card { display: block; padding: 20px 22px; background: var(--mint); border: 1px solid #cfe4e4; }
+.sp-cards .sp-card { color: var(--ink); }
+.sp-cards .sp-card strong { display: block; margin-bottom: 6px; font: 400 24px/1.2 "Cormorant Garamond", Georgia, serif; color: var(--teal); }
+.sp-cards .sp-card:hover { background: #d3ebeb; text-decoration: none; }
+.sp-card p { margin: 0 0 10px; }
+.sp-loading { margin-top: 28px; font: 400 12px Jost, Arial, sans-serif; letter-spacing: .2em; text-transform: uppercase; color: #9397ab; }
+.sp-note { padding: 14px 18px; background: var(--mint); }
+
+.sp-foot { background: var(--teal); color: #c4dfe0; padding: clamp(28px, 4vw, 48px) clamp(16px, 4vw, 48px) 22px; font-size: 14px; line-height: 1.7; }
+.sp-foot a { display: block; color: #e2f3f3; padding: 2px 0; }
+.sp-foot strong { display: block; margin-bottom: 6px; font: 500 11px Jost, Arial, sans-serif; letter-spacing: .22em; text-transform: uppercase; color: #f3d58c; }
+.sp-foot p { margin: 0; max-width: 300px; }
+.sp-foot span { display: block; }
+.sp-foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr; gap: 28px; max-width: 1180px; margin: 0 auto; }
+.sp-copy { max-width: 1180px; margin: 26px auto 0 !important; padding-top: 16px; border-top: 1px solid rgba(196, 223, 224, .2); font-size: 13px; }
+@media (max-width: 760px) { .sp-foot-grid { grid-template-columns: 1fr 1fr; } .sp-nav { gap: 4px 16px; } }
+@media (max-width: 480px) { .sp-foot-grid { grid-template-columns: 1fr; } }

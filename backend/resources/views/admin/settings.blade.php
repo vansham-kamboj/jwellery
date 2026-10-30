@@ -71,11 +71,23 @@
                 <h3>Gold & silver</h3>
                 <label class="check"><input type="checkbox" name="show_bullion_prices" value="1" @checked(old('show_bullion_prices', $s['show_bullion_prices']))> Show bar and coin prices on the site</label>
                 <span class="hint">When off, bars and coins show “Price on request” and customers ask for today’s price on WhatsApp.</span>
-                <div class="form-grid">
-                    <label class="field"><span>Today’s gold rate (CAD per oz)</span><input type="number" step="0.01" min="0" name="spot_gold_oz" value="{{ old('spot_gold_oz', $s['spot_gold_oz']) }}" placeholder="e.g. 3650"></label>
-                    <label class="field"><span>Today’s silver rate (CAD per oz)</span><input type="number" step="0.01" min="0" name="spot_silver_oz" value="{{ old('spot_silver_oz', $s['spot_silver_oz']) }}" placeholder="e.g. 44.50"></label>
+                <div class="field"><span>Where today’s gold and silver rate comes from</span>
+                    <label class="check"><input type="radio" name="spot_mode" value="auto" @checked(old('spot_mode', $s['spot_mode']) === 'auto')> Automatic — the live market price, refreshed every few minutes</label>
+                    <label class="check"><input type="radio" name="spot_mode" value="manual" @checked(old('spot_mode', $s['spot_mode']) === 'manual')> Manual — the two rates I type below</label>
                 </div>
-                <span class="hint">Shown on the site with the time you saved it{{ $s['spot_updated_at'] ? ' — last updated '.\Illuminate\Support\Carbon::parse($s['spot_updated_at'])->timezone(config('app.timezone'))->format('D j M, g:i a') : '' }}. Leave empty to show “Ask for today’s rate”.</span>
+                <span class="hint">
+                    @if ($spotNow['gold_oz'] && $spotNow['silver_oz'])
+                        Showing now on the website ({{ $spotNow['source'] === 'live' ? 'live price' : 'typed rate' }}): gold ${{ number_format($spotNow['gold_oz'], 2) }} and silver ${{ number_format($spotNow['silver_oz'], 2) }} CAD per oz{{ $spotNow['updated_at'] ? ', as of '.\Illuminate\Support\Carbon::parse($spotNow['updated_at'])->timezone(config('app.timezone'))->format('D j M, g:i a') : '' }}.
+                    @else
+                        Nothing to show yet — the website shows “Ask for today’s rate”.
+                    @endif
+                    In Automatic mode, if the live price can’t be reached, the last good price is kept for up to 2 days, then the rates below are used.
+                </span>
+                <div class="form-grid">
+                    <label class="field"><span>Gold rate (CAD per oz) — manual / backup</span><input type="number" step="0.01" min="0" name="spot_gold_oz" value="{{ old('spot_gold_oz', $s['spot_gold_oz']) }}" placeholder="e.g. 3650"></label>
+                    <label class="field"><span>Silver rate (CAD per oz) — manual / backup</span><input type="number" step="0.01" min="0" name="spot_silver_oz" value="{{ old('spot_silver_oz', $s['spot_silver_oz']) }}" placeholder="e.g. 44.50"></label>
+                </div>
+                <span class="hint">Used in Manual mode, and as a backup in Automatic mode. Leave empty to show “Ask for today’s rate” when no price is available.</span>
             </section>
 
             <section class="card card-pad grid" style="gap:14px">

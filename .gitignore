@@ -15,3 +15,15 @@ assets/ivory/
 
 # Local backend runner (local database and admin login)
 .claude/backend-local.ps1
+
+# Original phone photos and videos (large): the website uses the converted .webp files next to them
+*.heic
+*.HEIC
+*.mov
+*.MOV
+
+# Old copy of the storefront images, kept locally only (the site uses assets/web)
+assets/web-old/
+
+# Product photos made locally while testing (the live site makes its own from assets/ when you run database updates)
+backend/public/uploads/

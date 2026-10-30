@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
@@ -12,7 +13,7 @@ class Order extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'gift_wrap' => 'boolean', 'needs_quote' => 'boolean',
+        'gift_wrap' => 'boolean', 'needs_quote' => 'boolean', 'stock_taken' => 'boolean',
         'delivery_fee' => 'decimal:2', 'gift_wrap_fee' => 'decimal:2', 'subtotal' => 'decimal:2', 'discount_total' => 'decimal:2',
         'tax_rate' => 'decimal:2', 'tax' => 'decimal:2', 'total' => 'decimal:2',
         'confirmed_at' => 'datetime', 'shipped_at' => 'datetime', 'completed_at' => 'datetime', 'cancelled_at' => 'datetime',
@@ -25,11 +26,46 @@ class Order extends Model
 
     public function setStatus(string $status): void
     {
-        $this->status = $status;
-        $stamp = $status.'_at';
-        if (in_array($stamp, ['confirmed_at', 'shipped_at', 'completed_at', 'cancelled_at'], true) && ! $this->{$stamp}) {
-            $this->{$stamp} = now();
+        DB::transaction(function () use ($status) {
+            // Cancelling puts the pieces back on sale; re-opening a cancelled order takes them again.
+            if ($status === 'cancelled') {
+                $this->returnStock();
+            } elseif ($this->status === 'cancelled') {
+                $this->takeStock();
+            }
+            $this->status = $status;
+            $stamp = $status.'_at';
+            if (in_array($stamp, ['confirmed_at', 'shipped_at', 'completed_at', 'cancelled_at'], true) && ! $this->{$stamp}) {
+                $this->{$stamp} = now();
+            }
+            $this->save();
+        });
+    }
+
+    /** Takes the ordered pieces out of stock. Products without a stock count (bullion) are left alone. */
+    public function takeStock(): void
+    {
+        if ($this->stock_taken) {
+            return;
         }
+        foreach ($this->items as $item) {
+            $product = Product::withTrashed()->whereKey($item->product_id)->whereNotNull('stock_qty')->lockForUpdate()->first();
+            $product?->update(['stock_qty' => max(0, $product->stock_qty - $item->qty)]);
+        }
+        $this->stock_taken = true;
+        $this->save();
+    }
+
+    public function returnStock(): void
+    {
+        if (! $this->stock_taken) {
+            return;
+        }
+        foreach ($this->items as $item) {
+            $product = Product::withTrashed()->whereKey($item->product_id)->whereNotNull('stock_qty')->lockForUpdate()->first();
+            $product?->update(['stock_qty' => $product->stock_qty + $item->qty]);
+        }
+        $this->stock_taken = false;
         $this->save();
     }
 

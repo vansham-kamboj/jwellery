@@ -514,7 +514,8 @@
   /* ── Prices, stock and actions per piece ── */
   const onRequest = p => p.priceOnRequest || (p.bullion ? !STORE.showBullionPrices : p.metal === 'gold');
   const soldOut = p => p.inStock === false || p.stock === 0;
-  const priceHtml = p => onRequest(p) ? 'Price on request'
+  const comingSoon = p => soldOut(p) && /coming soon/i.test(p.tag || '');   // listed on the sheet, not for sale yet
+  const priceHtml = p => comingSoon(p) ? 'Coming soon' : onRequest(p) ? 'Price on request'
     : (p.wasPrice && p.wasPrice > p.price ? `<s class="iv-was">${cad(p.wasPrice)}</s> ` : '') + cad(p.price);
   const stockNote = p => soldOut(p) ? 'Sold out' : 'In stock';
   const askLink = p => waLink(`Hi Avya Jewels, could you share today’s price for the ${p.name}?`);
@@ -576,26 +577,34 @@
   let topAt = 0;
   function topMessages() { return [STORE.announcement].filter(Boolean); }
 
-  /* Live spot price: a free price feed (USD per troy ounce) converted to CAD, refreshed every minute.
-     Until it answers — or if it can't be reached — the rate typed in Admin → Settings is shown, if any. */
+  /* Today's gold & silver price (CAD per troy ounce). The backend gets it from the price feed and keeps it for a few
+     minutes (see backend App\Services\SpotPrices), so the page just asks the store for it once a minute. In Admin →
+     Settings the team can switch to typing the rates themselves. Only when the page runs without a store (the built-in
+     catalogue) does it fetch the feed directly. If nothing is available the rate shows as "Ask for today's rate". */
   function spotHtml() {
     const sp = STORE.spot || {};
     const parts = [sp.gold_oz && `<span>Gold ${cad(Math.round(sp.gold_oz))}<small>/oz</small></span>`, sp.silver_oz && `<span>Silver ${money(sp.silver_oz)}<small>/oz</small></span>`].filter(Boolean);
-    return parts.length ? `<span class="iv-top-spot-label">Live spot · CAD</span>${parts.join('')}` : '';
+    return parts.length ? `<span class="iv-top-spot-label">${sp.source === 'manual' ? 'Today’s rate' : 'Live spot'} · CAD</span>${parts.join('')}` : '';
+  }
+  async function fetchSpot() {
+    const get = u => fetch(u, { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(u); return r.json(); });
+    if (window.AVYA_API) return get(window.AVYA_API.base + '/spot');
+    const [gold, silver, fx] = await Promise.all([get('https://api.gold-api.com/price/XAU'), get('https://api.gold-api.com/price/XAG'), get('https://api.frankfurter.dev/v1/latest?base=USD&symbols=CAD')]);
+    const usdCad = fx.rates && fx.rates.CAD;
+    return { gold_oz: gold.price * usdCad, silver_oz: silver.price * usdCad, updated_at: new Date().toISOString(), source: 'live' };
   }
   async function refreshSpot() {
     if (document.hidden) return;
     try {
-      const get = u => fetch(u, { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(u); return r.json(); });
-      const [gold, silver, fx] = await Promise.all([get('https://api.gold-api.com/price/XAU'), get('https://api.gold-api.com/price/XAG'), get('https://api.frankfurter.dev/v1/latest?base=USD&symbols=CAD')]);
-      const usdCad = fx.rates && fx.rates.CAD;
-      if (!(gold.price > 0 && silver.price > 0 && usdCad > 0)) return;
-      const first = !STORE.spot.live;
-      STORE.spot = { ...STORE.spot, live: true, gold_oz: gold.price * usdCad, silver_oz: silver.price * usdCad, updated_at: new Date().toISOString() };
+      const next = await fetchSpot();
+      if (!(next.gold_oz > 0 && next.silver_oz > 0)) return;
+      const changed = !STORE.spot || STORE.spot.gold_oz !== next.gold_oz || STORE.spot.silver_oz !== next.silver_oz || STORE.spot.source !== next.source;
+      STORE.spot = { ...next };
       const el = document.getElementById('iv-top-spot');
       if (el) el.innerHTML = spotHtml();
-      if (first) window.dispatchEvent(new Event('avya:products'));   // redraw pages that show the rate
-    } catch (e) { /* feed unreachable — keep what is shown */ }
+      if (changed && !STORE.spotShown) window.dispatchEvent(new Event('avya:products'));   // first real price: redraw pages that show the rate
+      STORE.spotShown = true;
+    } catch (e) { /* the store or feed is unreachable — keep showing what we have */ }
   }
   refreshSpot();
   setInterval(refreshSpot, 60000);
@@ -659,7 +668,8 @@
 
   /* Card used in the bestseller band: centred, outline button under it. */
   function bandCard(p) {
-    const action = onRequest(p) ? `<a class="iv-btn ghost block sm" href="${askLink(p)}" target="_blank" rel="noopener">Ask today’s price</a>`
+    const action = comingSoon(p) ? `<button class="iv-btn ghost block sm" disabled>Coming soon</button>`
+      : onRequest(p) ? `<a class="iv-btn ghost block sm" href="${askLink(p)}" target="_blank" rel="noopener">Ask today’s price</a>`
       : soldOut(p) ? `<button class="iv-btn ghost block sm" disabled>Sold out</button>`
         : `<button class="iv-btn ghost block sm ${state.justAdded[p.id] ? 'on' : ''}" data-act="quickAdd" data-arg="${p.id}">${addLabel(p.id)}</button>`;
     return `<div class="iv-bcard">
@@ -671,7 +681,8 @@
 
   /* Card used in the collection grid: name left, price right, swatches + underline action. */
   function productCard(p) {
-    const action = onRequest(p) ? `<a class="iv-underline" href="${askLink(p)}" target="_blank" rel="noopener">Ask today’s price</a>`
+    const action = comingSoon(p) ? `<span class="iv-muted">Not available yet</span>`
+      : onRequest(p) ? `<a class="iv-underline" href="${askLink(p)}" target="_blank" rel="noopener">Ask today’s price</a>`
       : soldOut(p) ? `<span class="iv-muted">Sold out</span>` : `<button class="iv-underline" data-act="quickAdd" data-arg="${p.id}">${addLabel(p.id)}</button>`;
     return `<div class="iv-pcard">
       <a href="#/product/${p.id}" class="iv-img portrait">${p.tag ? `<span class="iv-tag">${esc(p.tag)}</span>` : ''}${photo(p.img, p.name)}</a>
@@ -829,7 +840,7 @@
     <section class="iv-promises">${promises.map(v => `<div><span class="iv-serif-22">${v.t}</span><span class="iv-muted">${v.b}</span></div>`).join('')}</section>`;
   }
 
-  const SORTS = [['featured', 'Featured'], ['best', 'Best selling'], ['price_asc', 'Price, low to high'], ['price_desc', 'Price, high to low']];
+  const SORTS = [['price_asc', 'Price, low to high'], ['price_desc', 'Price, high to low'], ['featured', 'Featured'], ['best', 'Best selling']];   // the order the client listed; Featured is what the page opens with
   /* Pieces without a listed price (gold, bullion) go to the end of the price sorts. Best selling = pieces flagged featured in the admin. */
   function sortList(list, mode) {
     const idx = p => PRODUCTS.indexOf(p), price = p => onRequest(p) ? Infinity : p.price;
@@ -932,27 +943,29 @@
     const sz = sizesOf(p);
     const fins = p.sw.map(k => ({ name: FINISH_OF[k], swatch: SW[k] })).filter(f => f.name);
     const { finish, size, added } = state.pdp;
-    const imgs = (p.gallery || [p.img, p.img2]).slice(0, p.video ? 2 : 3);
+    const imgs = (p.gallery || [p.img, p.img2]).slice(0, p.video ? 4 : 5);   // one large photo and up to four smaller ones
     const group = groupOfCat(p.cat);
     // "You may also like": pieces from the same category first, then the same menu section — never a mix of jewellery and bars.
     const others = REAL().filter(x => x.id !== p.id && !soldOut(x));
     const pairs = [...others.filter(x => x.cat === p.cat), ...others.filter(x => x.cat !== p.cat && group && group.cats.some(c => c.slug === x.cat))].slice(0, 4);
-    const ask = onRequest(p);
+    const soon = comingSoon(p);
+    const ask = onRequest(p) && !soon;
     const orderMsg = 'Hi Avya Jewels, I’d like to order the ' + p.name + (size ? ' (size ' + size + ')' : '') + (finish && !ask ? ' in ' + finish : '') + '.';
     const extra = [
-      ...(ask ? [] : [['Order on WhatsApp', waLink(orderMsg)]]),
+      ...(ask || soon || soldOut(p) ? [] : [['Order on WhatsApp', waLink(orderMsg)]]),
       ['Ask a question', waLink('Hi Avya Jewels, I have a question about the ' + p.name + '.')],
       ['Book a visit', waLink('Hi Avya Jewels, I’d like to book a visit to see the ' + p.name + '.')]
     ];
-    const buy = (ask
+    const buy = (soon ? `<button class="iv-btn block lg" disabled>Coming soon</button>` : ask
       ? `<a class="iv-btn block lg" href="${askLink(p)}" target="_blank" rel="noopener">Ask today’s price on WhatsApp</a>`
       : soldOut(p) ? `<button class="iv-btn block lg" disabled>Sold out</button>`
         : `<button class="iv-btn block lg" data-act="addToBag">${added ? 'Added — view bag (' + totals().count + ')' : 'Add to bag · ' + money(p.price)}</button>`)
       + `<div class="iv-pdp-links">${extra.map(([l, h]) => `<a href="${h}" target="_blank" rel="noopener">${l}</a>`).join('')}<button type="button" data-act="share">Share</button></div>`;
-    const weight = g => !g ? null : Math.abs(g / 31.1035 - Math.round(g / 31.1035)) < 0.01 ? Math.round(g / 31.1035) + ' oz' : (g >= 1000 ? g / 1000 + ' kg' : +(+g).toFixed(1) + ' g');
+    // Weight comes only when the team chose to show it; bars and coins read as oz / kg, jewellery as exact grams.
+    const weight = g => !g ? null : p.bullion ? (Math.abs(g / 31.1035 - Math.round(g / 31.1035)) < 0.01 ? Math.round(g / 31.1035) + ' oz' : (g >= 1000 ? g / 1000 + ' kg' : +(+g).toFixed(1) + ' g')) : +(+g).toFixed(2) + ' g';
     const details = (p.bullion
       ? [['Weight', weight(p.grams)], ['Purity', p.purity ? p.purity + '% pure' : '99.99% pure'], ['Brand / mint', p.brand], ['Design', p.design], ['Packaging', p.packaging], ['Assay certificate', p.certificate ? 'Included' : null], ['Product code', p.sku]]
-      : [['Metal', (p.metal || (/gold/i.test(p.material || '') && !/silver/i.test(p.material || '') ? 'gold' : 'silver')).replace(/^./, m => m.toUpperCase())], ['Purity', p.metal === 'gold' ? (p.purity || 'Hallmarked gold') : (p.purity || '925') + ' · hallmarked & stamped'], ['Product code', p.sku]]
+      : [['Metal', (p.metal || (/gold/i.test(p.material || '') && !/silver/i.test(p.material || '') ? 'gold' : 'silver')).replace(/^./, m => m.toUpperCase())], ['Purity', p.metal === 'gold' ? (p.purity || 'Hallmarked gold') : (p.purity || '925') + ' · hallmarked & stamped'], ['Weight', weight(p.grams)], ['Product code', p.sku]]
     ).filter(([, v]) => v);
     const notes = [p.bullion ? 'Certified 99.99%' : p.metal === 'gold' ? 'Hallmarked gold' : 'Hallmarked 925 silver', 'Free GTA delivery over $200', 'Pick-up in Mississauga', 'All sales final'];
     return `
@@ -965,11 +978,11 @@
         <div class="stack" style="gap:12px">
           <span class="iv-label accent">${esc([group && group.name, catLabel(p.cat)].filter(Boolean).join(' · '))}</span>
           <h1 class="iv-h1 title">${esc(p.name)}</h1>
-          <div class="iv-price-row"><span class="iv-price">${priceHtml(p)}</span><span class="iv-muted">${ask ? 'Live market price · confirmed on WhatsApp' : stockNote(p) + (STORE.taxIncluded ? ' · tax included' : '')}</span></div>
+          <div class="iv-price-row"><span class="iv-price">${priceHtml(p)}</span><span class="iv-muted">${soon ? 'Not available yet' : ask ? 'Live market price · confirmed on WhatsApp' : stockNote(p) + (STORE.taxIncluded ? ' · tax included' : '')}</span></div>
           <p class="iv-body">${esc(p.desc)}</p>
           ${details.length ? `<dl class="iv-specs">${details.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>` : ''}
         </div>
-        ${fins.length && !ask ? `<div class="iv-opt"><div class="iv-opt-head"><span>Metal</span><span>${esc(finish || '')}</span></div>
+        ${fins.length && !onRequest(p) ? `<div class="iv-opt"><div class="iv-opt-head"><span>Metal</span><span>${esc(finish || '')}</span></div>
           <div class="iv-opt-row">${fins.map(f => `<label class="iv-choice"><input type="radio" name="pfin" data-pdp="finish" value="${esc(f.name)}" ${finish === f.name ? 'checked' : ''}><span class="sw" style="background:${f.swatch}"></span>${esc(f.name)}</label>`).join('')}</div></div>` : ''}
         ${sz && !ask ? `<div class="iv-opt"><div class="iv-opt-head"><span>${esc(sz.label)}${/ring/i.test(sz.label) ? ' (CA/US)' : ''}</span><span>${esc(size || '')}</span></div>
           <div class="iv-sizes">${sz.opts.map(v => `<label class="iv-choice"><input type="radio" name="psize" data-pdp="size" value="${esc(v)}" ${size === v ? 'checked' : ''}>${esc(v)}</label>`).join('')}</div></div>` : ''}

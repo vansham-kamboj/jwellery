@@ -8,6 +8,10 @@ DirectoryIndex frontend/index.html index.html
     RewriteCond %{THE_REQUEST} \s/frontend/?(index\.html)?[\s?]
     RewriteRule ^frontend/?(index\.html)?$ / [R=301,L]
 
+    # Admin panel at /admin (Laravel lives in backend/public; ADMIN_PATH in backend/.env must stay "admin")
+    RewriteRule ^admin-assets/(.*)$ backend/public/admin-assets/$1 [L]
+    RewriteRule ^admin(/.*)?$ backend/public/index.php [L]
+
     # Home page
     RewriteRule ^$ frontend/index.html [L]
 
@@ -16,6 +20,20 @@ DirectoryIndex frontend/index.html index.html
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{DOCUMENT_ROOT}/frontend/$1 -f
     RewriteRule ^(.+)$ frontend/$1 [L]
+
+    # Real pages for search engines and web filters (made by tools/build-pages.js): /our-story/, /contact/ … → frontend/<page>/index.html
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{DOCUMENT_ROOT}/frontend/$1/index.html -f
+    RewriteRule ^([a-z0-9-]+)/?$ frontend/$1/index.html [L]
+</IfModule>
+
+# Plain text responses always say they are UTF-8, and a few standard safety headers
+AddDefaultCharset UTF-8
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Frame-Options "SAMEORIGIN"
 </IfModule>
 
 # Never serve settings files
