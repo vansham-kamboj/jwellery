@@ -740,7 +740,7 @@
       text: 'Lakshmi Diwali gold bars and Ganpati silver coins — a blessing that keeps its value.',
       ctas: [['Shop festive gold', '#/shop/gold-bars'], ['Silver coins', '#/shop/silver-coins']] },
     { img: 'silver-ring', kicker: '925 sterling silver', title: 'Rings that <i>catch the light.</i>',
-      text: 'Hallmarked, stamped and set by hand — in Canadian sizes 5 to 14.',
+      text: 'Hallmarked and stamped — each one of a kind, in its own Canadian size.',
       ctas: [['Shop rings', '#/shop/silver-rings'], ['All jewellery', '#/shop/' + jewelleryKey]] },
     { img: 'silver-bars', kicker: '99.99% pure silver', title: 'Silver bars <i>and coins.</i>',
       text: 'Royal Canadian Mint 1 kg and 100 oz bars, plus 1 oz coins.',
@@ -934,8 +934,9 @@
     const { finish, size, added } = state.pdp;
     const imgs = (p.gallery || [p.img, p.img2]).slice(0, p.video ? 2 : 3);
     const group = groupOfCat(p.cat);
-    const same = REAL().filter(x => x.id !== p.id && x.cat === p.cat).slice(0, 2);
-    const pairs = same.concat(REAL().filter(x => x.id !== p.id && x.cat !== p.cat && x.bullion !== p.bullion).slice(0, 4 - same.length));
+    // "You may also like": pieces from the same category first, then the same menu section — never a mix of jewellery and bars.
+    const others = REAL().filter(x => x.id !== p.id && !soldOut(x));
+    const pairs = [...others.filter(x => x.cat === p.cat), ...others.filter(x => x.cat !== p.cat && group && group.cats.some(c => c.slug === x.cat))].slice(0, 4);
     const ask = onRequest(p);
     const orderMsg = 'Hi Avya Jewels, I’d like to order the ' + p.name + (size ? ' (size ' + size + ')' : '') + (finish && !ask ? ' in ' + finish : '') + '.';
     const extra = [
@@ -980,10 +981,10 @@
         <div class="iv-acc">${(p.accordions || CONTENT.accordions).map((a, i) => (i === 0 && p.care ? { ...a, body: p.care } : a)).map((a, i) => `<button class="iv-acc-item" data-act="acc" data-arg="${i}" aria-expanded="${state.open === i}"><span class="iv-acc-head"><span>${esc(a.title)}</span><span class="pm">${state.open === i ? '−' : '+'}</span></span>${state.open === i ? `<p>${esc(a.body)}</p>` : ''}</button>`).join('')}</div>
       </div>
     </section>
-    <section class="iv-band">
-      <div class="iv-band-head"><h2 class="iv-h2 sm">You may also like</h2><a href="#/shop" class="iv-link dark">Shop all</a></div>
+    ${pairs.length ? `<section class="iv-band">
+      <div class="iv-band-head"><h2 class="iv-h2 sm">You may also like</h2><a href="#/shop/${p.cat}" class="iv-link dark">Shop all ${esc(catLabel(p.cat).toLowerCase())}</a></div>
       <div class="iv-pairs">${pairs.map(x => `<a href="#/product/${x.id}" class="iv-pair"><div class="iv-img square on-ivory">${photo(x.img, x.name)}</div><div class="iv-pair-row"><span class="iv-serif-20">${esc(x.name)}</span><span>${priceHtml(x)}</span></div></a>`).join('')}</div>
-    </section>
+    </section>` : ''}
     ${state.zoom !== null && state.zoom !== undefined ? lightbox(p, imgs) : ''}`;
   }
 
@@ -1106,34 +1107,54 @@
 
   /* ── Our story & visits ── */
   const OUR_PHOTO = '../assets/brand/our-photo.jpg';   // bottom half of the Our story picture: drop the family photo here
+
+  /* Reveal on scroll: blocks marked rv('id') fade up the first time they come into view, once per visit,
+     so the page redrawing (live prices, stock updates) never replays the animation. */
+  const REVEALED = new Set();
+  const rv = id => `data-reveal="${id}"${REVEALED.has(id) ? ' data-in' : ''}`;
+  // A plain scroll check (not IntersectionObserver), so nothing can stay hidden if a browser skips observer callbacks.
+  function watchReveals() {
+    const line = window.innerHeight * 0.92;
+    document.querySelectorAll('[data-reveal]:not([data-in])').forEach(el => {
+      if (el.getBoundingClientRect().top < line) { el.setAttribute('data-in', ''); REVEALED.add(el.dataset.reveal); }
+    });
+  }
+  let revealTimer = null;
+  const queueReveals = () => { if (!revealTimer) revealTimer = setTimeout(() => { revealTimer = null; watchReveals(); }, 60); };
+  window.addEventListener('scroll', queueReveals, { passive: true });
+  window.addEventListener('resize', queueReveals);
+  setInterval(() => { if (!document.hidden) watchReveals(); }, 400);   // safety net for browsers that don't send scroll events (e.g. embedded views)
   function studio() {
-    const cover = byId('floral-halo-ring') || REAL()[0];
+    const facts = [['10+', 'years in gold and silver'], ['925', 'hallmarked sterling silver'], ['99.99%', 'pure gold and silver bullion']];
     return `
-    <section class="iv-page-hero">
-      <div class="stack" style="gap:18px">
+    <section class="iv-story">
+      <div class="iv-story-head" ${rv('story-head')}>
         <span class="iv-label accent">Our story</span>
         <h1 class="iv-h1 title">From India to Canada, <i>a journey of passion.</i></h1>
         <p class="iv-lead">Avya means <i>the first rays of the sun</i> — the light that starts every new day.</p>
-        <p class="iv-body">Avya Jewels is rooted in more than ten years of experience in gold and silver jewellery. Our founder’s journey began in India with the support of her father, where she developed a deep appreciation for craftsmanship and for the memories each piece can hold.</p>
-        <p class="iv-body">Today she is building a new chapter in Canada alongside her husband, bringing that experience and passion to Avya Jewels. As a family venture, we believe jewellery is more than a luxury — it is a celebration of love, milestones and moments to cherish.</p>
-        <p class="iv-body">Every piece we choose is premium, elegant and affordable: 925 sterling silver jewellery, Gold jewellery, and 99.99% pure gold and silver bars and coins for saving, investing and gifting.</p>
       </div>
-      <div class="iv-page-img iv-story-photo">
+      <figure class="iv-story-photo ${window.AVYA_NO_PHOTO ? 'no-photo' : ''}" ${rv('story-photo')}>
         <div class="iv-story-logo">${logo('')}</div>
-        <div class="iv-story-pic iv-img"><img src="${OUR_PHOTO}" alt="The Avya Jewels family" fetchpriority="high" decoding="async" onerror="this.onerror=null;this.src='${cover.img2 || cover.img}'"></div>
+        <div class="iv-story-pic"><img src="${OUR_PHOTO}" alt="The Avya Jewels family" fetchpriority="high" decoding="async" onerror="this.onerror=null;window.AVYA_NO_PHOTO=1;this.closest('figure').classList.add('no-photo')"></div>
+      </figure>
+      <div class="iv-story-body">
+        <p class="iv-body" ${rv('story-p1')}>Avya Jewels is rooted in more than ten years of experience in gold and silver jewellery. Our founder’s journey began in India with the support of her father, where she developed a deep appreciation for craftsmanship and for the memories each piece can hold.</p>
+        <p class="iv-body" ${rv('story-p2')}>Today she is building a new chapter in Canada alongside her husband, bringing that experience and passion to Avya Jewels. As a family venture, we believe jewellery is more than a luxury — it is a celebration of love, milestones and moments to cherish.</p>
+        <p class="iv-body" ${rv('story-p3')}>Every piece we choose is premium, elegant and affordable: 925 sterling silver jewellery, Gold jewellery, and 99.99% pure gold and silver bars and coins for saving, investing and gifting.</p>
+        <dl class="iv-story-facts" ${rv('story-facts')}>${facts.map(([n, t]) => `<div><dt>${n}</dt><dd>${t}</dd></div>`).join('')}</dl>
       </div>
     </section>
-    <section class="iv-info-grid three">
-      <div class="iv-info"><span class="iv-label accent">Visit us</span><span class="iv-serif-28">${esc(STORE.area)}</span>
+    <section class="iv-info-grid three iv-story-cards">
+      <div class="iv-info" ${rv('story-c1')}><span class="iv-label accent">Visit us</span><span class="iv-serif-28">${esc(STORE.area)}</span>
         <p class="iv-body">We welcome you by appointment, or on a video call from anywhere. Message us to choose a time.</p>
         <span class="iv-muted">${esc(STORE.hours)}</span>
         <a class="iv-btn" href="${waLink('Hi Avya Jewels, I’d like to book a visit.')}" target="_blank" rel="noopener">Book a visit on WhatsApp</a></div>
-      <div class="iv-info"><span class="iv-label accent">Contact</span><span class="iv-serif-28">We reply in 15–30 minutes</span>
+      <div class="iv-info" ${rv('story-c2')}><span class="iv-label accent">Contact</span><span class="iv-serif-28">We reply in 15–30 minutes</span>
         <a href="${waLink()}" target="_blank" rel="noopener">WhatsApp ${esc(STORE.phone)}</a>
         <a href="${telLink}">Call ${esc(STORE.phone)}</a>
         <a href="mailto:${esc(STORE.email)}">${esc(STORE.email)}</a>
         <a href="${esc(STORE.instagram)}" target="_blank" rel="noopener">Instagram @avyajewels.ca</a></div>
-      <div class="iv-info"><span class="iv-label accent">Bridal &amp; bulk orders</span><span class="iv-serif-28">For the whole family</span>
+      <div class="iv-info" ${rv('story-c3')}><span class="iv-label accent">Bridal &amp; bulk orders</span><span class="iv-serif-28">For the whole family</span>
         <p class="iv-body">Bridal sets, bridesmaid gifts and corporate or festive gifting in larger quantities — tell us what you need.</p>
         <a class="iv-btn ghost" href="${waLink('Hi Avya Jewels, I’d like to ask about a bridal or bulk order.')}" target="_blank" rel="noopener">Ask about an order</a></div>
     </section>`;
@@ -1177,6 +1198,7 @@
     const drawerBody = app.querySelector('.iv-drawer-body');
     if (drawerBody) drawerBody.scrollTop = drawerScroll;
     document.body.style.overflow = state.filtersOpen || state.drawer ? 'hidden' : '';
+    watchReveals();
     if (state.filtersOpen === 'opening') { state.filtersOpen = true; app.querySelector('.sheet [data-act="closeFilters"]').focus(); }
     if (focusId) { const el = app.querySelector(`[data-model="${focusId}"]`); if (el) { el.focus(); const v = el.value; el.value = ''; el.value = v; } }
   }

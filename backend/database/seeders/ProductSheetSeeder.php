@@ -8,12 +8,13 @@ use App\Models\Product;
 use App\Services\ImageOptimizer;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Makes the catalogue match the client's product sheet (database/seeders/data/product-sheet.json,
  * made by `node tools/product-sheet.js <sheet.xlsx>`). Products are matched by SKU:
  * new ones are added, existing ones updated, and products not on the sheet are removed
- * (soft-deleted, so past orders keep their history). Categories with nothing left are hidden.
+ * (soft-deleted, so past orders keep their history). The client's menu categories are kept, even when empty.
  *
  * Photos: put files named by SKU in assets/products/ — AVY-SW-RG-001.jpg (main), AVY-SW-RG-001-1.jpg,
  * AVY-SW-RG-001-2.jpg … — and run this again; a product's photos are replaced only when new files are found.
@@ -21,16 +22,28 @@ use Illuminate\Support\Facades\DB;
  */
 class ProductSheetSeeder extends Seeder
 {
-    /** Categories the sheet uses: slug => [name, menu section, kind]. */
+    /** The menu the client chose, in order: slug => [name, menu section, kind]. Categories with no pieces yet stay
+        in the menu and show "new pieces are on their way". Any category added in the admin is left alone. */
     private const CATEGORIES = [
-        'silver-rings' => ['Woman Rings', 'Silver Jewellery', 'jewellery'],
+        'silver-pendant-sets' => ['Woman Pendant Sets & Necklaces', 'Silver Jewellery', 'jewellery'],
+        'silver-earrings' => ['Woman Earrings', 'Silver Jewellery', 'jewellery'],
         'silver-bracelets' => ['Woman Bracelets', 'Silver Jewellery', 'jewellery'],
+        'silver-rings' => ['Woman Rings', 'Silver Jewellery', 'jewellery'],
+        'gold-earrings' => ['Gold earrings', 'Gold Jewellery', 'jewellery'],
+        'mens-gold-chains' => ['Gold chains', 'Gold Jewellery', 'jewellery'],
         'gold-bars' => ['Gold bars', 'Bullion', 'bullion'],
         'gold-coins' => ['Gold coins', 'Bullion', 'bullion'],
         'silver-bars' => ['Silver bars', 'Bullion', 'bullion'],
         'silver-coins' => ['Silver coins', 'Bullion', 'bullion'],
+        'silver-bowls' => ['Silver bowls', 'Silver Utensils', 'jewellery'],
+        'silver-spoons' => ['Silver spoons', 'Silver Utensils', 'jewellery'],
         'kids-kada' => ['Kada', 'Kids', 'jewellery'],
         'kids-nazariya' => ['Nazariya', 'Kids', 'jewellery'],
+    ];
+
+    /** Category text that has to follow the sheet (rings are one of a kind, each in its own size). */
+    private const DESCRIPTIONS = [
+        'silver-rings' => 'Rings in 925 sterling silver, hallmarked and stamped — each one of a kind, in its own Canadian size.',
     ];
 
     private const FINISHES = [
@@ -49,7 +62,8 @@ class ProductSheetSeeder extends Seeder
             $categories = [];
             $n = 0;
             foreach (self::CATEGORIES as $slug => [$name, $group, $kind]) {
-                $categories[$slug] = Category::updateOrCreate(['slug' => $slug], ['name' => $name, 'group' => $group, 'kind' => $kind, 'is_visible' => true, 'sort_order' => $n++]);
+                $categories[$slug] = Category::updateOrCreate(['slug' => $slug], ['name' => $name, 'group' => $group, 'kind' => $kind, 'is_visible' => true, 'sort_order' => $n++]
+                    + (isset(self::DESCRIPTIONS[$slug]) ? ['description' => self::DESCRIPTIONS[$slug]] : []));
             }
 
             $finishes = [];
@@ -98,6 +112,7 @@ class ProductSheetSeeder extends Seeder
                 ksort($files);
                 $files = array_values($files);
                 if ($files) {
+                    Storage::disk('public')->delete($product->images()->pluck('path')->all());   // replaced photos leave no files behind
                     $product->images()->delete();
                     foreach ($files as $i => $f) {
                         $source = $photoDir.DIRECTORY_SEPARATOR.$f;
@@ -108,9 +123,8 @@ class ProductSheetSeeder extends Seeder
                 }
             }
 
-            // Not on the sheet: remove from the store (soft delete) and hide categories that are now empty.
+            // Not on the sheet: remove from the store (soft delete). Categories stay, so the menu keeps all five sections.
             $removed = Product::whereNull('sku')->orWhereNotIn('sku', $skus)->get()->each->delete()->count();
-            Category::whereNotIn('slug', array_keys(self::CATEGORIES))->update(['is_visible' => false]);
 
             return compact('added', 'updated', 'removed', 'withPhotos');
         });

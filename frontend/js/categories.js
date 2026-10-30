@@ -9,7 +9,7 @@ const CATEGORY_LIST = [
   { slug: 'silver-bracelets', name: 'Woman Bracelets', group: 'Silver Jewellery', kind: 'jewellery',
     description: 'Silver bracelets for every day and every occasion.' },
   { slug: 'silver-rings', name: 'Woman Rings', group: 'Silver Jewellery', kind: 'jewellery',
-    description: 'Solitaires, halos and statement rings in 925 sterling silver. Canadian sizes 5 to 14.' },
+    description: 'Rings in 925 sterling silver, hallmarked and stamped — each one of a kind, in its own Canadian size.' },
   { slug: 'gold-earrings', name: 'Gold earrings', group: 'Gold Jewellery', kind: 'jewellery',
     description: 'Gold earrings for festive days and the moments worth remembering.' },
   { slug: 'mens-gold-chains', name: 'Gold chains', group: 'Gold Jewellery', kind: 'jewellery',
