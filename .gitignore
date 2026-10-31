@@ -27,3 +27,7 @@ assets/web-old/
 
 # Product photos made locally while testing (the live site makes its own from assets/ when you run database updates)
 backend/public/uploads/
+
+# Local test admin login and the Hostinger upload package
+LOCAL-ADMIN-LOGIN.txt
+deploy/
