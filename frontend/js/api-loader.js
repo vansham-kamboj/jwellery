@@ -1,10 +1,10 @@
-/* Backend connection â€” loads settings and products from the store API before the app starts.
+/* Backend connection — loads settings and products from the store API before the app starts.
    The API address comes from js/site-env.js, which frontend/build-env.js writes from frontend/.env.
    If there is no address or the API can't be reached, the built-in catalogue is used instead. */
 (() => {
   const startApp = () => {
     const s = document.createElement('script');
-    s.src = 'js/app.js?v=20261108';   // bump with the script tags in index.html after each update
+    s.src = 'js/app.js?v=20261109';   // bump with the script tags in index.html after each update
     document.body.appendChild(s);
   };
 
@@ -49,7 +49,7 @@
       PRODUCTS.length = 0;
       PRODUCTS.push(...list.data.map(toProduct));
       window.dispatchEvent(new Event('avya:products'));   // js/app.js redraws the page
-    } catch (e) { /* offline for a moment â€” try again next time */ }
+    } catch (e) { /* offline for a moment — try again next time */ }
   }
   setInterval(refreshProducts, 30000);
   document.addEventListener('visibilitychange', refreshProducts);
@@ -80,13 +80,13 @@
   const showDown = () => {
     const wa = ((window.AVYA_ENV || {}).WHATSAPP_API_URL || 'https://wa.me').replace(/\/+$/, '');
     document.getElementById('app').innerHTML = `<main class="iv-down" role="status">
-      <img src="../assets/brand/avya-logo.png" alt="Avya Jewels" width="420" height="191">
-      <h1>Weâ€™ll be right back</h1>
-      <p>Our shop is taking a short break. This page will open by itself as soon as itâ€™s ready.</p>
+      <img src="../assets/brand/avya-logo.png?v=20261102" alt="Avya Jewels" width="560" height="229">
+      <h1>We’ll be right back</h1>
+      <p>Our shop is taking a short break. This page will open by itself as soon as it’s ready.</p>
       <a href="${wa}/16477185454" target="_blank" rel="noopener">Message us on WhatsApp</a></main>`;
   };
   const boot = () => connect().then(startApp, err => {
-    console.warn('Store API unavailable â€” trying again shortly.', err);
+    console.warn('Store API unavailable — trying again shortly.', err);
     showDown();
     setTimeout(boot, 15000);
   });

@@ -167,7 +167,7 @@ const jsonLd = () => JSON.stringify({
 }, null, 2);
 
 const header = () => `<header class="sp-head">
-    <a class="sp-logo" href="/" aria-label="Avya Jewels home"><img src="/assets/brand/avya-logo.png" alt="Avya Jewels" width="168" height="76"></a>
+    <a class="sp-logo" href="/" aria-label="Avya Jewels home"><img src="/assets/brand/avya-logo.png?v=20261102" alt="Avya Jewels" width="112" height="46"></a>
     <nav class="sp-nav" aria-label="Main">${NAV.map(([l, h]) => `<a href="${h}">${esc(l)}</a>`).join('')}<a class="sp-shop" href="/#/shop">Shop</a></nav>
   </header>`;
 

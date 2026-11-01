@@ -7,7 +7,7 @@ const IMG = {
   model: '../assets/web/model-chains.jpg',
   gift: '../assets/web/gift-bracelet.jpg'
 };
-const BRAND = { logo: '../assets/brand/avya-logo.png', bars: '../assets/brand/gold-bars.webp' };
+const BRAND = { logo: '../assets/brand/avya-logo.png?v=20261102', bars: '../assets/brand/gold-bars.webp' };
 
 /* Gold bars & coins shown on the homepage — filled in catalog-real.js. */
 const GOLD = { featured: [] };
