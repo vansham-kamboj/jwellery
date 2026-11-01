@@ -114,7 +114,7 @@
     </div>`;
   }
 
-  const logo = cls => `<img src="${BRAND.logo}" alt="Avya Jewels" class="${cls}" width="560" height="229">`;
+  const logo = cls => `<img src="${BRAND.logo}" alt="Avya Jewels" class="${cls}" width="420" height="191">`;
 
   function header() {
     const t = totals();

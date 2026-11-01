@@ -4,7 +4,7 @@
 (() => {
   const startApp = () => {
     const s = document.createElement('script');
-    s.src = 'js/app.js?v=20261109';   // bump with the script tags in index.html after each update
+    s.src = 'js/app.js?v=20261110';   // bump with the script tags in index.html after each update
     document.body.appendChild(s);
   };
 
@@ -80,7 +80,7 @@
   const showDown = () => {
     const wa = ((window.AVYA_ENV || {}).WHATSAPP_API_URL || 'https://wa.me').replace(/\/+$/, '');
     document.getElementById('app').innerHTML = `<main class="iv-down" role="status">
-      <img src="../assets/brand/avya-logo.png?v=20261102" alt="Avya Jewels" width="560" height="229">
+      <img src="../assets/brand/avya-logo.png?v=20261103" alt="Avya Jewels" width="420" height="191">
       <h1>We’ll be right back</h1>
       <p>Our shop is taking a short break. This page will open by itself as soon as it’s ready.</p>
       <a href="${wa}/16477185454" target="_blank" rel="noopener">Message us on WhatsApp</a></main>`;
