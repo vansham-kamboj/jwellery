@@ -4,6 +4,9 @@ DirectoryIndex frontend/index.html index.html
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # Project tooling and git data are not part of the website
+    RewriteRule ^(tools|\.claude|\.git)(/|$) - [F,L]
+
     # Old /frontend/ links → the clean address
     RewriteCond %{THE_REQUEST} \s/frontend/?(index\.html)?[\s?]
     RewriteRule ^frontend/?(index\.html)?$ / [R=301,L]
@@ -38,5 +41,10 @@ AddDefaultCharset UTF-8
 
 # Never serve settings files
 <FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>
+
+# Never serve archives, database dumps, backups, logs or scripts, even if one is left on the server by mistake
+<FilesMatch "\.(zip|rar|7z|tar|gz|tgz|bz2|sql|sqlite|bak|backup|old|orig|swp|log|ps1|sh|md|lock)$">
     Require all denied
 </FilesMatch>
