@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Services\ImageOptimizer;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -165,7 +166,9 @@ class ProductSheetSeeder extends Seeder
                     $product->update($fields);
                     $updated++;
                 } else {
-                    $product = Product::create($fields + ['show_weight' => $p['weight_grams'] !== null]);   // later, the admin decides
+                    // The admin decides later whether a weight shows. (On a database that is still being brought up to date
+                    // the column may not exist yet; the update that adds it also fills it in for every product with a weight.)
+                    $product = Product::create($fields + (Schema::hasColumn('products', 'show_weight') ? ['show_weight' => $p['weight_grams'] !== null] : []));
                     $added++;
                 }
 
