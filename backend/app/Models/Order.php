@@ -27,11 +27,11 @@ class Order extends Model
     public function setStatus(string $status): void
     {
         DB::transaction(function () use ($status) {
-            // Cancelling puts the pieces back on sale; re-opening a cancelled order takes them again.
-            if ($status === 'cancelled') {
-                $this->returnStock();
-            } elseif ($this->status === 'cancelled') {
+            // A piece is taken off sale only when the order is confirmed (or later). A new order, or a cancelled one, leaves it on sale.
+            if (in_array($status, ['confirmed', 'shipped', 'completed'], true)) {
                 $this->takeStock();
+            } else {
+                $this->returnStock();
             }
             $this->status = $status;
             $stamp = $status.'_at';

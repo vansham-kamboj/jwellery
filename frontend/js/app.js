@@ -518,7 +518,7 @@
   const priceHtml = p => comingSoon(p) ? 'Coming soon' : onRequest(p) ? 'Price on request'
     : (p.wasPrice && p.wasPrice > p.price ? `<s class="iv-was">${cad(p.wasPrice)}</s> ` : '') + cad(p.price);
   const stockNote = p => soldOut(p) ? 'Sold out' : 'In stock';
-  const askLink = p => waLink(`Hi Avya Jewels, could you share today’s price for the ${p.name}?`);
+  const askLink = p => waLink(`Hi Avya Jewels, could you share today’s price for the ${p.name}${p.sku ? ' (SKU ' + p.sku + ')' : ''}?`);
   /* Customer reviews come only from Admin → Reviews; with none, no reviews section is shown. */
   const REVIEWS = window.AVYA_API ? (window.AVYA_API.site.reviews || []) : [];
   function reviewsBlock(list, heading) {
@@ -791,7 +791,7 @@
     const tabs = { 'Silver jewellery': p => !p.bullion, 'Gold & silver': p => p.bullion };
     const tab = tabs[state.homeTab] ? state.homeTab : 'Silver jewellery';
     const featured = REAL().filter(tabs[tab]);
-    const picks = [...featured.filter(p => p.tag), ...featured.filter(p => !p.tag)].slice(0, 4);
+    const picks = [...featured.filter(p => p.bestseller), ...featured.filter(p => !p.bestseller && p.tag), ...featured.filter(p => !p.bestseller && !p.tag)].slice(0, 4);
     const bar = byId('rcm-100g-gold-bar') || side;
     const promises = [
       { t: '925 hallmarked silver', b: 'Stamped on every piece of jewellery.' },
@@ -841,11 +841,12 @@
   }
 
   const SORTS = [['price_asc', 'Price, low to high'], ['price_desc', 'Price, high to low'], ['featured', 'Featured'], ['best', 'Best selling']];   // the order the client listed; Featured is what the page opens with
-  /* Pieces without a listed price (gold, bullion) go to the end of the price sorts. Best selling = pieces flagged featured in the admin. */
+  /* Pieces without a listed price (gold, bullion) go to the end of the price sorts.
+     Featured = pieces ticked "Featured" in the admin; Best selling = pieces ticked "Best selling" — two separate lists. */
   function sortList(list, mode) {
     const idx = p => PRODUCTS.indexOf(p), price = p => onRequest(p) ? Infinity : p.price;
-    const by = { featured: (a, b) => idx(a) - idx(b),
-      best: (a, b) => (+(b.featured || /best/i.test(b.tag || '')) - +(a.featured || /best/i.test(a.tag || ''))) || idx(a) - idx(b),
+    const by = { featured: (a, b) => (+!!b.featured - +!!a.featured) || idx(a) - idx(b),
+      best: (a, b) => (+!!b.bestseller - +!!a.bestseller) || idx(a) - idx(b),
       price_asc: (a, b) => (price(a) - price(b)) || idx(a) - idx(b),
       price_desc: (a, b) => ((onRequest(a) - onRequest(b)) || (price(b) - price(a))) || idx(a) - idx(b) };
     return [...list].sort(by[mode] || by.featured);
@@ -926,15 +927,17 @@
 
   const ZOOM_ICON = svg('<path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/>', 16);
   /* Full-screen image viewer for the product page. */
+  let LB = { imgs: [], name: '' };   // the photos in the open viewer, so stepping to the next one changes only the picture (no page redraw, no flicker)
   function lightbox(p, imgs) {
-    const n = imgs.length, i = ((state.zoom % n) + n) % n;
+    LB = { imgs, name: p.name };
+    const n = imgs.length, i = Math.max(0, Math.min(n - 1, state.zoom));   // stops at the first and last photo
     return `<div class="iv-lightbox" role="dialog" aria-modal="true" aria-label="${esc(p.name)} images">
       <div class="iv-lb-backdrop" data-act="unzoom"></div>
-      <figure class="iv-lb-stage"><img src="${imgs[i]}" alt="${esc(p.name)} — image ${i + 1} of ${n}"><figcaption>${esc(p.name)} <span>${i + 1} / ${n}</span></figcaption></figure>
+      <figure class="iv-lb-stage"><div class="iv-lb-frame"><img src="${imgs[i]}" alt="${esc(p.name)} — image ${i + 1} of ${n}" decoding="sync" draggable="false"></div><figcaption>${esc(p.name)} <span>${i + 1} / ${n}</span></figcaption><p class="iv-lb-hint">Tap the photo to zoom</p></figure>
       <button type="button" class="iv-lb-btn close" data-act="unzoom" aria-label="Close">${ICON.close}</button>
-      ${n > 1 ? `<button type="button" class="iv-lb-btn prev" data-act="zoomStep" data-arg="-1" aria-label="Previous image">${svg('<path d="M15 5l-7 7 7 7"/>', 24)}</button>
-      <button type="button" class="iv-lb-btn next" data-act="zoomStep" data-arg="1" aria-label="Next image">${svg('<path d="M9 5l7 7-7 7"/>', 24)}</button>
-      <div class="iv-lb-thumbs">${imgs.map((src, j) => `<button type="button" class="${j === i ? 'on' : ''}" data-act="zoom" data-arg="${j}" aria-label="Image ${j + 1}">${photo(src, '')}</button>`).join('')}</div>` : ''}
+      ${n > 1 ? `<button type="button" class="iv-lb-btn prev" data-act="zoomStep" data-arg="-1" aria-label="Previous image" ${i === 0 ? 'disabled' : ''}>${svg('<path d="M15 5l-7 7 7 7"/>', 24)}</button>
+      <button type="button" class="iv-lb-btn next" data-act="zoomStep" data-arg="1" aria-label="Next image" ${i === n - 1 ? 'disabled' : ''}>${svg('<path d="M9 5l7 7-7 7"/>', 24)}</button>
+      <div class="iv-lb-thumbs">${imgs.map((src, j) => `<button type="button" class="${j === i ? 'on' : ''}" data-act="zoomTo" data-arg="${j}" aria-label="Image ${j + 1}"><img src="${src}" alt="" decoding="sync"></button>`).join('')}</div>` : ''}
     </div>`;
   }
 
@@ -950,11 +953,12 @@
     const pairs = [...others.filter(x => x.cat === p.cat), ...others.filter(x => x.cat !== p.cat && group && group.cats.some(c => c.slug === x.cat))].slice(0, 4);
     const soon = comingSoon(p);
     const ask = onRequest(p) && !soon;
-    const orderMsg = 'Hi Avya Jewels, I’d like to order the ' + p.name + (size ? ' (size ' + size + ')' : '') + (finish && !ask ? ' in ' + finish : '') + '.';
+    const code = p.sku ? ' (SKU ' + p.sku + ')' : '';
+    const orderMsg = 'Hi Avya Jewels, I’d like to order the ' + p.name + code + (size ? ' (size ' + size + ')' : '') + (finish && !ask ? ' in ' + finish : '') + '.';
     const extra = [
       ...(ask || soon || soldOut(p) ? [] : [['Order on WhatsApp', waLink(orderMsg)]]),
-      ['Ask a question', waLink('Hi Avya Jewels, I have a question about the ' + p.name + '.')],
-      ['Book a visit', waLink('Hi Avya Jewels, I’d like to book a visit to see the ' + p.name + '.')]
+      ['Ask a question', waLink('Hi Avya Jewels, I have a question about the ' + p.name + code + '.')],
+      ['Book a visit', waLink('Hi Avya Jewels, I’d like to book a visit to see the ' + p.name + code + '.')]
     ];
     const buy = (soon ? `<button class="iv-btn block lg" disabled>Coming soon</button>` : ask
       ? `<a class="iv-btn block lg" href="${askLink(p)}" target="_blank" rel="noopener">Ask today’s price on WhatsApp</a>`
@@ -964,14 +968,14 @@
     // Weight comes only when the team chose to show it; bars and coins read as oz / kg, jewellery as exact grams.
     const weight = g => !g ? null : p.bullion ? (Math.abs(g / 31.1035 - Math.round(g / 31.1035)) < 0.01 ? Math.round(g / 31.1035) + ' oz' : (g >= 1000 ? g / 1000 + ' kg' : +(+g).toFixed(1) + ' g')) : +(+g).toFixed(2) + ' g';
     const details = (p.bullion
-      ? [['Weight', weight(p.grams)], ['Purity', p.purity ? p.purity + '% pure' : '99.99% pure'], ['Brand / mint', p.brand], ['Design', p.design], ['Packaging', p.packaging], ['Assay certificate', p.certificate ? 'Included' : null], ['Product code', p.sku]]
+      ? [['Weight', weight(p.grams)], ['Purity', p.metal === 'gold' ? '.9999 pure gold' : '0.9999 pure silver'], ['Brand / mint', p.brand], ['Design', p.design], ['Packaging', p.packaging], ['Assay certificate', p.certificate ? 'Included' : null], ['Product code', p.sku]]
       : [['Metal', (p.metal || (/gold/i.test(p.material || '') && !/silver/i.test(p.material || '') ? 'gold' : 'silver')).replace(/^./, m => m.toUpperCase())], ['Purity', p.metal === 'gold' ? (p.purity || 'Hallmarked gold') : (p.purity || '925') + ' · hallmarked & stamped'], ['Weight', weight(p.grams)], ['Product code', p.sku]]
     ).filter(([, v]) => v);
-    const notes = [p.bullion ? 'Certified 99.99%' : p.metal === 'gold' ? 'Hallmarked gold' : 'Hallmarked 925 silver', 'Free GTA delivery over $200', 'Pick-up in Mississauga', 'All sales final'];
+    const notes = [p.bullion ? (p.metal === 'gold' ? 'Certified .9999 pure gold' : 'Certified 0.9999 pure silver') : p.metal === 'gold' ? 'Hallmarked gold' : 'Hallmarked 925 silver', 'Free GTA delivery over $200', 'Pick-up in Mississauga', 'All sales final'];
     return `
     <section class="iv-pdp">
       <div class="iv-gallery">
-        ${imgs.map((s, i) => `<button type="button" class="iv-img iv-zoomable ${i ? 'half' : 'main'}" data-act="zoom" data-arg="${i}" aria-label="View ${esc(p.name)} image ${i + 1} full screen">${!i && p.tag ? `<span class="iv-tag">${esc(p.tag)}</span>` : ''}${photo(s, p.name + (i ? ' — view ' + (i + 1) : ''), !i)}<span class="iv-zoom-hint" aria-hidden="true">${ZOOM_ICON}</span></button>`).join('')}
+        ${imgs.map((s, i) => `<button type="button" class="iv-img iv-zoomable fit ${i ? 'half' : 'main'}" style="--bg:url('${s}')" data-act="zoom" data-arg="${i}" aria-label="View ${esc(p.name)} image ${i + 1} full screen">${!i && p.tag ? `<span class="iv-tag">${esc(p.tag)}</span>` : ''}<img src="${s}" alt="${esc(p.name + (i ? ' — view ' + (i + 1) : ''))}" ${i ? '' : 'fetchpriority="high"'} decoding="sync"><span class="iv-zoom-hint" aria-hidden="true">${ZOOM_ICON}</span></button>`).join('')}
         ${p.video ? `<div class="iv-img half"><video src="${p.video}" poster="${p.img}" autoplay muted loop playsinline aria-label="${esc(p.name)} video"></video></div>` : ''}
       </div>
       <div class="iv-buy">
@@ -982,7 +986,7 @@
           <p class="iv-body">${esc(p.desc)}</p>
           ${details.length ? `<dl class="iv-specs">${details.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>` : ''}
         </div>
-        ${fins.length && !onRequest(p) ? `<div class="iv-opt"><div class="iv-opt-head"><span>Metal</span><span>${esc(finish || '')}</span></div>
+        ${fins.length > 1 && !onRequest(p) ? `<div class="iv-opt"><div class="iv-opt-head"><span>Metal</span><span>${esc(finish || '')}</span></div>
           <div class="iv-opt-row">${fins.map(f => `<label class="iv-choice"><input type="radio" name="pfin" data-pdp="finish" value="${esc(f.name)}" ${finish === f.name ? 'checked' : ''}><span class="sw" style="background:${f.swatch}"></span>${esc(f.name)}</label>`).join('')}</div></div>` : ''}
         ${sz && !ask ? `<div class="iv-opt"><div class="iv-opt-head"><span>${esc(sz.label)}${/ring/i.test(sz.label) ? ' (CA/US)' : ''}</span><span>${esc(size || '')}</span></div>
           <div class="iv-sizes">${sz.opts.map(v => `<label class="iv-choice"><input type="radio" name="psize" data-pdp="size" value="${esc(v)}" ${size === v ? 'checked' : ''}>${esc(v)}</label>`).join('')}</div></div>` : ''}
@@ -991,7 +995,7 @@
           ${buy}
           <span class="iv-note">${notes.join(' · ')}</span>
         </div>
-        <div class="iv-acc">${(p.accordions || CONTENT.accordions).map((a, i) => (i === 0 && p.care ? { ...a, body: p.care } : a)).map((a, i) => `<button class="iv-acc-item" data-act="acc" data-arg="${i}" aria-expanded="${state.open === i}"><span class="iv-acc-head"><span>${esc(a.title)}</span><span class="pm">${state.open === i ? '−' : '+'}</span></span>${state.open === i ? `<p>${esc(a.body)}</p>` : ''}</button>`).join('')}</div>
+        <div class="iv-acc">${(p.accordions || CONTENT.accordions).map(a => (/care/i.test(a.title) && p.care ? { ...a, body: p.care } : a)).map((a, i) => `<button class="iv-acc-item" data-act="acc" data-arg="${i}" aria-expanded="${state.open === i}"><span class="iv-acc-head"><span>${esc(a.title)}</span><span class="pm">${state.open === i ? '−' : '+'}</span></span>${state.open === i ? `<p>${esc(a.body)}</p>` : ''}</button>`).join('')}</div>
       </div>
     </section>
     ${pairs.length ? `<section class="iv-band">
@@ -1085,7 +1089,7 @@
           ${field('Email for a confirmation (optional)', 'email', 'type="email" autocomplete="email"', 'style="grid-column:1/-1"')}
         </div>
         <div class="stack" style="gap:10px"><h3>Delivery</h3>
-          ${SHIP.map(o => { const ok = !o.minOrder || t.goods >= o.minOrder; return `<label class="radio option-box tinted ${t.opt && t.opt.id === o.id ? 'on' : ''} ${ok ? '' : 'disabled'}" ${ok ? '' : 'style="opacity:.5"'}><span class="row" style="gap:12px"><input type="radio" name="ship" data-set="ship" value="${esc(o.id)}" ${t.opt && t.opt.id === o.id ? 'checked' : ''} ${ok ? '' : 'disabled'}><span class="dot"></span><span class="stack"><span>${esc(o.name)}</span><span style="font-size:12px" class="muted">${esc(ok ? o.eta : 'Available on orders over $' + o.minOrder)}</span></span></span><span>${o.price ? money(o.price) : 'Free'}</span></label>`; }).join('')}</div>
+          ${SHIP.map(o => { const ok = !o.minOrder || t.goods >= o.minOrder; return `<label class="radio option-box tinted ${t.opt && t.opt.id === o.id ? 'on' : ''} ${ok ? '' : 'disabled'}" ${ok ? '' : 'style="opacity:.85"'}><span class="row" style="gap:12px"><input type="radio" name="ship" data-set="ship" value="${esc(o.id)}" ${t.opt && t.opt.id === o.id ? 'checked' : ''} ${ok ? '' : 'disabled'}><span class="dot"></span><span class="stack"><span>${esc(o.name)}</span><span style="font-size:12px" class="muted">${esc(ok ? o.eta : 'Available on orders over $' + o.minOrder)}</span></span></span><span>${o.price ? money(o.price) : 'Free'}</span></label>`; }).join('')}</div>
         ${delivering ? `<div class="stack" style="gap:12px"><h3>Delivery address</h3><div class="grid-2">
             ${field('Address', 'address', 'required autocomplete="street-address"', 'style="grid-column:1/-1"')}
             ${field('City', 'city', 'required autocomplete="address-level2"')}
@@ -1110,7 +1114,7 @@
   function orderMessage(t) {
     const f = state.form;
     return ['Hi Avya Jewels! I would like to place an order.', '',
-      ...t.lines.map((l, i) => `${i + 1}. ${l.p.name} — ${l.variant} × ${l.qty} — ${money(l.sum)}`), '',
+      ...t.lines.map((l, i) => `${i + 1}. ${l.p.name}${l.p.sku ? ' (SKU ' + l.p.sku + ')' : ''} — ${l.variant} × ${l.qty} — ${money(l.sum)}`), '',
       'Subtotal: ' + money(t.goods), (t.opt ? t.opt.name : 'Delivery') + ': ' + t.shipping, t.gift ? 'Gift wrapping: yes' : '',
       'Total: ' + money(t.total) + ' CAD' + (STORE.taxIncluded ? ' (taxes included)' : ''), '',
       'Name: ' + f.name, 'Phone: ' + f.phone, f.email ? 'Email: ' + f.email : '',
@@ -1216,7 +1220,23 @@
     if (focusId) { const el = app.querySelector(`[data-model="${focusId}"]`); if (el) { el.focus(); const v = el.value; el.value = ''; el.value = v; } }
   }
 
+  /* Going back (browser Back, or the phone's back gesture) returns to the same spot on the page, not the top.
+     Each history entry is stamped with a key; the scroll position is remembered per key. A new visit starts at the top. */
+  history.scrollRestoration = 'manual';
+  const SCROLLS = {};
+  let navKey = null, navSeq = 0;
+  window.addEventListener('scroll', () => { if (navKey) SCROLLS[navKey] = window.scrollY; }, { passive: true });
+  const jump = y => window.scrollTo({ top: y, left: 0, behavior: 'instant' });   // instant: the page's smooth scrolling would make the page visibly slide
+  function restoreScroll(y) {
+    jump(y);
+    [120, 400, 900].forEach(ms => setTimeout(() => { if (Math.abs(window.scrollY - y) > 4 && document.documentElement.scrollHeight >= y + window.innerHeight - 4) jump(y); }, ms));
+  }
+
   function route() {
+    const stamped = history.state && history.state.avyaNav;
+    const back = !!stamped && SCROLLS[stamped] != null;
+    if (stamped) navKey = stamped;
+    else { navKey = 'n' + (++navSeq) + '-' + Date.now(); history.replaceState({ ...(history.state || {}), avyaNav: navKey }, ''); }
     const [r, param] = location.hash.replace(/^#\/?/, '').split('/');
     const name = PAGES[r] ? r : 'home';
     const anchor = r === 'gold-bars' || r === 'gift' ? r : null;
@@ -1228,8 +1248,9 @@
     }
     set(patch);
     document.title = name === 'home' ? TITLES.home : (name === 'product' ? byId(state.pdp.id).name : TITLES[name]) + ' · Avya Jewels';
-    if (anchor && document.getElementById(anchor)) document.getElementById(anchor).scrollIntoView({ block: 'start' });
-    else window.scrollTo(0, 0);
+    if (back) restoreScroll(SCROLLS[navKey]);
+    else if (anchor && document.getElementById(anchor)) document.getElementById(anchor).scrollIntoView({ block: 'start' });
+    else jump(0);
   }
 
   /* ── Events ─────────────────────────────────────────────────────────── */
@@ -1237,7 +1258,7 @@
     toggleNav: () => set({ navOpen: !state.navOpen }),
     newIn: () => set({ filter: 'All', ffin: 'Any' }),
     quickAdd: id => quickAdd(id),
-    filter: c => { history.replaceState(null, '', '#/shop' + (c === 'All' ? '' : '/' + c)); set({ filter: c }); },
+    filter: c => { history.replaceState(history.state, '', '#/shop' + (c === 'All' ? '' : '/' + c)); set({ filter: c }); },
     clearFilters: () => set({ filter: 'All', ffin: 'Any' }),
     openFilters: () => set({ filtersOpen: 'opening', draft: { filter: state.filter, ffin: state.ffin } }),
     closeFilters: () => { set({ filtersOpen: false }); document.querySelector('.filter-trigger')?.focus(); },
@@ -1274,7 +1295,7 @@
     bespoke: () => set({ submitted: true }),
     filters: () => {
       const { filter, ffin } = state.draft;
-      history.replaceState(null, '', '#/shop' + (filter === 'All' ? '' : '/' + filter));
+      history.replaceState(history.state, '', '#/shop' + (filter === 'All' ? '' : '/' + filter));
       set({ filter, ffin, filtersOpen: false });
       document.querySelector('.coll-body')?.scrollIntoView({ block: 'start' });
     }
@@ -1453,9 +1474,24 @@
 
   /* Full-screen product images */
   const lockScroll = () => { document.body.style.overflow = state.zoom !== null && state.zoom !== undefined ? 'hidden' : ''; };
+  /* Move to another photo by changing the picture in place: no redraw, so nothing flickers, and it stops at the first and last photo. */
+  function lbGo(i) {
+    const box = document.querySelector('.iv-lightbox'), n = LB.imgs.length;
+    if (!box || !n) return;
+    i = Math.max(0, Math.min(n - 1, i));
+    state.zoom = i;
+    const img = box.querySelector('.iv-lb-frame img');
+    img.classList.remove('zoomed'); img.style.transformOrigin = '';
+    img.src = LB.imgs[i]; img.alt = LB.name + ' — image ' + (i + 1) + ' of ' + n;
+    box.querySelector('figcaption span').textContent = (i + 1) + ' / ' + n;
+    box.querySelectorAll('.iv-lb-thumbs button').forEach((b, j) => b.classList.toggle('on', j === i));
+    box.querySelector('.iv-lb-btn.prev')?.toggleAttribute('disabled', i === 0);
+    box.querySelector('.iv-lb-btn.next')?.toggleAttribute('disabled', i === n - 1);
+  }
   Object.assign(ACTIONS, {
-    zoom: i => { set({ zoom: +i }); lockScroll(); document.querySelector('.iv-lb-btn.close')?.focus(); },
-    zoomStep: d => { set({ zoom: (state.zoom || 0) + +d }); lockScroll(); document.querySelector(`.iv-lb-btn.${+d > 0 ? 'next' : 'prev'}`)?.focus(); },
+    zoom: i => { set({ zoom: +i }); lockScroll(); LB.imgs.forEach(src => { new Image().src = src; }); document.querySelector('.iv-lb-btn.close')?.focus(); },
+    zoomTo: i => lbGo(+i),
+    zoomStep: d => lbGo((state.zoom || 0) + +d),
     unzoom: () => { const i = state.zoom; set({ zoom: null }); lockScroll(); document.querySelector(`.iv-zoomable[data-arg="${i}"]`)?.focus(); }
   });
   document.addEventListener('keydown', e => {
@@ -1463,6 +1499,32 @@
     if (e.key === 'Escape') ACTIONS.unzoom();
     else if (e.key === 'ArrowRight') ACTIONS.zoomStep(1);
     else if (e.key === 'ArrowLeft') ACTIONS.zoomStep(-1);
+  });
+  /* Zoom: tap or click the photo to magnify it where you pointed; move the mouse or drag a finger to look around; tap again to zoom out. */
+  const lbPoint = (img, x, y) => { const r = img.getBoundingClientRect(); img.style.transformOrigin = Math.max(0, Math.min(100, (x - r.left) / r.width * 100)) + '% ' + Math.max(0, Math.min(100, (y - r.top) / r.height * 100)) + '%'; };
+  let lbDrag = null;
+  document.addEventListener('click', e => {
+    const img = e.target.closest && e.target.closest('.iv-lb-frame img');
+    if (!img || lbDrag === 'moved') { lbDrag = null; return; }
+    if (img.classList.contains('zoomed')) { img.classList.remove('zoomed'); img.style.transformOrigin = ''; return; }
+    lbPoint(img, e.clientX, e.clientY); img.classList.add('zoomed');
+  });
+  document.addEventListener('mousemove', e => { const img = document.querySelector('.iv-lb-frame img.zoomed'); if (img && e.target.closest && e.target.closest('.iv-lb-frame')) lbPoint(img, e.clientX, e.clientY); });
+  let lbSwipe = null;
+  document.addEventListener('touchstart', e => {
+    if (!e.target.closest || !e.target.closest('.iv-lightbox')) { lbSwipe = null; return; }
+    lbSwipe = { x: e.touches[0].clientX, y: e.touches[0].clientY }; lbDrag = null;
+  }, { passive: true });
+  document.addEventListener('touchmove', e => {
+    const img = document.querySelector('.iv-lb-frame img.zoomed');
+    if (img && lbSwipe && e.target.closest('.iv-lb-frame')) { lbPoint(img, e.touches[0].clientX, e.touches[0].clientY); lbDrag = 'moved'; }
+  }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (!lbSwipe) return;
+    const dx = e.changedTouches[0].clientX - lbSwipe.x, dy = e.changedTouches[0].clientY - lbSwipe.y;
+    lbSwipe = null;
+    if (document.querySelector('.iv-lb-frame img.zoomed')) return;   // zoomed in: dragging looks around, it does not change photo
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) lbGo((state.zoom || 0) + (dx < 0 ? 1 : -1));
   });
   window.addEventListener('hashchange', () => { state.zoom = null; document.body.style.overflow = ''; });
 

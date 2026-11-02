@@ -17,12 +17,12 @@ class Product extends Model
     protected $fillable = [
         'category_id', 'name', 'slug', 'short_name', 'material', 'description', 'care', 'price', 'tag', 'kind',
         'metal', 'weight_grams', 'show_weight', 'purity', 'sku', 'brand', 'design', 'packaging', 'certificate', 'tax_exempt', 'size_label', 'default_size', 'in_stock', 'stock_qty', 'is_visible',
-        'is_featured', 'sort_order',
+        'is_featured', 'is_bestseller', 'sort_order',
     ];
 
     protected $casts = [
         'price' => 'decimal:2', 'weight_grams' => 'decimal:4', 'show_weight' => 'boolean', 'tax_exempt' => 'boolean', 'in_stock' => 'boolean',
-        'is_visible' => 'boolean', 'is_featured' => 'boolean', 'certificate' => 'boolean', 'sort_order' => 'integer', 'stock_qty' => 'integer',
+        'is_visible' => 'boolean', 'is_featured' => 'boolean', 'is_bestseller' => 'boolean', 'certificate' => 'boolean', 'sort_order' => 'integer', 'stock_qty' => 'integer',
     ];
 
     public function category(): BelongsTo

@@ -34,6 +34,7 @@
                             <span class="badge {{ $p->is_visible ? 'on' : 'off' }}">{{ $p->is_visible ? 'Visible' : 'Hidden' }}</span>
                             @unless ($p->in_stock)<span class="badge off">Sold out</span>@endunless
                             @if ($p->is_featured)<span class="badge new">Featured</span>@endif
+                            @if ($p->is_bestseller)<span class="badge new">Best selling</span>@endif
                             @if ($p->tag)<span class="badge quiet">{{ $p->tag }}</span>@endif
                         </td>
                         <td class="num"><a href="{{ route('admin.products.edit', $p) }}" class="btn ghost sm">Edit</a></td>

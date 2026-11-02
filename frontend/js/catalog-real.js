@@ -116,8 +116,7 @@ const JEWELLERY_DETAILS = [
   { title: 'Returns', body: 'All sales are final — we don’t accept returns or exchanges. If anything isn’t right with your purchase, message us and we’ll do our best to help.' }
 ];
 const BULLION_DETAILS = [
-  { title: 'Certification & packaging', body: '' },
-  { title: 'How pricing works', body: 'Gold and silver follow the live market, so we share today’s price on WhatsApp — usually within 15 to 30 minutes. Pay in full by e-Transfer or cash to confirm your order.' },
+  { title: 'How pricing works', body: 'Gold and silver follow the live market, so we share today’s price on WhatsApp — usually within 15 to 30 minutes. Pay in full by e-Transfer to confirm your order.' },
   { title: 'Delivery & pick-up', body: 'Free delivery across the GTA on orders over $200, or pick up from us in Mississauga. We don’t ship bullion outside the GTA yet.' }
 ];
 PRODUCTS.filter(p => p.real).forEach(p => {

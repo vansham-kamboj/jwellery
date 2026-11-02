@@ -103,12 +103,13 @@ for (const tab of tabs) {
     if (grams && Math.abs(grams - 31.1) < 0.05) grams = OZ;   // the sheet rounds 1 oz to 31.1 g
     const brand = pick(BRANDS, name), design = pick(DESIGNS, name);
     const metalWord = gold ? 'gold' : 'silver';
+    const pureWord = gold ? '.9999 pure gold' : '0.9999 pure silver';   // the client's wording
     products.push({ ...base, kind: 'bullion', category: `${metalWord}-${isBar ? 'bars' : 'coins'}`, name, slug: slug(name),
-      metal: metalWord, purity: '99.99', material: `99.99% pure ${metalWord}`, finish: gold ? 'finegold' : 'finesilver', price: priceOf(r) || 0,
+      metal: metalWord, purity: '99.99', material: pureWord, finish: gold ? 'finegold' : 'finesilver', price: priceOf(r) || 0,
       weight_grams: grams ? +grams.toFixed(4) : null, size: null, brand, design, certificate: /pamp|valcambi/i.test(name),
-      description: `${name} — 99.99% pure ${metalWord}${brand ? ` from ${brand}` : ''}${/collectible/i.test(r['Product type'] || '') ? ', a collector’s coin' : ''}. ` +
-        `${isBar ? 'Sealed as issued by the refiner' : 'In mint condition'}, for saving, investing and gifting.` + (base.tag ? ' Coming soon.' : ` Price follows the live ${metalWord} market — we confirm today’s price on WhatsApp.`),
-      care: 'Keep in its original sealed packaging or capsule, and handle by the edges.' });
+      description: `${name} — ${pureWord}${brand ? ` from ${brand}` : ''}${/collectible/i.test(r['Product type'] || '') ? ', a collector’s coin' : ''}, for saving, investing and gifting.` +
+        (base.tag ? ' Coming soon.' : ` Price follows the live ${metalWord} market — we confirm today’s price on WhatsApp.`),
+      care: null });
   }
 }
 

@@ -1,6 +1,6 @@
 {
  "source": "Avya Jewels Products (1).xlsx",
- "generated": "2026-10-30",
+ "generated": "2026-11-02",
  "products": [
   {
    "sku": "AVY-SK-KD-001",
@@ -3551,7 +3551,7 @@
    "slug": "1-gram-gold-bar-pamp-suisse-lady-fortuna",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 1,
@@ -3559,8 +3559,8 @@
    "brand": "PAMP Suisse",
    "design": "Lady Fortuna",
    "certificate": true,
-   "description": "1 Gram Gold Bar – PAMP Suisse Lady Fortuna — 99.99% pure gold from PAMP Suisse. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "1 Gram Gold Bar – PAMP Suisse Lady Fortuna — .9999 pure gold from PAMP Suisse, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-GB-002",
@@ -3575,7 +3575,7 @@
    "slug": "2-5-gram-gold-bar-pamp-suisse-lady-fortuna",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 2.5,
@@ -3583,8 +3583,8 @@
    "brand": "PAMP Suisse",
    "design": "Lady Fortuna",
    "certificate": true,
-   "description": "2.5 Gram Gold Bar – PAMP Suisse Lady Fortuna — 99.99% pure gold from PAMP Suisse. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "2.5 Gram Gold Bar – PAMP Suisse Lady Fortuna — .9999 pure gold from PAMP Suisse, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-GB-003",
@@ -3599,7 +3599,7 @@
    "slug": "5-gram-gold-bar-pamp-suisse-lady-fortuna",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 5,
@@ -3607,8 +3607,8 @@
    "brand": "PAMP Suisse",
    "design": "Lady Fortuna",
    "certificate": true,
-   "description": "5 Gram Gold Bar – PAMP Suisse Lady Fortuna — 99.99% pure gold from PAMP Suisse. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "5 Gram Gold Bar – PAMP Suisse Lady Fortuna — .9999 pure gold from PAMP Suisse, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-GB-004",
@@ -3623,7 +3623,7 @@
    "slug": "10-gram-diwali-gold-bar",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 10,
@@ -3631,8 +3631,8 @@
    "brand": null,
    "design": "Diwali",
    "certificate": false,
-   "description": "10 Gram Diwali Gold Bar — 99.99% pure gold. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "10 Gram Diwali Gold Bar — .9999 pure gold, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-GB-005",
@@ -3647,7 +3647,7 @@
    "slug": "10-gram-rcm-gold-bar",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 10,
@@ -3655,8 +3655,8 @@
    "brand": "Royal Canadian Mint",
    "design": null,
    "certificate": false,
-   "description": "10 Gram RCM Gold Bar — 99.99% pure gold from Royal Canadian Mint. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "10 Gram RCM Gold Bar — .9999 pure gold from Royal Canadian Mint, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-GB-006",
@@ -3671,7 +3671,7 @@
    "slug": "1-oz-diwali-laxmi-gold-bar",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 31.1035,
@@ -3679,8 +3679,8 @@
    "brand": null,
    "design": "Goddess Laxmi",
    "certificate": false,
-   "description": "1 oz Diwali Laxmi Gold Bar — 99.99% pure gold. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "1 oz Diwali Laxmi Gold Bar — .9999 pure gold, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-GB-007",
@@ -3695,7 +3695,7 @@
    "slug": "1-oz-rcm-gold-bar",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 31.1035,
@@ -3703,8 +3703,8 @@
    "brand": "Royal Canadian Mint",
    "design": null,
    "certificate": false,
-   "description": "1 oz RCM Gold Bar — 99.99% pure gold from Royal Canadian Mint. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "1 oz RCM Gold Bar — .9999 pure gold from Royal Canadian Mint, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-GB-008",
@@ -3719,7 +3719,7 @@
    "slug": "1-oz-bmo-gold-bar",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 31.1035,
@@ -3727,8 +3727,8 @@
    "brand": "BMO",
    "design": null,
    "certificate": false,
-   "description": "1 oz BMO Gold Bar — 99.99% pure gold from BMO. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "1 oz BMO Gold Bar — .9999 pure gold from BMO, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-GB-009",
@@ -3743,7 +3743,7 @@
    "slug": "50-gram-gold-bar-pamp-suisse-lady-fortuna",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 50,
@@ -3751,8 +3751,8 @@
    "brand": "PAMP Suisse",
    "design": "Lady Fortuna",
    "certificate": true,
-   "description": "50 Gram Gold Bar – PAMP Suisse Lady Fortuna — 99.99% pure gold from PAMP Suisse. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "50 Gram Gold Bar – PAMP Suisse Lady Fortuna — .9999 pure gold from PAMP Suisse, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-GB-010",
@@ -3767,7 +3767,7 @@
    "slug": "100-gram-gold-bar-pamp-suisse-lady-fortuna",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 100,
@@ -3775,8 +3775,8 @@
    "brand": "PAMP Suisse",
    "design": "Lady Fortuna",
    "certificate": true,
-   "description": "100 Gram Gold Bar – PAMP Suisse Lady Fortuna — 99.99% pure gold from PAMP Suisse. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "100 Gram Gold Bar – PAMP Suisse Lady Fortuna — .9999 pure gold from PAMP Suisse, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-GB-011",
@@ -3791,7 +3791,7 @@
    "slug": "100-gram-valcambi-gold-bar",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 100,
@@ -3799,8 +3799,8 @@
    "brand": "Valcambi Suisse",
    "design": null,
    "certificate": true,
-   "description": "100 Gram Valcambi Gold Bar — 99.99% pure gold from Valcambi Suisse. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "100 Gram Valcambi Gold Bar — .9999 pure gold from Valcambi Suisse, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-GB-012",
@@ -3815,7 +3815,7 @@
    "slug": "100-gram-rcm-gold-bar",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 100,
@@ -3823,8 +3823,8 @@
    "brand": "Royal Canadian Mint",
    "design": null,
    "certificate": false,
-   "description": "100 Gram RCM Gold Bar — 99.99% pure gold from Royal Canadian Mint. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "100 Gram RCM Gold Bar — .9999 pure gold from Royal Canadian Mint, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-GC-001",
@@ -3839,7 +3839,7 @@
    "slug": "1-gram-gold-maple-leaf-coin-maplegram",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 1,
@@ -3847,8 +3847,8 @@
    "brand": "Royal Canadian Mint",
    "design": "Maplegram",
    "certificate": false,
-   "description": "1 Gram Gold Maple Leaf Coin – Maplegram — 99.99% pure gold from Royal Canadian Mint. In mint condition, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "1 Gram Gold Maple Leaf Coin – Maplegram — .9999 pure gold from Royal Canadian Mint, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-GC-002",
@@ -3863,7 +3863,7 @@
    "slug": "1-oz-gold-maple-leaf-coin",
    "metal": "gold",
    "purity": "99.99",
-   "material": "99.99% pure gold",
+   "material": ".9999 pure gold",
    "finish": "finegold",
    "price": 0,
    "weight_grams": 31.1035,
@@ -3871,8 +3871,8 @@
    "brand": "Royal Canadian Mint",
    "design": "Maple Leaf",
    "certificate": false,
-   "description": "1 oz Gold Maple Leaf Coin — 99.99% pure gold from Royal Canadian Mint. In mint condition, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "1 oz Gold Maple Leaf Coin — .9999 pure gold from Royal Canadian Mint, for saving, investing and gifting. Price follows the live gold market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-SC-001",
@@ -3887,7 +3887,7 @@
    "slug": "1-oz-silver-maple-leaf-coin",
    "metal": "silver",
    "purity": "99.99",
-   "material": "99.99% pure silver",
+   "material": "0.9999 pure silver",
    "finish": "finesilver",
    "price": 0,
    "weight_grams": 31.1035,
@@ -3895,8 +3895,8 @@
    "brand": "Royal Canadian Mint",
    "design": "Maple Leaf",
    "certificate": false,
-   "description": "1 oz Silver Maple Leaf Coin — 99.99% pure silver from Royal Canadian Mint. In mint condition, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "1 oz Silver Maple Leaf Coin — 0.9999 pure silver from Royal Canadian Mint, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-SC-002",
@@ -3911,7 +3911,7 @@
    "slug": "1-oz-australian-silver-kookaburra",
    "metal": "silver",
    "purity": "99.99",
-   "material": "99.99% pure silver",
+   "material": "0.9999 pure silver",
    "finish": "finesilver",
    "price": 0,
    "weight_grams": 31.1035,
@@ -3919,8 +3919,8 @@
    "brand": "The Perth Mint",
    "design": "Kookaburra",
    "certificate": false,
-   "description": "1 oz Australian Silver Kookaburra — 99.99% pure silver from The Perth Mint. In mint condition, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "1 oz Australian Silver Kookaburra — 0.9999 pure silver from The Perth Mint, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-SC-003",
@@ -3935,7 +3935,7 @@
    "slug": "1-oz-silver-australian-kangaroo",
    "metal": "silver",
    "purity": "99.99",
-   "material": "99.99% pure silver",
+   "material": "0.9999 pure silver",
    "finish": "finesilver",
    "price": 0,
    "weight_grams": 31.1035,
@@ -3943,8 +3943,8 @@
    "brand": "The Perth Mint",
    "design": "Kangaroo",
    "certificate": false,
-   "description": "1 oz Silver Australian Kangaroo — 99.99% pure silver from The Perth Mint. In mint condition, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "1 oz Silver Australian Kangaroo — 0.9999 pure silver from The Perth Mint, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-SC-004",
@@ -3959,7 +3959,7 @@
    "slug": "1-oz-silver-australian-koala-coin",
    "metal": "silver",
    "purity": "99.99",
-   "material": "99.99% pure silver",
+   "material": "0.9999 pure silver",
    "finish": "finesilver",
    "price": 0,
    "weight_grams": 31.1035,
@@ -3967,8 +3967,8 @@
    "brand": "The Perth Mint",
    "design": "Koala",
    "certificate": false,
-   "description": "1 oz Silver Australian Koala Coin — 99.99% pure silver from The Perth Mint. In mint condition, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "1 oz Silver Australian Koala Coin — 0.9999 pure silver from The Perth Mint, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-SC-005",
@@ -3983,7 +3983,7 @@
    "slug": "1-oz-silver-britannia-coin",
    "metal": "silver",
    "purity": "99.99",
-   "material": "99.99% pure silver",
+   "material": "0.9999 pure silver",
    "finish": "finesilver",
    "price": 0,
    "weight_grams": 31.1035,
@@ -3991,8 +3991,8 @@
    "brand": "The Royal Mint",
    "design": "Britannia",
    "certificate": false,
-   "description": "1 oz Silver Britannia Coin — 99.99% pure silver from The Royal Mint. In mint condition, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "1 oz Silver Britannia Coin — 0.9999 pure silver from The Royal Mint, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-SC-006",
@@ -4007,7 +4007,7 @@
    "slug": "1-oz-silver-ultra-high-relief-maple-leaf-coin-2026",
    "metal": "silver",
    "purity": "99.99",
-   "material": "99.99% pure silver",
+   "material": "0.9999 pure silver",
    "finish": "finesilver",
    "price": 0,
    "weight_grams": 31.1035,
@@ -4015,8 +4015,8 @@
    "brand": "Royal Canadian Mint",
    "design": "Ultra High Relief Maple Leaf",
    "certificate": false,
-   "description": "1 oz Silver Ultra High Relief Maple Leaf Coin 2026 — 99.99% pure silver from Royal Canadian Mint, a collector’s coin. In mint condition, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "1 oz Silver Ultra High Relief Maple Leaf Coin 2026 — 0.9999 pure silver from Royal Canadian Mint, a collector’s coin, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-SC-007",
@@ -4031,7 +4031,7 @@
    "slug": "5-gram-laxmi-ganpati-silver-coin",
    "metal": "silver",
    "purity": "99.99",
-   "material": "99.99% pure silver",
+   "material": "0.9999 pure silver",
    "finish": "finesilver",
    "price": 0,
    "weight_grams": 5,
@@ -4039,8 +4039,8 @@
    "brand": null,
    "design": "Laxmi Ganpati",
    "certificate": false,
-   "description": "5 Gram Laxmi Ganpati Silver Coin — 99.99% pure silver. In mint condition, for saving, investing and gifting. Coming soon.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "5 Gram Laxmi Ganpati Silver Coin — 0.9999 pure silver, for saving, investing and gifting. Coming soon.",
+   "care": null
   },
   {
    "sku": "AVY-SC-008",
@@ -4055,7 +4055,7 @@
    "slug": "10-gram-laxmi-ganpati-silver-coin",
    "metal": "silver",
    "purity": "99.99",
-   "material": "99.99% pure silver",
+   "material": "0.9999 pure silver",
    "finish": "finesilver",
    "price": 0,
    "weight_grams": 10,
@@ -4063,8 +4063,8 @@
    "brand": null,
    "design": "Laxmi Ganpati",
    "certificate": false,
-   "description": "10 Gram Laxmi Ganpati Silver Coin — 99.99% pure silver. In mint condition, for saving, investing and gifting. Coming soon.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "10 Gram Laxmi Ganpati Silver Coin — 0.9999 pure silver, for saving, investing and gifting. Coming soon.",
+   "care": null
   },
   {
    "sku": "AVY-SB-001",
@@ -4079,7 +4079,7 @@
    "slug": "1-kg-rcm-silver-bar",
    "metal": "silver",
    "purity": "99.99",
-   "material": "99.99% pure silver",
+   "material": "0.9999 pure silver",
    "finish": "finesilver",
    "price": 0,
    "weight_grams": 1000,
@@ -4087,8 +4087,8 @@
    "brand": "Royal Canadian Mint",
    "design": null,
    "certificate": false,
-   "description": "1 kg RCM Silver Bar — 99.99% pure silver from Royal Canadian Mint. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "1 kg RCM Silver Bar — 0.9999 pure silver from Royal Canadian Mint, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
+   "care": null
   },
   {
    "sku": "AVY-SB-002",
@@ -4103,7 +4103,7 @@
    "slug": "100-oz-rcm-silver-bar",
    "metal": "silver",
    "purity": "99.99",
-   "material": "99.99% pure silver",
+   "material": "0.9999 pure silver",
    "finish": "finesilver",
    "price": 0,
    "weight_grams": 3110.35,
@@ -4111,8 +4111,8 @@
    "brand": "Royal Canadian Mint",
    "design": null,
    "certificate": false,
-   "description": "100 oz RCM Silver Bar — 99.99% pure silver from Royal Canadian Mint. Sealed as issued by the refiner, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
-   "care": "Keep in its original sealed packaging or capsule, and handle by the edges."
+   "description": "100 oz RCM Silver Bar — 0.9999 pure silver from Royal Canadian Mint, for saving, investing and gifting. Price follows the live silver market — we confirm today’s price on WhatsApp.",
+   "care": null
   }
  ]
 }

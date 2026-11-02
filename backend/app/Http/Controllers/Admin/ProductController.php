@@ -154,6 +154,7 @@ class ProductController extends Controller
             'in_stock' => $request->boolean('in_stock'),
             'is_visible' => $request->boolean('is_visible'),
             'is_featured' => $request->boolean('is_featured'),
+            'is_bestseller' => $request->boolean('is_bestseller'),
         ])->save();
 
         // Sizes: "5, 6, 7" plus an optional list of sold-out ones.

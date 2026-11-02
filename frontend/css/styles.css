@@ -1365,3 +1365,49 @@ html[data-hero-tone="dark"] .iv-circle-img { box-shadow: 0 0 0 1px rgba(246, 241
 .iv-down p { margin: 0; max-width: 440px; font: 300 16px/1.7 Jost, sans-serif; }
 .iv-down a { margin-top: 8px; padding: 13px 24px; border: 1px solid #d9b46a; color: #f3d58c; font: 400 12px Jost, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
 .iv-down a:hover { background: #d9b46a; color: #0d3d45; }
+/* ══ Round 3 (client feedback): easier to read, photos shown whole and centred, photo viewer that zooms ══ */
+:root { --color-neutral-300: #2f3445; --color-neutral-400: #3a4052; --color-neutral-500: #444a5c; --color-neutral-600: #555b6d; }
+body { font-weight: 400; }
+.iv-lead, .iv-body, .iv-muted, .iv-note, .iv-acc-item p, .iv-search-empty, .iv-info > a:not(.iv-btn), .iv-group-body li { font-weight: 400; }
+.iv-lead, .iv-body, .iv-acc-item p, .iv-search-empty { color: #2b3142; }
+.iv-muted, .iv-note, .iv-label, .iv-specs dt, .iv-opt-head > span:first-child, .iv-crumbs a { color: #3a4154; }
+.iv-crumbs { color: #5a6075; }
+.iv-crumbs i { color: #8d93a8; }
+.iv-fopt small { color: #5a6075; }
+.iv-fopt.none { color: #7d8397; }
+.iv-was { color: #5f6577; font-weight: 400; }
+.field > label { color: var(--color-text); font-size: 13px; }
+.soft, .muted, .line-note, .ship-meter, .assure, .assure span, .summary .between, .checkout-side .between { color: #2b3142; }
+.muted { color: #3a4154; }
+.line-note { color: #0d3d45; }
+.checkout-form p, .checkout-form .soft, .checkout-side, .summary { font-weight: 400; }
+.input::placeholder, textarea.input::placeholder { color: #5f6577; opacity: 1; }
+.option-box .muted, .co-line .muted { color: #3a4154; }
+.sp, .sp-shell { font-weight: 400; }
+
+/* header: a solid bar (a blurred see-through bar flickers over photos while scrolling) */
+.iv-head { backdrop-filter: none; background: #0d3d45; }
+@media (hover: none) { a.iv-img:hover > img, a:hover > .iv-img > img { transform: none; } }
+
+/* product photos: shown whole and centred, never cropped or zoomed in; the empty edges are filled with a soft blur of the same photo */
+.iv-img.fit { background: #dfeceb; isolation: isolate; }
+.iv-img.fit::before { content: ""; position: absolute; inset: -24px; background: var(--bg) center / cover no-repeat; filter: blur(22px) saturate(1.05); opacity: .8; z-index: 0; }
+.iv-img.fit > img { object-fit: contain; object-position: center; z-index: 1; transition: none; }
+.iv-gallery .iv-img.fit:hover > img { transform: none; }
+.iv-gallery .iv-tag, .iv-gallery .iv-zoom-hint { z-index: 2; }
+
+/* the specs grid: when the last detail is on its own, it spans the row instead of leaving a gap */
+.iv-specs > div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+/* photo viewer */
+.iv-lb-stage { padding: 56px 72px 112px; }
+.iv-lb-frame { overflow: hidden; display: flex; align-items: center; justify-content: center; pointer-events: auto; max-width: min(96vw, 1400px); }
+.iv-lb-stage .iv-lb-frame img { max-width: min(96vw, 1400px); max-height: calc(100vh - 190px); object-fit: contain; cursor: zoom-in; transform: scale(1); transition: transform .22s ease; touch-action: manipulation; user-select: none; -webkit-user-drag: none; }
+.iv-lb-stage .iv-lb-frame img.zoomed { transform: scale(2.6); cursor: zoom-out; touch-action: none; }
+.iv-lb-hint { margin: 0; font: 400 12px Jost, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #9fc4c6; }
+.iv-lb-btn[disabled] { opacity: .3; cursor: default; pointer-events: none; }
+.iv-lb-thumbs img { transition: none; }
+@media (max-width: 760px) {
+  .iv-lb-stage { padding: 60px 8px 108px; }
+  .iv-lb-stage .iv-lb-frame img { max-width: 98vw; max-height: calc(100vh - 200px); }
+}

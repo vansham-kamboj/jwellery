@@ -66,7 +66,8 @@ class OrderPlacer
             }
             $order->whatsapp_message = $this->message($order, $quote);
             $order->save();
-            $order->takeStock();
+            // Stock is taken when the order is confirmed in Admin → Orders (see Order::setStatus), not when the enquiry is sent,
+            // so a piece is not shown as sold out just because someone asked about it.
 
             return $order;
         });
@@ -85,9 +86,11 @@ class OrderPlacer
     {
         $m = fn ($n) => '$'.number_format((float) $n, 2);
         $out = ['Hi '.Settings::get('store_name').'! I would like to place an order.', '', 'Order: '.$order->code];
+        $skus = Product::withTrashed()->whereIn('id', collect($q['items'])->pluck('product_id'))->pluck('sku', 'id');
         foreach ($q['items'] as $i => $l) {
             $opts = implode(', ', array_filter([$l['finish'], $l['size'] ? 'size '.$l['size'] : null]));
-            $line = ($i + 1).'. '.$l['name'].($opts ? ' — '.$opts : '').' × '.$l['qty'].' — '.$m($l['line_total']);
+            $sku = $skus[$l['product_id']] ?? null;
+            $line = ($i + 1).'. '.$l['name'].($sku ? ' (SKU '.$sku.')' : '').($opts ? ' — '.$opts : '').' × '.$l['qty'].' — '.$m($l['line_total']);
             if ($l['offer']) {
                 $line .= ' (was '.$m($l['original_price'] * $l['qty']).', '.$l['offer'].')';
             }

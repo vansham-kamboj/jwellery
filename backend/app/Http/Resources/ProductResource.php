@@ -37,6 +37,7 @@ class ProductResource extends JsonResource
             'in_stock' => $p->in_stock && $p->stock_qty !== 0,
             'stock' => $p->stock_qty,
             'is_featured' => $p->is_featured,
+            'is_bestseller' => $p->is_bestseller,
             'image' => $images->first()?->url(),
             'image_alt' => $images->get(1)?->url(),
             'finishes' => $p->finishes->map(fn ($f) => [
