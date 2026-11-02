@@ -1005,7 +1005,7 @@
     ${state.zoom !== null && state.zoom !== undefined ? lightbox(p, imgs) : ''}`;
   }
 
-  /* ── Bag & checkout: orders are confirmed and paid over WhatsApp (e-Transfer or cash). ── */
+  /* ── Bag & checkout: orders are confirmed on WhatsApp and paid by e-Transfer. ── */
   function totals() {
     const lines = state.cart.map(l => ({ ...l, p: byId(l.id), sum: l.price * l.qty })).filter(l => l.p);
     const goods = lines.reduce((a, l) => a + l.sum, 0);
@@ -1226,6 +1226,7 @@
   const SCROLLS = {};
   let navKey = null, navSeq = 0;
   window.addEventListener('scroll', () => { if (navKey) SCROLLS[navKey] = window.scrollY; }, { passive: true });
+  document.addEventListener('click', () => { if (navKey) SCROLLS[navKey] = window.scrollY; }, true);   // also on the click that leaves the page: a scroll event may still be pending
   const jump = y => window.scrollTo({ top: y, left: 0, behavior: 'instant' });   // instant: the page's smooth scrolling would make the page visibly slide
   function restoreScroll(y) {
     jump(y);
