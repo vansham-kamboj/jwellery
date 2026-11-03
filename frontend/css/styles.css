@@ -1411,3 +1411,24 @@ body { font-weight: 400; }
   .iv-lb-stage { padding: 60px 8px 108px; }
   .iv-lb-stage .iv-lb-frame img { max-width: 98vw; max-height: calc(100vh - 200px); }
 }
+/* ══ Checkout and order-sent page (client round 4): WhatsApp-only, no payment taken on the site ══ */
+.co-intro { gap: 8px; font-size: 14px; line-height: 1.6; color: #2b3142; }
+.co-intro b { font-weight: 600; color: #0d3d45; }
+.co-wa-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 14px 18px; min-height: 64px; text-align: center; }
+.co-wa-main { display: inline-flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+.co-wa-sub { font-size: 12.5px; letter-spacing: .02em; text-transform: none; color: #d6ecec; font-weight: 400; }
+.co-paynote { font-size: 13px; font-weight: 500; color: #0d3d45; line-height: 1.5; }
+.co-done { padding: 48px var(--g) 72px; display: flex; justify-content: center; }
+.co-done-card { width: 100%; max-width: 680px; display: flex; flex-direction: column; gap: 14px; color: #2b3142; font-size: 16px; line-height: 1.65; }
+.co-done-card h2 { margin: 0; font: 400 clamp(30px, 4vw, 40px)/1.15 "Cormorant Garamond", serif; color: #0d3d45; }
+.co-done-card p { margin: 0; }
+.co-done-thanks { font-weight: 500; color: #0d3d45; }
+.co-done-total { display: flex; flex-direction: column; gap: 6px; padding: 18px 20px; background: #e1f1f1; color: #0d3d45; }
+.co-done-total .between b { font-weight: 500; font-size: 17px; }
+.co-done-total .between b:last-child { font-size: 20px; }
+.co-done-total span { font-size: 13.5px; color: #2b3142; }
+.co-done-note { text-align: center; font-size: 13.5px; color: #3a4154; }
+.co-done-more { width: 100%; justify-content: center; }
+@media (max-width: 760px) { .co-done { padding: 32px 16px 56px; } .co-wa-main { font-size: 14px; letter-spacing: .06em; } }
+/* checkout header on tablets and phones: logo left, "Back to bag" right (the "Checkout" word sat under the logo) */
+@media (max-width: 1024px) { .iv-head.co .co-title { display: none; } }

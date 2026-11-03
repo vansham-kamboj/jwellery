@@ -24,6 +24,15 @@
         "--port=8000"
       ],
       "port": 8000
+    },
+    {
+      "name": "storefront-5174",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        ".claude/serve.js",
+        "5174"
+      ],
+      "port": 5174
     }
   ]
 }

@@ -569,7 +569,7 @@
     }
     if (!hits.length) return `<p class="iv-search-empty">No pieces match “${esc(q.trim())}”. Try “ring”, “bracelet” or “gold bar” — or <a href="${waLink('Hi Avya Jewels, do you have ' + q.trim() + '?')}" target="_blank" rel="noopener">ask us on WhatsApp</a>.</p>`;
     return `<ul class="iv-search-list">${hits.slice(0, 6).map(p => `<li><a href="#/product/${p.id}"><span class="iv-search-thumb">${photo(p.img, p.name)}</span>
-        <span class="stack"><span class="iv-serif-20">${esc(p.name)}</span><span class="iv-muted">${esc(p.material)}</span></span><span class="iv-price-sm">${priceHtml(p)}</span></a></li>`).join('')}</ul>
+        <span class="stack"><span class="iv-serif-20">${esc(p.name)}</span>${p.bullion ? '' : `<span class="iv-muted">${esc(p.material)}</span>`}</span><span class="iv-price-sm">${priceHtml(p)}</span></a></li>`).join('')}</ul>
       <button type="submit" class="iv-btn ghost block sm">See all ${hits.length} result${hits.length === 1 ? '' : 's'}</button>`;
   }
 
@@ -620,7 +620,7 @@
   function header() {
     const t = totals();
     if (state.route === 'checkout') {
-      return `<header class="iv-head"><span class="iv-label">Checkout</span>
+      return `<header class="iv-head co"><span class="iv-label co-title">Checkout</span>
         <a href="#/" class="iv-logo" aria-label="Avya Jewels home">${logo('')}</a>
         <div class="iv-right"><a href="#/bag">Back to bag</a></div></header>`;
     }
@@ -674,7 +674,7 @@
         : `<button class="iv-btn ghost block sm ${state.justAdded[p.id] ? 'on' : ''}" data-act="quickAdd" data-arg="${p.id}">${addLabel(p.id)}</button>`;
     return `<div class="iv-bcard">
       <a href="#/product/${p.id}" class="iv-img portrait on-ivory">${p.tag ? `<span class="iv-tag">${esc(p.tag)}</span>` : ''}${photo(p.img, p.name)}</a>
-      <div class="iv-bcard-info"><a href="#/product/${p.id}" class="iv-serif-22">${esc(p.name)}</a><span class="iv-muted">${esc(p.material)}</span><span class="iv-price-sm">${priceHtml(p)}</span></div>
+      <div class="iv-bcard-info"><a href="#/product/${p.id}" class="iv-serif-22">${esc(p.name)}</a>${p.bullion ? '' : `<span class="iv-muted">${esc(p.material)}</span>`}<span class="iv-price-sm">${priceHtml(p)}</span></div>
       ${action}
     </div>`;
   }
@@ -686,7 +686,7 @@
       : soldOut(p) ? `<span class="iv-muted">Sold out</span>` : `<button class="iv-underline" data-act="quickAdd" data-arg="${p.id}">${addLabel(p.id)}</button>`;
     return `<div class="iv-pcard">
       <a href="#/product/${p.id}" class="iv-img portrait">${p.tag ? `<span class="iv-tag">${esc(p.tag)}</span>` : ''}${photo(p.img, p.name)}</a>
-      <div class="iv-pcard-row"><div class="stack" style="gap:3px"><a href="#/product/${p.id}" class="iv-serif-24">${esc(p.name)}</a><span class="iv-muted">${esc(p.material)}</span></div><span class="iv-price-sm" style="padding-top:6px;text-align:right">${priceHtml(p)}</span></div>
+      <div class="iv-pcard-row"><div class="stack" style="gap:3px"><a href="#/product/${p.id}" class="iv-serif-24">${esc(p.name)}</a>${p.bullion ? '' : `<span class="iv-muted">${esc(p.material)}</span>`}</div><span class="iv-price-sm" style="padding-top:6px;text-align:right">${priceHtml(p)}</span></div>
       <div class="iv-pcard-row center"><span class="iv-swatches">${metalOf(p).map(m => `<span style="background:${METAL_SW[m]}" title="${m}"></span>`).join('')}</span>${action}</div>
     </div>`;
   }
@@ -1064,16 +1064,21 @@
     </section>`;
   }
 
+  const CO_CHAT = svg('<path d="M20 11.5a8.5 8.5 0 0 1-12.4 7.5L4 20l1.1-3.4A8.5 8.5 0 1 1 20 11.5z"/>', 16);
+  const CO_ARROW = svg('<path d="M8 16L16 8M9 8h7v7"/>', 14);
   function checkout() {
     const done = state.placed;
     if (done) {
-      return `<section class="checkout"><div class="checkout-form" style="gap:18px">
-        <span class="eyebrow neutral">${done.code ? 'Order request ' + esc(done.code) : 'Almost done'}</span>
-        <h2>Send your order on WhatsApp</h2>
-        <p class="soft">${esc(done.message)}</p>
-        <p class="soft">Total ${money(done.total)} CAD · we reply within 15–30 minutes with e-Transfer details.</p>
-        ${done.whatsapp_url ? `<a class="btn btn-primary" style="padding:15px;font-size:15px;align-self:flex-start" href="${esc(done.whatsapp_url)}" target="_blank" rel="noopener">Open WhatsApp to send order</a>` : ''}
-        <a href="#/shop" class="btn btn-secondary" style="align-self:flex-start">Keep shopping</a></div></section>`;
+      return `<section class="co-done"><div class="co-done-card">
+        <span class="iv-label">${done.code ? 'Order request #' + esc(done.code) : 'Order request'}</span>
+        <h2>You’re one step away!</h2>
+        <p class="co-done-thanks">Thank you for choosing Avya Jewels!</p>
+        <p>Your order request has been created. Simply send your order details via WhatsApp, and our team will confirm availability and guide you through the secure Interac e-Transfer payment process.</p>
+        <div class="co-done-total"><div class="between"><b>Order total</b><b>${money(done.total)} CAD</b></div><span>No payment has been collected. Your order will be confirmed by our team on WhatsApp.</span></div>
+        ${done.whatsapp_url ? `<a class="btn btn-primary co-wa-btn" href="${esc(done.whatsapp_url)}" target="_blank" rel="noopener"><span class="co-wa-main">${CO_CHAT} Send order via WhatsApp ${CO_ARROW}</span></a>` : ''}
+        <span class="co-done-note">We typically respond within 15–30 minutes during business hours.</span>
+        <a href="#/shop" class="btn btn-secondary co-done-more">Continue shopping</a>
+      </div></section>`;
     }
     const t = totals();
     const f = state.form;
@@ -1082,11 +1087,11 @@
     return `
     <section class="checkout">
       <form class="checkout-form" data-form="checkout">
-        <div class="stack" style="gap:6px"><h3>Your details</h3><span class="soft" style="font-size:13px">Place your order and WhatsApp opens with it ready to send. We reply within 15–30 minutes to confirm — pay in full by e-Transfer. Nothing is charged here.</span></div>
+        <div class="stack co-intro"><h3>Your details</h3><b>Almost there!</b><span>Review your details and continue to WhatsApp to confirm your order with Avya Jewels. Once confirmed, we’ll share the Interac e-Transfer payment details with you.</span><b>No payment is required on this page.</b></div>
         <div class="grid-2">
           ${field('Full name', 'name', 'required autocomplete="name"')}
           ${field('Phone (WhatsApp)', 'phone', 'required type="tel" autocomplete="tel" pattern="[0-9+()\\-\\s.]{7,}"')}
-          ${field('Email for a confirmation (optional)', 'email', 'type="email" autocomplete="email"', 'style="grid-column:1/-1"')}
+          ${field('Email (optional)', 'email', 'type="email" autocomplete="email"', 'style="grid-column:1/-1"')}
         </div>
         <div class="stack" style="gap:10px"><h3>Delivery</h3>
           ${SHIP.map(o => { const ok = !o.minOrder || t.goods >= o.minOrder; return `<label class="radio option-box tinted ${t.opt && t.opt.id === o.id ? 'on' : ''} ${ok ? '' : 'disabled'}" ${ok ? '' : 'style="opacity:.85"'}><span class="row" style="gap:12px"><input type="radio" name="ship" data-set="ship" value="${esc(o.id)}" ${t.opt && t.opt.id === o.id ? 'checked' : ''} ${ok ? '' : 'disabled'}><span class="dot"></span><span class="stack"><span>${esc(o.name)}</span><span style="font-size:12px" class="muted">${esc(ok ? o.eta : 'Available on orders over $' + o.minOrder)}</span></span></span><span>${o.price ? money(o.price) : 'Free'}</span></label>`; }).join('')}</div>
@@ -1097,7 +1102,7 @@
           </div></div>` : ''}
         <div class="field"><label for="co-note">Note (optional)</label><textarea id="co-note" class="input" data-model="note" placeholder="Gift message, preferred delivery or pick-up time…">${esc(f.note || '')}</textarea></div>
         <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
-        <button type="submit" class="btn btn-primary" style="padding:15px;font-size:15px" ${t.count && !state.placing ? '' : 'disabled'}>${state.placing ? 'Saving your order…' : 'Place order on WhatsApp · ' + money(t.total) + ' CAD'}</button>
+        <button type="submit" class="btn btn-primary co-wa-btn" ${t.count && !state.placing ? '' : 'disabled'}>${state.placing ? '<span class="co-wa-main">Saving your order…</span>' : `<span class="co-wa-main">${CO_CHAT} Continue to WhatsApp ${CO_ARROW}</span><span class="co-wa-sub">Confirm your order • No payment required yet</span>`}</button>
       </form>
       <aside class="checkout-side">
         <span class="card-title">In your bag (${t.count})</span>
@@ -1105,7 +1110,7 @@
         <div class="rule" style="margin:6px 0"></div>
         ${summaryRows(t)}
         <div class="between" style="font-size:20px;font-weight:500"><span>Total</span><span>${money(t.total)} <span style="font-size:13px" class="muted">CAD</span></span></div>
-        <span class="muted" style="font-size:12px">All sales are final. Questions? WhatsApp ${esc(STORE.phone)}.</span>
+        <span class="co-paynote">Payment details will be shared via WhatsApp after order confirmation.</span>
       </aside>
     </section>`;
   }
@@ -1503,10 +1508,12 @@
   });
   /* Zoom: tap or click the photo to magnify it where you pointed; move the mouse or drag a finger to look around; tap again to zoom out. */
   const lbPoint = (img, x, y) => { const r = img.getBoundingClientRect(); img.style.transformOrigin = Math.max(0, Math.min(100, (x - r.left) / r.width * 100)) + '% ' + Math.max(0, Math.min(100, (y - r.top) / r.height * 100)) + '%'; };
-  let lbDrag = null;
+  let lbDrag = null, lbTapAt = 0;
   document.addEventListener('click', e => {
     const img = e.target.closest && e.target.closest('.iv-lb-frame img');
     if (!img || lbDrag === 'moved') { lbDrag = null; return; }
+    if (Date.now() - lbTapAt < 400) return;   // a double click counts as one tap, so it doesn't zoom in and straight back out
+    lbTapAt = Date.now();
     if (img.classList.contains('zoomed')) { img.classList.remove('zoomed'); img.style.transformOrigin = ''; return; }
     lbPoint(img, e.clientX, e.clientY); img.classList.add('zoomed');
   });
