@@ -1102,7 +1102,7 @@
           </div></div>` : ''}
         <div class="field"><label for="co-note">Note (optional)</label><textarea id="co-note" class="input" data-model="note" placeholder="Gift message, preferred delivery or pick-up time…">${esc(f.note || '')}</textarea></div>
         <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
-        <button type="submit" class="btn btn-primary co-wa-btn" ${t.count && !state.placing ? '' : 'disabled'}>${state.placing ? '<span class="co-wa-main">Saving your order…</span>' : `<span class="co-wa-main">${CO_CHAT} Continue to WhatsApp ${CO_ARROW}</span><span class="co-wa-sub">Confirm your order • No payment required yet</span>`}</button>
+        <button type="submit" class="btn btn-primary co-wa-btn" ${t.count && !state.placing ? '' : 'disabled'}>${state.placing ? '<span class="co-wa-main">Saving your order…</span>' : `<span class="co-wa-main">${CO_CHAT} Continue to WhatsApp ${CO_ARROW}</span>`}</button>
       </form>
       <aside class="checkout-side">
         <span class="card-title">In your bag (${t.count})</span>

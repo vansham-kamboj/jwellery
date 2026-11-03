@@ -1432,3 +1432,19 @@ body { font-weight: 400; }
 @media (max-width: 760px) { .co-done { padding: 32px 16px 56px; } .co-wa-main { font-size: 14px; letter-spacing: .06em; } }
 /* checkout header on tablets and phones: logo left, "Back to bag" right (the "Checkout" word sat under the logo) */
 @media (max-width: 1024px) { .iv-head.co .co-title { display: none; } }
+/* order-sent page on large screens: a centred card that fills the screen, larger and darker text */
+.co-done { min-height: calc(100vh - 92px); align-items: center; padding: clamp(32px, 5vh, 72px) var(--g); }
+.co-done-card { max-width: clamp(640px, 46vw, 900px); gap: clamp(14px, 1.6vh, 22px); padding: clamp(28px, 3.2vw, 56px); background: #fff; box-shadow: 0 0 0 1px #e3e5f0, 0 18px 48px rgba(13, 61, 69, .08); color: #1d2733; font-size: clamp(16px, 1.05vw, 19px); }
+.co-done-card .iv-label { color: #136670; font-size: clamp(12px, .75vw, 14px); }
+.co-done-card h2 { font-size: clamp(32px, 2.8vw, 54px); font-weight: 500; }
+.co-done-thanks { font-weight: 600; font-size: 1.05em; }
+.co-done-total { padding: clamp(18px, 1.6vw, 28px) clamp(20px, 1.8vw, 32px); }
+.co-done-total .between b { font-weight: 600; font-size: clamp(17px, 1.15vw, 21px); }
+.co-done-total .between b:last-child { font-size: clamp(20px, 1.5vw, 28px); }
+.co-done-total span { font-size: clamp(13.5px, .85vw, 16px); color: #1d2733; }
+.co-done-card .co-wa-btn { min-height: clamp(58px, 4.2vw, 76px); }
+.co-done-card .co-wa-main { font-size: clamp(15px, .95vw, 18px); font-weight: 600; }
+.co-done-note { font-size: clamp(13.5px, .85vw, 16px); color: #2b3142; }
+.co-done-more { min-height: clamp(50px, 3.4vw, 62px); font-size: clamp(12px, .8vw, 14px); font-weight: 500; color: #0d3d45; border-color: #0d3d45; }
+.co-wa-main { font-weight: 600; }
+@media (max-width: 760px) { .co-done { min-height: 0; align-items: flex-start; } .co-done-card { padding: 24px 18px; box-shadow: 0 0 0 1px #e3e5f0; } }
