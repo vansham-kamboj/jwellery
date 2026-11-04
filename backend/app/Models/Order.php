@@ -27,12 +27,7 @@ class Order extends Model
     public function setStatus(string $status): void
     {
         DB::transaction(function () use ($status) {
-            // A piece is taken off sale only when the order is confirmed (or later). A new order, or a cancelled one, leaves it on sale.
-            if (in_array($status, ['confirmed', 'shipped', 'completed'], true)) {
-                $this->takeStock();
-            } else {
-                $this->returnStock();
-            }
+            // Orders never change stock: the admin marks a piece sold out in Admin → Products.
             $this->status = $status;
             $stamp = $status.'_at';
             if (in_array($stamp, ['confirmed_at', 'shipped_at', 'completed_at', 'cancelled_at'], true) && ! $this->{$stamp}) {
@@ -40,33 +35,6 @@ class Order extends Model
             }
             $this->save();
         });
-    }
-
-    /** Takes the ordered pieces out of stock. Products without a stock count (bullion) are left alone. */
-    public function takeStock(): void
-    {
-        if ($this->stock_taken) {
-            return;
-        }
-        foreach ($this->items as $item) {
-            $product = Product::withTrashed()->whereKey($item->product_id)->whereNotNull('stock_qty')->lockForUpdate()->first();
-            $product?->update(['stock_qty' => max(0, $product->stock_qty - $item->qty)]);
-        }
-        $this->stock_taken = true;
-        $this->save();
-    }
-
-    public function returnStock(): void
-    {
-        if (! $this->stock_taken) {
-            return;
-        }
-        foreach ($this->items as $item) {
-            $product = Product::withTrashed()->whereKey($item->product_id)->whereNotNull('stock_qty')->lockForUpdate()->first();
-            $product?->update(['stock_qty' => $product->stock_qty + $item->qty]);
-        }
-        $this->stock_taken = false;
-        $this->save();
     }
 
     public function whatsappToCustomer(): string

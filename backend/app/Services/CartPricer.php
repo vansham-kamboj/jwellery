@@ -43,7 +43,7 @@ class CartPricer
         $problems = [];
         foreach (array_values($lines) as $i => $line) {
             $p = $products->get($line['product'] ?? '');
-            if (! $p || ! $p->in_stock || $p->stock_qty === 0) {
+            if (! $p || ! $p->in_stock) {
                 $problems[] = ['line' => $i, 'message' => 'This piece is no longer available.'];
 
                 continue;
@@ -77,10 +77,6 @@ class CartPricer
             }
 
             $qty = max(1, min((int) ($line['qty'] ?? 1), (int) $settings['max_qty_per_line']));
-            if ($p->stock_qty !== null && $qty > $p->stock_qty) {
-                $qty = $p->stock_qty;
-                $problems[] = ['line' => $i, 'message' => 'Only '.$p->stock_qty.' left of '.$p->name.'.'];
-            }
             $price = $this->priceFor($p, $adjust);
             $needsQuote = $p->needsQuote($price['price']);
             if ($needsQuote && $qty > 1) {

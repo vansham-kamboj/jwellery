@@ -149,7 +149,6 @@ class ProductController extends Controller
             'size_label' => $d['size_label'] ?? null,
             'default_size' => $d['default_size'] ?? null,
             'sort_order' => $d['sort_order'] ?? 0,
-            'stock_qty' => $d['stock_qty'] ?? null,
             'tax_exempt' => $request->boolean('tax_exempt'),
             'in_stock' => $request->boolean('in_stock'),
             'is_visible' => $request->boolean('is_visible'),

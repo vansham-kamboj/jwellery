@@ -20,18 +20,7 @@ class OrderPlacer
         }
 
         $order = DB::transaction(function () use (&$quote, $customer, $ip) {
-            // Two customers can reach this at once: lock the pieces and check again, so a one-of-a-kind piece sells only once.
-            $wanted = collect($quote['items'])->groupBy('product_id')->map(fn ($lines) => $lines->sum('qty'));
-            $soldOut = Product::whereIn('id', $wanted->keys())->lockForUpdate()->get()
-                ->filter(fn ($p) => $p->stock_qty !== null && $wanted[$p->id] > $p->stock_qty);
-            if ($soldOut->isNotEmpty()) {
-                foreach ($soldOut as $p) {
-                    $quote['problems'][] = ['line' => null, 'message' => $p->name.' has just sold out.'];
-                }
-
-                return null;
-            }
-
+            // No automatic stock: whether a piece is sold out is set only in Admin → Products ("In stock").
             $order = Order::create([
                 'code' => 'TEMP-'.bin2hex(random_bytes(4)),
                 'customer_name' => $customer['name'],
@@ -66,8 +55,6 @@ class OrderPlacer
             }
             $order->whatsapp_message = $this->message($order, $quote);
             $order->save();
-            // Stock is taken when the order is confirmed in Admin → Orders (see Order::setStatus), not when the enquiry is sent,
-            // so a piece is not shown as sold out just because someone asked about it.
 
             return $order;
         });

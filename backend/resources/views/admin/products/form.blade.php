@@ -92,7 +92,7 @@
                     <h3>Visibility</h3>
                     <label class="check"><input type="checkbox" name="is_visible" value="1" @checked(old('is_visible', $product->is_visible))> Visible on the site</label>
                     <label class="check"><input type="checkbox" name="in_stock" value="1" @checked(old('in_stock', $product->in_stock))> In stock</label>
-                    <label class="field"><span>Units in stock</span><input type="number" name="stock_qty" min="0" value="{{ old('stock_qty', $product->stock_qty) }}" placeholder="Not tracked"><span class="hint">The site shows “Only 3 left” at 5 or fewer. Leave empty to just show In stock.</span></label>
+                    <span class="hint">Untick to show this piece as <b>Sold out</b> on the site. Orders never change this — only you do.</span>
                     <label class="check"><input type="checkbox" name="is_featured" value="1" @checked(old('is_featured', $product->is_featured))> Featured (shown first when the shop is sorted by “Featured”)</label>
                     <label class="check"><input type="checkbox" name="is_bestseller" value="1" @checked(old('is_bestseller', $product->is_bestseller))> Best selling (shown first when sorted by “Best selling”, and in “Our bestsellers” on the home page)</label>
                     <label class="check"><input type="checkbox" name="tax_exempt" value="1" @checked(old('tax_exempt', $product->tax_exempt))> Tax-exempt (investment bullion)</label>

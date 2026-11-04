@@ -513,7 +513,7 @@
 
   /* ── Prices, stock and actions per piece ── */
   const onRequest = p => p.priceOnRequest || (p.bullion ? !STORE.showBullionPrices : p.metal === 'gold');
-  const soldOut = p => p.inStock === false || p.stock === 0;
+  const soldOut = p => p.inStock === false;   // set only by the admin's "In stock" tick box
   const comingSoon = p => soldOut(p) && /coming soon/i.test(p.tag || '');   // listed on the sheet, not for sale yet
   const priceHtml = p => comingSoon(p) ? 'Coming soon' : onRequest(p) ? 'Price on request'
     : (p.wasPrice && p.wasPrice > p.price ? `<s class="iv-was">${cad(p.wasPrice)}</s> ` : '') + cad(p.price);

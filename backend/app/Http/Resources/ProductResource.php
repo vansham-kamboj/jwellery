@@ -34,7 +34,7 @@ class ProductResource extends JsonResource
             'price_on_request' => $hidden,
             'needs_quote' => ! $hidden && $p->needsQuote($price['price']),
             'tax_exempt' => $p->tax_exempt,
-            'in_stock' => $p->in_stock && $p->stock_qty !== 0,
+            'in_stock' => $p->in_stock,   // sold out only when the admin unticks "In stock"
             'stock' => $p->stock_qty,
             'is_featured' => $p->is_featured,
             'is_bestseller' => $p->is_bestseller,
