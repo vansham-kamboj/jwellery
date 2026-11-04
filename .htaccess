@@ -13,6 +13,8 @@ DirectoryIndex frontend/index.html index.html
 
     # Admin panel at /admin (Laravel lives in backend/public; ADMIN_PATH in backend/.env must stay "admin")
     RewriteRule ^admin-assets/(.*)$ backend/public/admin-assets/$1 [L]
+    # Product, category and request photos: the admin links them at /uploads/…, the shop at /backend/uploads/…
+    RewriteRule ^uploads/(.*)$ backend/public/uploads/$1 [L]
     RewriteRule ^admin(/.*)?$ backend/public/index.php [L]
 
     # Home page
