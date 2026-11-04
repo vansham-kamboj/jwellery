@@ -45,19 +45,22 @@
                 <section class="card card-pad grid" style="gap:14px">
                     <h3>Photos & videos</h3>
                     @if ($editing && $product->images->isNotEmpty())
-                        <div class="media">
+                        <div class="media" data-sortable>
                             @foreach ($product->images as $m)
-                                <figure>
-                                    @if ($m->type === 'video')<video src="{{ $m->url() }}" muted playsinline preload="metadata"></video>@else<img src="{{ $m->url() }}" alt="" loading="lazy">@endif
+                                <figure draggable="true">
+                                    <span class="media-main">Main photo</span>
+                                    @if ($m->type === 'video')<video src="{{ $m->url() }}" muted playsinline preload="metadata"></video>@else<img src="{{ $m->url() }}" alt="" loading="lazy" draggable="false">@endif
                                     <figcaption>
-                                        <div class="row"><label class="small">Order <input type="number" name="media[{{ $m->id }}][sort]" value="{{ $m->sort_order }}" min="0"></label>
+                                        <input type="hidden" class="media-sort" name="media[{{ $m->id }}][sort]" value="{{ $m->sort_order }}">
+                                        <div class="row"><span class="media-move"><button type="button" class="btn ghost sm" data-move="-1" aria-label="Move earlier">&#9664;</button><button type="button" class="btn ghost sm" data-move="1" aria-label="Move later">&#9654;</button></span>
                                             <label class="check small"><input type="checkbox" name="media[{{ $m->id }}][remove]" value="1"> Remove</label></div>
                                         <input type="text" name="media[{{ $m->id }}][alt]" value="{{ $m->alt }}" placeholder="Alt text" aria-label="Alt text">
                                     </figcaption>
                                 </figure>
                             @endforeach
                         </div>
-                        <span class="hint">Lowest order number shows first and is used on product cards.</span>
+                        <span class="hint">Drag a photo to change the order (on a phone, use the ◀ ▶ buttons). The first one is the main photo, shown on product cards. Press Save to keep the new order.</span>
+                        <script src="{{ asset('admin-assets/media-sort.js') }}?v=1" defer></script>
                     @endif
                     <label class="field"><span>Add files</span><input type="file" name="images[]" multiple accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"></label>
                     <span class="hint">JPG, PNG or WebP photos, MP4/WebM videos. Up to 50 MB each.</span>

@@ -213,3 +213,13 @@ select.status-select.cancelled { background-color: var(--bad-bg); color: var(--b
 @keyframes toast-in { from { opacity: 0; transform: translateY(-10px); } }
 @media (prefers-reduced-motion: reduce) { .live-dot i, .live-toast { animation: none; } }
 @media (max-width: 860px) { .live-dot { display: none; } }
+
+/* photo order: drag and drop */
+.media figure { position: relative; cursor: grab; transition: box-shadow .15s, opacity .15s; }
+.media figure.dragging { opacity: .45; cursor: grabbing; }
+.media figure.is-main { box-shadow: 0 0 0 2px var(--teal-800); }
+.media-main { display: none; position: absolute; top: 6px; left: 6px; z-index: 1; padding: 3px 8px; border-radius: 999px; background: var(--teal-800); color: #fff; font-size: 11px; font-weight: 600; }
+.media figure.is-main .media-main { display: block; }
+.media-move { display: inline-flex; gap: 4px; }
+.media-move .btn { padding: 3px 8px; min-height: 0; line-height: 1.2; }
+.media-move .btn:disabled { opacity: .35; }

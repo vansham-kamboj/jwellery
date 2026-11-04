@@ -32,7 +32,7 @@
     <title>@yield('title') · {{ $storeName }} admin</title>
     <link rel="icon" href="{{ asset('admin-assets/logo.png') }}">
     @if (config('store.fonts_url'))<link rel="stylesheet" href="{{ config('store.fonts_url') }}">@endif
-    <link rel="stylesheet" href="{{ asset('admin-assets/admin.css') }}?v=5">
+    <link rel="stylesheet" href="{{ asset('admin-assets/admin.css') }}?v=6">
 </head>
 <body data-live-url="{{ route('admin.live') }}" data-latest-order="{{ \App\Support\LiveStatus::latestOrderId() }}" data-signature="{{ \App\Support\LiveStatus::signature() }}">
 <div class="shell">
