@@ -2,9 +2,18 @@
    The API address comes from js/site-env.js, which frontend/build-env.js writes from frontend/.env.
    If there is no address or the API can't be reached, the built-in catalogue is used instead. */
 (() => {
+  // Removes the start-up logo screen (index.html #preload) once the shop or the notice is on screen.
+  const hidePreload = () => {
+    const p = document.getElementById('preload');
+    if (!p || p.classList.contains('done')) return;
+    p.classList.add('done');
+    setTimeout(() => p.remove(), 300);
+  };
   const startApp = () => {
     const s = document.createElement('script');
-    s.src = 'js/app.js?v=20261116';   // bump with the script tags in index.html after each update
+    s.src = 'js/app.js?v=20261117';   // bump with the script tags in index.html after each update
+    s.onload = hidePreload;
+    s.onerror = hidePreload;
     document.body.appendChild(s);
   };
 
@@ -84,6 +93,7 @@
       <h1>We’ll be right back</h1>
       <p>Our shop is taking a short break. This page will open by itself as soon as it’s ready.</p>
       <a href="${wa}/16477185454" target="_blank" rel="noopener">Message us on WhatsApp</a></main>`;
+    hidePreload();
   };
   const boot = () => connect().then(startApp, err => {
     console.warn('Store API unavailable — trying again shortly.', err);

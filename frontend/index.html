@@ -65,8 +65,17 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap">
   <link rel="stylesheet" href="css/pages.css">
   <link rel="stylesheet" href="css/styles.css?v=20261115">
+  <style>
+    /* Preloader: shows the logo while the shop loads, then fades away (js/api-loader.js removes it). */
+    #preload { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; background: var(--ivory, #fbf7f0); transition: opacity .25s ease; }
+    #preload.done { opacity: 0; pointer-events: none; }
+    #preload img { width: min(168px, 40vw); height: auto; animation: preload-in .5s ease both; }
+    @keyframes preload-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { #preload img { animation: none; } }
+  </style>
 </head>
 <body>
+  <div id="preload" aria-hidden="true"><img src="/assets/brand/avya-logo.png?v=20261103" alt="" width="168" height="76"></div>
   <div id="app"><!--shell:start-->
     <div class="sp sp-shell">
       <header class="sp-head">
@@ -101,6 +110,6 @@
   <script src="js/catalog-real.js?v=20261115"></script>
   <script>var STUDIO_SET = 'ivory';</script>
   <script src="js/catalog-purple.js?v=20261115"></script>
-  <script src="js/api-loader.js?v=20261115"></script>
+  <script src="js/api-loader.js?v=20261117"></script>
 </body>
 </html>
