@@ -223,3 +223,20 @@ select.status-select.cancelled { background-color: var(--bad-bg); color: var(--b
 .media-move { display: inline-flex; gap: 4px; }
 .media-move .btn { padding: 3px 8px; min-height: 0; line-height: 1.2; }
 .media-move .btn:disabled { opacity: .35; }
+
+/* ── Responsive polish (Nov 2026) ── */
+/* Top bar: menu button and page name stay on one line; long page names are shortened with "…". */
+.top > .toolbar:first-child { flex-wrap: nowrap; min-width: 0; }
+.top .crumbs { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 860px) {
+  .top { flex-wrap: wrap; row-gap: 10px; }
+  .burger { min-width: 40px; min-height: 40px; align-items: center; justify-content: center; }
+  /* Wide tables (5+ columns) scroll sideways instead of squeezing names into one word per line. */
+  .table-wrap table:has(th:nth-child(5)) { min-width: 680px; }
+  .table-wrap { -webkit-overflow-scrolling: touch; }
+}
+@media (max-width: 560px) {
+  /* Page actions move to their own row under the page name, lined up on the left. */
+  .top > .toolbar:last-child { width: 100%; justify-content: flex-start; }
+  .page-head h1 { font-size: 30px; }
+}

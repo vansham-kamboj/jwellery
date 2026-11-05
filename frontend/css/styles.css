@@ -1448,3 +1448,18 @@ body { font-weight: 400; }
 .co-done-more { min-height: clamp(50px, 3.4vw, 62px); font-size: clamp(12px, .8vw, 14px); font-weight: 500; color: #0d3d45; border-color: #0d3d45; }
 .co-wa-main { font-weight: 600; }
 @media (max-width: 760px) { .co-done { min-height: 0; align-items: flex-start; } .co-done-card { padding: 24px 18px; box-shadow: 0 0 0 1px #e3e5f0; } }
+
+/* ── Responsive polish (Nov 2026) ── */
+/* Small icon buttons get a 40px tap area without moving them (header search/call, grid view toggles). */
+.iv-iconbtn, .iv-viewas button { position: relative; }
+.iv-iconbtn::after { content: ""; position: absolute; inset: -11px; }
+.iv-viewas button::after { content: ""; position: absolute; inset: -10px -3px; }
+/* Easier-to-read small labels. */
+.iv-specs dt { font-size: 12px; }
+.iv-tag { font-size: 11px; }
+@media (max-width: 520px) {
+  /* Hero buttons: one per line at full width, so their labels never wrap onto two lines. */
+  .iv-slide-copy .iv-ctas { flex-direction: column; gap: 10px; }
+  .iv-slide-copy .iv-ctas .iv-btn { flex: none; width: 100%; padding: 15px 16px; }
+  .iv-story-facts dd { font-size: 11px; letter-spacing: .08em; }
+}
