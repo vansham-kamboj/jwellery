@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CatalogController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\InboxController;
 use App\Http\Controllers\Admin\OfferController;
 use App\Http\Controllers\Admin\OrderController;
@@ -39,6 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('finishes/{finish}', [CatalogController::class, 'saveFinish'])->name('finishes.update');
     Route::delete('finishes/{finish}', [CatalogController::class, 'deleteFinish'])->name('finishes.destroy');
 
+    Route::resource('homepage-slides', HeroSlideController::class)->except('show')->parameters(['homepage-slides' => 'heroSlide']);
     Route::resource('offers', OfferController::class)->except('show');
     Route::resource('reviews', ReviewController::class)->except('show');
 

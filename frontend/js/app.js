@@ -740,7 +740,8 @@
 
   /* ── Home hero: full-width photo carousel — slides by itself, arrows, dots and swipe ── */
   const HERO_IMG = f => '../assets/web/hero/' + f;
-  const heroSlides = () => [
+  // Built-in slides: used only when the store API is not set up. The real slides come from Admin → Homepage slides.
+  const fallbackSlides = () => [
     { img: 'jewellery', kicker: 'Avya Jewels · Mississauga', title: 'Silver jewellery. <i>Gold &amp; silver bars.</i>',
       text: '925 sterling silver jewellery, and 99.99% pure gold and silver bars and coins — all in one place.',
       ctas: [['Shop jewellery', '#/shop/' + jewelleryKey], ['Shop gold & silver', '#/shop/' + bullionKey]] },
@@ -757,13 +758,20 @@
       text: 'Royal Canadian Mint 1 kg and 100 oz bars, plus 1 oz coins.',
       ctas: [['Shop silver bars', '#/shop/silver-bars'], ['Ask today’s price', waLink('Hi Avya Jewels, could you share today’s silver price?')]] }
   ];
+  // Slides from the store (Admin → Homepage slides), already escaped by the server; empty list = no banner.
+  const heroSlides = () => {
+    const api = window.AVYA_API && window.AVYA_API.site && window.AVYA_API.site.slides;
+    if (api) return api.map(s => ({ img: s.image, mobile: s.mobile_image, kicker: s.kicker, title: s.title, text: s.text, ctas: s.buttons }));
+    return fallbackSlides().map(s => ({ img: HERO_IMG(s.img + '.webp'), mobile: HERO_IMG(s.img + '-m.webp'), kicker: s.kicker, title: s.title, text: s.text, ctas: s.ctas }));
+  };
   let heroAt = 0;
   function heroCarousel() {
     const slides = heroSlides(), n = slides.length;
+    if (!n) return '';
     return `<section class="iv-hero-car" aria-roledescription="carousel" aria-label="Featured at Avya Jewels">
       <div class="iv-car-track" style="transform:translateX(-${heroAt * 100}%)">
         ${slides.map((s, i) => { const on = i === heroAt, h = i ? 'h2' : 'h1'; return `<div class="iv-slide ${on ? 'on' : ''}" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${n}" ${on ? '' : 'aria-hidden="true"'}>
-          <picture><source media="(max-width: 760px)" srcset="${HERO_IMG(s.img + '-m.webp')}"><img src="${HERO_IMG(s.img + '.webp')}" alt="" ${i ? 'loading="lazy"' : 'fetchpriority="high"'} decoding="async"></picture>
+          <picture><source media="(max-width: 760px)" srcset="${s.mobile}"><img src="${s.img}" alt="" ${i ? 'loading="lazy"' : 'fetchpriority="high"'} decoding="async"></picture>
           <div class="iv-slide-copy"><span class="iv-label">${s.kicker}</span><${h} class="iv-slide-title">${s.title}</${h}><p>${s.text}</p>
             <div class="iv-ctas">${s.ctas.map(([l, href], j) => `<a href="${href}" class="iv-btn on-dark ${j ? 'ghost' : ''}" ${href.startsWith('http') ? 'target="_blank" rel="noopener"' : ''} ${on ? '' : 'tabindex="-1"'}>${l}</a>`).join('')}</div></div>
         </div>`; }).join('')}

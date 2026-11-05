@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Finish;
+use App\Models\HeroSlide;
 use App\Models\Product;
 use App\Models\Review;
 use App\Services\SpotPrices;
 use App\Support\Settings;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class CatalogController extends Controller
 {
@@ -23,6 +25,9 @@ class CatalogController extends Controller
             'categories' => Category::visible()->withCount(['products' => fn ($q) => $q->visible()])->get()
                 ->map(fn ($c) => ['slug' => $c->slug, 'name' => $c->name, 'kind' => $c->kind, 'group' => $c->group, 'description' => $c->description, 'image' => $c->image ? asset('uploads/'.$c->image) : null, 'count' => $c->products_count]),
             'finishes' => Finish::orderBy('sort_order')->get(['slug', 'name', 'swatch_hex']),
+            // Home-page photo banner, set in Admin → Homepage slides (empty list = no banner).
+            // Until "Run database updates" has created the table, null tells the storefront to use its built-in slides.
+            'slides' => Schema::hasTable('hero_slides') ? HeroSlide::visibleList()->map->toPublic()->values() : null,
             // Home-page reviews; empty until the team adds real ones in Admin → Reviews.
             'reviews' => Review::visible()->where('is_featured', true)->with('product:id,slug,name')->limit(12)->get()->map->toPublic(),
         ]);

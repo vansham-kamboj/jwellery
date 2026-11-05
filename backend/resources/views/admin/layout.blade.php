@@ -6,6 +6,7 @@
         'categories' => '<path d="M4 5h7v6H4zM13 5h7v6h-7zM4 13h7v6H4zM13 13h7v6h-7z"/>',
         'finishes' => '<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/>',
         'offers' => '<path d="M3 12l9-9h8v8l-9 9z"/><circle cx="16" cy="8" r="1.5"/>',
+        'slides' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 15l3-3 2 2 2-2 3 3"/><circle cx="9" cy="9" r="1"/>',
         'requests' => '<path d="M4 5h16v11H8l-4 4z"/>',
         'bookings' => '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',
         'reviews' => '<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.8z"/>',
@@ -17,7 +18,7 @@
     $newOrders = $liveCounts['orders'];
     $newRequests = $liveCounts['requests'];
     $nav = [
-        'Store' => [['dashboard', 'Dashboard', 'admin.dashboard', 'admin.dashboard', 0], ['orders', 'Orders', 'admin.orders.index', 'admin.orders.*', $newOrders]],
+        'Store' => [['dashboard', 'Dashboard', 'admin.dashboard', 'admin.dashboard', 0], ['orders', 'Orders', 'admin.orders.index', 'admin.orders.*', $newOrders], ['slides', 'Homepage slides', 'admin.homepage-slides.index', 'admin.homepage-slides.*', 0]],
         'Catalogue' => [['products', 'Products', 'admin.products.index', 'admin.products.*', 0], ['categories', 'Categories', 'admin.categories.index', 'admin.categories.*', 0], ['finishes', 'Finishes', 'admin.finishes.index', 'admin.finishes.*', 0], ['offers', 'Offers', 'admin.offers.index', 'admin.offers.*', 0]],
         'Customers' => [['requests', 'Custom requests', 'admin.requests.index', 'admin.requests.*', $newRequests], ['reviews', 'Reviews', 'admin.reviews.index', 'admin.reviews.*', 0], ['bookings', 'Bookings', 'admin.bookings.index', 'admin.bookings.*', 0], ['subscribers', 'Subscribers', 'admin.subscribers.index', 'admin.subscribers.*', 0]],
         'Setup' => [['settings', 'Settings', 'admin.settings.edit', 'admin.settings.*', 0]],
