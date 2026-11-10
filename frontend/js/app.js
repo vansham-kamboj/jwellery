@@ -15,7 +15,7 @@
 
   const state = {
     route: 'home', param: null, navOpen: false, filtersOpen: false, draft: { filter: 'All', ffin: 'Any' },
-    filter: 'All', ffin: 'Any', homeTab: 'All', barPick: GOLD.featured[1],
+    filter: 'All', ffin: 'Any', homeTab: 'All', barPick: GOLD.featured[1], size: null,
     pdp: { id: null, finish: null, size: null, added: false }, open: 0,
     justAdded: {}, gift: false, cart: store.get('cart', DEFAULT_CART).filter(l => byId(l.id)),
     ship: 'std', promo: '',
@@ -865,11 +865,14 @@
   const FILTER_ICON2 = svg('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>', 16);
   const availOk = p => state.inStock === state.outStock || (state.inStock ? !soldOut(p) : soldOut(p));
   const priceOk = (p, band = state.price) => { const b = PRICES.find(x => x[0] === band); return !b || (!onRequest(p) && p.price >= b[2] && p.price < b[3]); };
-  const pass = (p, skip) => (skip === 'avail' || availOk(p)) && (skip === 'metal' || !state.metal || metalOf(p).includes(state.metal)) && (skip === 'price' || priceOk(p));
+  const sizeOk = (p, size = state.size) => !size || !!(sizesOf(p) && sizesOf(p).opts.includes(size));
+  const sizeOptions = scope => [...new Set(scope.flatMap(p => (sizesOf(p) ? sizesOf(p).opts : [])))].sort((a, b) => parseFloat(a) - parseFloat(b));
+  const pass = (p, skip) => (skip === 'avail' || availOk(p)) && (skip === 'metal' || !state.metal || metalOf(p).includes(state.metal)) && (skip === 'price' || priceOk(p)) && (skip === 'size' || sizeOk(p));
   const activeFilters = () => [
     state.inStock !== state.outStock && [state.inStock ? 'In stock' : 'Out of stock', 'clearAvail', ''],
     state.metal && [state.metal, 'metal', state.metal],
-    state.price && [PRICES.find(x => x[0] === state.price)[1], 'price', state.price]
+    state.price && [PRICES.find(x => x[0] === state.price)[1], 'price', state.price],
+    state.size && ['Ring size ' + state.size, 'size', state.size]
   ].filter(Boolean);
 
   function filterPanel(scope, isBullion, tabs) {
@@ -887,6 +890,7 @@
             ${opt('checkbox', state.inStock, 'avail', 'inStock', 'In stock', scope.filter(p => pass(p, 'avail') && !soldOut(p)).length)}
             ${opt('checkbox', state.outStock, 'avail', 'outStock', 'Out of stock', scope.filter(p => pass(p, 'avail') && soldOut(p)).length)}</fieldset>
           ${isBullion ? '' : `<fieldset><legend>Metal</legend>${Object.keys(METALS).map(m => opt('checkbox', state.metal === m, 'metal', m, m, scope.filter(p => pass(p, 'metal') && metalOf(p).includes(m)).length, `<i class="iv-fsw" style="background:${METAL_SW[m]}"></i>`)).join('')}</fieldset>`}
+          ${sizeOptions(scope).length ? `<fieldset><legend>Ring size</legend>${sizeOptions(scope).map(v => opt('checkbox', state.size === v, 'size', v, v, scope.filter(p => pass(p, 'size') && sizeOk(p, v)).length)).join('')}</fieldset>` : ''}
           ${priced ? `<fieldset><legend>Price</legend>${PRICES.map(([k, l]) => opt('checkbox', state.price === k, 'price', k, l, scope.filter(p => pass(p, 'price') && priceOk(p, k)).length)).join('')}</fieldset>` : ''}
         </div>
         <div class="iv-drawer-foot"><button class="iv-btn ghost sm" data-act="clearAll" ${activeFilters().length ? '' : 'disabled'}>Clear all</button><button class="iv-btn sm" data-act="drawer">Show ${n} piece${n === 1 ? '' : 's'}</button></div>
@@ -900,6 +904,7 @@
     const isBullion = !!(group && group.bullion);
     const q = (state.q || '').trim();
     const scope = REAL().filter(p => inFilter(p, f) && (!q || matchQ(p, q)));
+    if (state.size && !sizeOptions(scope).includes(state.size)) state.size = null;   // a ring size picked on Rings doesn't follow you to Bracelets
     const list = sortList(scope.filter(p => pass(p)), state.sort);
     const tabs = group ? [[group.key, 'All'], ...group.cats.map(c => [c.slug, c.name])] : [['All', 'Everything'], ...GROUPS.map(g => [g.key, g.name])];
     const lead = esc((catOf(f) || {}).description || (group && GROUP_COPY[group.key]) || '925 silver rings, bracelets and kids’ jewellery, and 99.99% pure gold and silver bars and coins.');
@@ -1324,7 +1329,8 @@
     avail: k => set({ [k]: !state[k] }),
     clearAvail: () => set({ inStock: false, outStock: false }),
     price: k => set({ price: state.price === k ? null : k }),
-    clearAll: () => set({ inStock: false, outStock: false, metal: null, price: null }),
+    size: v => set({ size: state.size === v ? null : v }),
+    clearAll: () => set({ inStock: false, outStock: false, metal: null, price: null, size: null }),
     drawer: () => {
       set({ drawer: state.drawer ? false : 'opening' });   // 'opening' plays the slide-in once
       if (state.drawer) state.drawer = true;
