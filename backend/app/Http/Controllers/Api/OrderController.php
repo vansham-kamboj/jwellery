@@ -35,7 +35,7 @@ class OrderController extends Controller
         $d = $request->validate(self::LINE_RULES + [
             'customer.name' => 'required|string|max:120',
             'customer.phone' => ['required', 'string', 'max:40', 'regex:/^[0-9+()\-\s.]{7,}$/'],
-            'customer.email' => 'nullable|email|max:160',
+            'customer.email' => 'required|email|max:160',
             'customer.address' => 'nullable|string|max:200',
             'customer.city' => 'nullable|string|max:80',
             'customer.postal_code' => 'nullable|string|max:12',

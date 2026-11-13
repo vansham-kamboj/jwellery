@@ -99,6 +99,9 @@ class OrderPlacer
         $out[] = '';
         $out[] = 'Name: '.$order->customer_name;
         $out[] = 'Phone: '.$order->customer_phone;
+        if ($order->customer_email) {
+            $out[] = 'Email: '.$order->customer_email;
+        }
         if ($order->address) {
             $out[] = 'Address: '.implode(', ', array_filter([$order->address, $order->city, trim($order->province.' '.$order->postal_code)]));
         }
