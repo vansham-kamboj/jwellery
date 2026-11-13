@@ -1104,7 +1104,7 @@
         <div class="grid-2">
           ${field('Full name', 'name', 'required autocomplete="name"')}
           ${field('Phone (WhatsApp)', 'phone', 'required type="tel" autocomplete="tel" pattern="[0-9+()\\-\\s.]{7,}"')}
-          ${field('Email', 'email', 'required type="email" autocomplete="email"', 'style="grid-column:1/-1"')}
+          ${field('Email (required)', 'email', 'required type="email" autocomplete="email"', 'style="grid-column:1/-1"')}
         </div>
         <div class="stack" style="gap:10px"><h3>Delivery</h3>
           ${SHIP.map(o => { const ok = !o.minOrder || t.goods >= o.minOrder; return `<label class="radio option-box tinted ${t.opt && t.opt.id === o.id ? 'on' : ''} ${ok ? '' : 'disabled'}" ${ok ? '' : 'style="opacity:.85"'}><span class="row" style="gap:12px"><input type="radio" name="ship" data-set="ship" value="${esc(o.id)}" ${t.opt && t.opt.id === o.id ? 'checked' : ''} ${ok ? '' : 'disabled'}><span class="dot"></span><span class="stack"><span>${esc(o.name)}</span><span style="font-size:12px" class="muted">${esc(ok ? o.eta : 'Available on orders over $' + o.minOrder)}</span></span></span><span>${o.price ? money(o.price) : 'Free'}</span></label>`; }).join('')}</div>
