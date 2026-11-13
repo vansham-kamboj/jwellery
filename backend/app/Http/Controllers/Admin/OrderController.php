@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
@@ -40,5 +41,34 @@ class OrderController extends Controller
         }
 
         return back()->with('ok', 'Order '.$order->code.' updated.');
+    }
+
+    public function updateDetails(Request $request, Order $order)
+    {
+        $d = $request->validate([
+            'customer_name' => 'required|string|max:120',
+            'customer_phone' => 'required|string|max:40',
+            'customer_email' => 'nullable|email|max:120',
+            'address' => 'nullable|string|max:200',
+            'city' => 'nullable|string|max:80',
+            'province' => 'nullable|string|max:40',
+            'postal_code' => 'nullable|string|max:10',
+            'note' => 'nullable|string|max:1000',
+        ]);
+        $order->update($d);
+
+        return back()->with('ok', 'Order '.$order->code.' details saved.');
+    }
+
+    /** Removes the order and its items. Orders never change stock, so nothing is put back. */
+    public function destroy(Order $order)
+    {
+        $code = $order->code;
+        DB::transaction(function () use ($order) {
+            $order->items()->delete();
+            $order->delete();
+        });
+
+        return redirect()->route('admin.orders.index')->with('ok', 'Order '.$code.' deleted.');
     }
 }

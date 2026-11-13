@@ -27,6 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::patch('orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+    Route::patch('orders/{order}/details', [OrderController::class, 'updateDetails'])->name('orders.details');
+    Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
     Route::resource('products', ProductController::class)->except('show');
     Route::post('products/{product}/duplicate', [ProductController::class, 'duplicate'])->name('products.duplicate');

@@ -72,6 +72,31 @@
                     @if ($order->note)<dt>Note</dt><dd>{{ $order->note }}</dd>@endif
                 </dl>
             </section>
+            <section class="card card-pad grid" style="gap:12px">
+                <h3>Edit customer details</h3>
+                <form method="post" action="{{ route('admin.orders.details', $order) }}" class="grid" style="gap:10px">
+                    @csrf @method('PATCH')
+                    <label class="field"><span>Name</span><input name="customer_name" value="{{ old('customer_name', $order->customer_name) }}" required></label>
+                    <label class="field"><span>Phone</span><input name="customer_phone" value="{{ old('customer_phone', $order->customer_phone) }}" required></label>
+                    <label class="field"><span>Email</span><input type="email" name="customer_email" value="{{ old('customer_email', $order->customer_email) }}"></label>
+                    <label class="field"><span>Address</span><input name="address" value="{{ old('address', $order->address) }}"></label>
+                    <div class="grid" style="grid-template-columns:1fr 1fr 1fr;gap:10px">
+                        <label class="field"><span>City</span><input name="city" value="{{ old('city', $order->city) }}"></label>
+                        <label class="field"><span>Province</span><input name="province" value="{{ old('province', $order->province) }}"></label>
+                        <label class="field"><span>Postal code</span><input name="postal_code" value="{{ old('postal_code', $order->postal_code) }}"></label>
+                    </div>
+                    <label class="field"><span>Customer note</span><textarea name="note">{{ old('note', $order->note) }}</textarea></label>
+                    <button class="btn">Save details</button>
+                </form>
+            </section>
+            <section class="card card-pad grid" style="gap:12px">
+                <h3>Delete order</h3>
+                <p class="muted small">Removes this order and its items from the admin. This cannot be undone.</p>
+                <form method="post" action="{{ route('admin.orders.destroy', $order) }}" onsubmit="return confirm('Delete order {{ $order->code }}? This cannot be undone.');">
+                    @csrf @method('DELETE')
+                    <button class="btn danger">Delete order</button>
+                </form>
+            </section>
         </div>
     </div>
 @endsection

@@ -25,7 +25,7 @@
             <p class="empty">No orders{{ $search ? ' match “'.$search.'”' : '' }}.</p>
         @else
             <div class="table-wrap"><table>
-                <thead><tr><th>Order</th><th>Customer</th><th>Phone</th><th>Items</th><th>Status</th><th class="num">Total</th><th>Placed</th></tr></thead>
+                <thead><tr><th>Order</th><th>Customer</th><th>Phone</th><th>Items</th><th>Status</th><th class="num">Total</th><th>Placed</th><th>Actions</th></tr></thead>
                 <tbody>
                 @foreach ($orders as $o)
                     <tr>
@@ -36,6 +36,8 @@
                         <td>@include('admin.orders._status', ['order' => $o])</td>
                         <td class="num">${{ number_format($o->total, 2) }}</td>
                         <td class="muted">{{ $o->created_at->format('j M Y, H:i') }}</td>
+                        <td class="nowrap"><a href="{{ route('admin.orders.show', $o) }}" class="btn ghost sm">Edit</a>
+                            <form method="post" action="{{ route('admin.orders.destroy', $o) }}" style="display:inline" onsubmit="return confirm('Delete order {{ $o->code }}? This cannot be undone.');">@csrf @method('DELETE')<button class="btn danger sm">Delete</button></form></td>
                     </tr>
                 @endforeach
                 </tbody>
