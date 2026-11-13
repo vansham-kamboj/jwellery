@@ -20,7 +20,7 @@ backend/public/uploads/products/silver-pendant-set-no-19/WNbbr1rJMggRkRGxUOudBMi
 backend/public/uploads/products/silver-pendant-set-no-20/l6ePVzn3PNOQ2nb1lKO2qF2j.webp
 backend/public/uploads/products/silver-pendant-set-no-21/x4hamX7UY5LKfBZ87T8cblYp.webp
 backend/public/uploads/products/silver-pendant-set-no-22/57JRSE1BpJOeP2WtnWd7lPLc.webp
-backend/public/uploads/products/silver-pendant-set-no-23/EWflc3v8TQyiFF8dIcN68zQI.webp
+backend/public/uploads/products/silver-pendant-set-no-23/vS63eD9uBFGlAVuqUIljx881.webp
 backend/public/uploads/products/silver-pendant-set-no-24/9zu76gBzxyIhwR8mbK9hh8Zq.webp
 backend/public/uploads/products/silver-pendant-set-no-25/DIgHO6Hv3UF2O22rQmCqhWlZ.webp
 backend/public/uploads/products/silver-pendant-set-no-26/6s6wLVKPKyD5tLPkitMcqx8n.webp
