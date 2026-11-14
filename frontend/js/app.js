@@ -981,11 +981,13 @@
       + `<div class="iv-pdp-links">${extra.map(([l, h]) => `<a href="${h}" target="_blank" rel="noopener">${l}</a>`).join('')}<button type="button" data-act="share">Share</button></div>`;
     // Weight comes only when the team chose to show it; bars and coins read as oz / kg, jewellery as exact grams.
     const weight = g => !g ? null : p.bullion ? (Math.abs(g / 31.1035 - Math.round(g / 31.1035)) < 0.01 ? Math.round(g / 31.1035) + ' oz' : (g >= 1000 ? g / 1000 + ' kg' : +(+g).toFixed(1) + ' g')) : +(+g).toFixed(2) + ' g';
+    // Fine (999) silver pieces such as bowls and spoons are not 925 sterling, so their purity and notes say so.
+    const fineSilver = !p.bullion && p.metal !== 'gold' && p.purity === '999';
     const details = (p.bullion
       ? [['Weight', weight(p.grams)], ['Purity', p.metal === 'gold' ? '.9999 pure gold' : '0.9999 pure silver'], ['Brand / mint', p.brand], ['Design', p.design], ['Packaging', p.packaging], ['Assay certificate', p.certificate ? 'Included' : null], ['Product code', p.sku]]
-      : [['Metal', (p.metal || (/gold/i.test(p.material || '') && !/silver/i.test(p.material || '') ? 'gold' : 'silver')).replace(/^./, m => m.toUpperCase())], ['Purity', p.metal === 'gold' ? (p.purity || 'Hallmarked gold') : (p.purity || '925') + ' · hallmarked & stamped'], ['Weight', weight(p.grams)], ['Product code', p.sku]]
+      : [['Metal', (p.metal || (/gold/i.test(p.material || '') && !/silver/i.test(p.material || '') ? 'gold' : 'silver')).replace(/^./, m => m.toUpperCase())], ['Purity', p.metal === 'gold' ? (p.purity || 'Hallmarked gold') : fineSilver ? '999 fine silver' : (p.purity || '925') + ' · hallmarked & stamped'], ['Weight', weight(p.grams)], ['Product code', p.sku]]
     ).filter(([, v]) => v);
-    const notes = [p.bullion ? (p.metal === 'gold' ? 'Certified .9999 pure gold' : 'Certified 0.9999 pure silver') : p.metal === 'gold' ? 'Hallmarked gold' : 'Hallmarked 925 silver', 'Free GTA delivery over $200', 'Pick-up in Mississauga', 'All sales final'];
+    const notes = [p.bullion ? (p.metal === 'gold' ? 'Certified .9999 pure gold' : 'Certified 0.9999 pure silver') : p.metal === 'gold' ? 'Hallmarked gold' : fineSilver ? '999 fine silver' : 'Hallmarked 925 silver', 'Free GTA delivery over $200', 'Pick-up in Mississauga', 'All sales final'];
     return `
     <section class="iv-pdp">
       <div class="iv-gallery">
