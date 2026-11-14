@@ -512,7 +512,8 @@
   const jewelleryKey = (GROUPS.find(g => !g.bullion) || { key: 'All' }).key;
 
   /* ── Prices, stock and actions per piece ── */
-  const onRequest = p => p.priceOnRequest || (p.bullion ? !STORE.showBullionPrices : p.metal === 'gold');
+  // Live products: the store API decides (it knows about fixed-price bars and coins). Built-in demo pieces use the old rule.
+  const onRequest = p => p.real ? !!p.priceOnRequest : (p.bullion ? !STORE.showBullionPrices : p.metal === 'gold');
   const soldOut = p => p.inStock === false;   // set only by the admin's "In stock" tick box
   const comingSoon = p => soldOut(p) && /coming soon/i.test(p.tag || '');   // listed on the sheet, not for sale yet
   const priceHtml = p => comingSoon(p) ? 'Coming soon' : onRequest(p) ? 'Price on request'
