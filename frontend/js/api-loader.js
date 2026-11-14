@@ -11,7 +11,7 @@
   };
   const startApp = () => {
     const s = document.createElement('script');
-    s.src = 'js/app.js?v=20261123';   // bump with the script tags in index.html after each update
+    s.src = 'js/app.js?v=20261124';   // bump with the script tags in index.html after each update
     s.onload = hidePreload;
     s.onerror = hidePreload;
     document.body.appendChild(s);
@@ -39,7 +39,7 @@
       sizes, rating: null, reviews: 0, bullion, short: d.short_name, metal: d.metal, grams: d.weight_grams, purity: d.purity, sku: d.sku,
       brand: d.brand, design: d.design, packaging: d.packaging, certificate: d.certificate,
       featured: !!d.is_featured, bestseller: !!d.is_bestseller, taxExempt: d.tax_exempt, confirmed: true, customerReviews: d.reviews || [],
-      perks: bullion ? BULLION_PERKS : JEWELLERY_PERKS, accordions: bullion ? BULLION_DETAILS : JEWELLERY_DETAILS
+      perks: bullion ? BULLION_PERKS : JEWELLERY_PERKS, accordions: bullion ? BULLION_DETAILS : (['silver-bowls', 'silver-spoons'].includes(d.category.slug) ? JEWELLERY_DETAILS.slice(1) : JEWELLERY_DETAILS)
     };
   };
 
