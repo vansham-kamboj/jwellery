@@ -11,7 +11,7 @@
   };
   const startApp = () => {
     const s = document.createElement('script');
-    s.src = 'js/app.js?v=20261122';   // bump with the script tags in index.html after each update
+    s.src = 'js/app.js?v=20261123';   // bump with the script tags in index.html after each update
     s.onload = hidePreload;
     s.onerror = hidePreload;
     document.body.appendChild(s);
