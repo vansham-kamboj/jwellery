@@ -34,6 +34,7 @@
                                 <option value="bullion" @selected(old('kind', $product->kind) === 'bullion')>Bullion (coins, bars)</option>
                             </select></label>
                         <label class="field"><span>Price (before offers)</span><input type="number" name="price" step="0.01" min="0" value="{{ old('price', $product->price) }}" required>@error('price')<span class="err">{{ $message }}</span>@enderror</label>
+                        <label class="check"><input type="hidden" name="show_fixed_price" value="0"><input type="checkbox" name="show_fixed_price" value="1" @checked(old('show_fixed_price', $product->show_fixed_price))> Show this fixed price on the site (bullion only; coins that aren't priced at the live market rate)</label>
                         <label class="field"><span>Tag</span><input type="text" name="tag" value="{{ old('tag', $product->tag) }}" placeholder="New, Bestseller…"></label>
                         <label class="field"><span>Material line</span><input type="text" name="material" value="{{ old('material', $product->material) }}" placeholder="Sterling silver · cubic zirconia"></label>
                         <label class="field"><span>Short name</span><input type="text" name="short_name" value="{{ old('short_name', $product->short_name) }}" placeholder="1 oz coin"></label>

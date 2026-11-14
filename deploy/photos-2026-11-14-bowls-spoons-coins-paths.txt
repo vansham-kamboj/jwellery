@@ -1,0 +1,10 @@
+backend/public/uploads/products/shared/silver-bowl-1.webp
+backend/public/uploads/products/shared/silver-bowl-2.webp
+backend/public/uploads/products/shared/silver-bowl-3.webp
+backend/public/uploads/products/shared/silver-bowl-4.webp
+backend/public/uploads/products/shared/silver-spoon-1.webp
+backend/public/uploads/products/shared/silver-spoon-2.webp
+backend/public/uploads/products/shared/diwali-5g-front.webp
+backend/public/uploads/products/shared/diwali-5g-back.webp
+backend/public/uploads/products/shared/diwali-10g-front.webp
+backend/public/uploads/products/shared/diwali-10g-back.webp
