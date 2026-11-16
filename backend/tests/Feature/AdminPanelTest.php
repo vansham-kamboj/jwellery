@@ -153,4 +153,26 @@ class AdminPanelTest extends TestCase
             ->assertJsonPath('settings.prices_include_tax', false);
         $this->assertNotNull(Settings::get('spot_updated_at'));
     }
+    public function test_dashboard_figures_follow_the_period_filter(): void
+    {
+        $make = function (string $code, string $status, float $total, $when) {
+            $o = Order::create(['code' => $code, 'customer_name' => 'P', 'customer_phone' => '4165550182', 'subtotal' => $total, 'total' => $total, 'status' => $status]);
+            $o->created_at = $when;
+            $o->save();
+        };
+        $make('AVY-1', 'new', 35, now());
+        $make('AVY-2', 'confirmed', 65, now());
+        $make('AVY-3', 'cancelled', 20, now());
+        $make('AVY-4', 'completed', 100, now()->subMonthNoOverflow()->startOfMonth()->addDays(2));
+
+        $this->actingAs($this->admin);
+        $this->get('/admin')->assertOk()
+            ->assertViewHas('stats', fn ($s) => $s['sales'] == 65 && $s['pending'] == 35 && $s['orders'] === 2 && $s['cancelled'] === 1);
+        $this->get('/admin?period=last_month')->assertOk()
+            ->assertViewHas('stats', fn ($s) => $s['sales'] == 100 && $s['pending'] == 0 && $s['salesCount'] === 1);
+        $this->get('/admin?period=all')->assertOk()
+            ->assertViewHas('stats', fn ($s) => $s['sales'] == 165 && $s['orderValue'] == 200 && $s['average'] == 82.5)
+            ->assertSee('All time');
+        $this->get('/admin?period=nonsense')->assertOk()->assertViewHas('period', 'month');
+    }
 }
