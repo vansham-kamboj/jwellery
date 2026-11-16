@@ -10,33 +10,34 @@
             <p class="muted">{{ now()->format('l, j F Y') }} · {{ $ordersToday }} {{ Str::plural('order', $ordersToday) }} today</p></div>
     </div>
 
-    <nav class="tabs" aria-label="Show figures for">
-        @foreach (\App\Http\Controllers\Admin\DashboardController::PERIODS as $key => $label)
-            <a href="{{ route('admin.dashboard', ['period' => $key]) }}" class="{{ $period === $key ? 'on' : '' }}">{{ $label }}</a>
-        @endforeach
-    </nav>
-    <p class="muted" style="margin:-6px 0 14px">{{ $periodLabel }} · {{ $rangeText }} · counted by the day each order was placed</p>
-
-    <div class="grid g3">
-        <div class="card stat accent"><b>${{ number_format($stats['sales'], 2) }}</b><span>Sales · {{ $stats['salesCount'] }} confirmed, shipped or completed {{ Str::plural('order', $stats['salesCount']) }}</span></div>
-        <a href="{{ route('admin.orders.index', ['status' => 'new']) }}" class="card stat"><b>${{ number_format($stats['pending'], 2) }}</b><span>Waiting to confirm · {{ $stats['pendingCount'] }} new {{ Str::plural('order', $stats['pendingCount']) }}</span></a>
-        <div class="card stat"><b>${{ number_format($stats['orderValue'], 2) }}</b><span>All orders · {{ $stats['orders'] }} {{ Str::plural('order', $stats['orders']) }}, not counting cancelled</span></div>
+    <div class="period-bar">
+        <nav class="tabs" aria-label="Show figures for">
+            @foreach (\App\Http\Controllers\Admin\DashboardController::PERIODS as $key => $label)
+                <a href="{{ route('admin.dashboard', ['period' => $key]) }}" class="{{ $period === $key ? 'on' : '' }}" @if ($period === $key) aria-current="page" @endif>{{ $label }}</a>
+            @endforeach
+        </nav>
+        <p class="muted">{{ $rangeText }}</p>
     </div>
 
-    <div class="grid g3">
-        <div class="card stat"><b>${{ number_format($stats['average'], 2) }}</b><span>Average sale</span></div>
-        <a href="{{ route('admin.orders.index', ['status' => 'cancelled']) }}" class="card stat"><b>{{ $stats['cancelled'] }}</b><span>Cancelled · ${{ number_format($stats['cancelledAmount'], 2) }}</span></a>
-        <a href="{{ route('admin.requests.index', ['status' => 'new']) }}" class="card stat"><b>{{ $openRequests }}</b><span>New custom requests</span></a>
+    <div class="grid g4">
+        <div class="card stat accent"><span>Sales</span><b>${{ number_format($stats['sales'], 2) }}</b><small>{{ $stats['salesCount'] }} confirmed, shipped or completed</small></div>
+        <a href="{{ route('admin.orders.index', ['status' => 'new']) }}" class="card stat"><span>Waiting to confirm</span><b>${{ number_format($stats['pending'], 2) }}</b><small>{{ $stats['pendingCount'] }} new {{ Str::plural('order', $stats['pendingCount']) }}</small></a>
+        <a href="{{ route('admin.orders.index') }}" class="card stat"><span>All orders</span><b>${{ number_format($stats['orderValue'], 2) }}</b><small>{{ $stats['orders'] }} {{ Str::plural('order', $stats['orders']) }}, not counting cancelled</small></a>
+        <div class="card stat"><span>Average sale</span><b>${{ number_format($stats['average'], 2) }}</b><small>Per confirmed order</small></div>
     </div>
 
-    <div class="grid g5">
-        @foreach (\App\Models\Order::STATUSES as $key => $label)
-            <a href="{{ route('admin.orders.index', ['status' => $key]) }}" class="card stat {{ $key === 'new' ? 'accent' : '' }}"><b>{{ $counts[$key] }}</b><span>{{ $label }}</span></a>
-        @endforeach
-    </div>
+    <section class="card">
+        <div class="card-head"><h2>Orders by status</h2><span class="muted">{{ $periodLabel }}</span></div>
+        <div class="status-strip">
+            @foreach (\App\Models\Order::STATUSES as $key => $label)
+                <a href="{{ route('admin.orders.index', ['status' => $key]) }}" class="{{ $key }}"><b>{{ $counts[$key] }}</b><span>{{ $label }}</span>@if ($key === 'cancelled')<small>${{ number_format($stats['cancelledAmount'], 2) }}</small>@endif</a>
+            @endforeach
+        </div>
+    </section>
 
-    <div class="grid g3">
-        <a href="{{ route('admin.products.index') }}" class="card stat"><b>{{ $products['total'] }}</b><span>Products · {{ $products['soldOut'] }} sold out · {{ $products['hidden'] }} hidden</span></a>
+    <div class="grid g2">
+        <a href="{{ route('admin.requests.index', ['status' => 'new']) }}" class="card stat"><span>New custom requests</span><b>{{ $openRequests }}</b><small>Waiting for a reply</small></a>
+        <a href="{{ route('admin.products.index') }}" class="card stat"><span>Products</span><b>{{ $products['total'] }}</b><small>{{ $products['soldOut'] }} sold out · {{ $products['hidden'] }} hidden</small></a>
     </div>
 
     <div class="split">
