@@ -10,6 +10,7 @@
         'requests' => '<path d="M4 5h16v11H8l-4 4z"/>',
         'bookings' => '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',
         'reviews' => '<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.8z"/>',
+        'manual' => '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/>',
         'subscribers' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
         'settings' => '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',
     ];
@@ -18,7 +19,7 @@
     $newOrders = $liveCounts['orders'];
     $newRequests = $liveCounts['requests'];
     $nav = [
-        'Store' => [['dashboard', 'Dashboard', 'admin.dashboard', 'admin.dashboard', 0], ['orders', 'Orders', 'admin.orders.index', 'admin.orders.*', $newOrders], ['slides', 'Homepage slides', 'admin.homepage-slides.index', 'admin.homepage-slides.*', 0]],
+        'Store' => [['dashboard', 'Dashboard', 'admin.dashboard', 'admin.dashboard', 0], ['orders', 'Orders', 'admin.orders.index', 'admin.orders.*', $newOrders], ['manual', 'Manual order', 'admin.manual-orders.create', 'admin.manual-orders.*', 0], ['slides', 'Homepage slides', 'admin.homepage-slides.index', 'admin.homepage-slides.*', 0]],
         'Catalogue' => [['products', 'Products', 'admin.products.index', 'admin.products.*', 0], ['categories', 'Categories', 'admin.categories.index', 'admin.categories.*', 0], ['finishes', 'Finishes', 'admin.finishes.index', 'admin.finishes.*', 0], ['offers', 'Offers', 'admin.offers.index', 'admin.offers.*', 0]],
         'Customers' => [['requests', 'Custom requests', 'admin.requests.index', 'admin.requests.*', $newRequests], ['reviews', 'Reviews', 'admin.reviews.index', 'admin.reviews.*', 0], ['bookings', 'Bookings', 'admin.bookings.index', 'admin.bookings.*', 0], ['subscribers', 'Subscribers', 'admin.subscribers.index', 'admin.subscribers.*', 0]],
         'Setup' => [['settings', 'Settings', 'admin.settings.edit', 'admin.settings.*', 0]],
@@ -33,7 +34,7 @@
     <title>@yield('title') · {{ $storeName }} admin</title>
     <link rel="icon" href="{{ asset('admin-assets/logo.png') }}">
     @if (config('store.fonts_url'))<link rel="stylesheet" href="{{ config('store.fonts_url') }}">@endif
-    <link rel="stylesheet" href="{{ asset('admin-assets/admin.css') }}?v=8">
+    <link rel="stylesheet" href="{{ asset('admin-assets/admin.css') }}?v=10">
 </head>
 <body data-live-url="{{ route('admin.live') }}" data-latest-order="{{ \App\Support\LiveStatus::latestOrderId() }}" data-signature="{{ \App\Support\LiveStatus::signature() }}">
 <div class="shell">
@@ -50,7 +51,7 @@
         <div class="side-foot">
             <div>{{ auth()->user()->name }}</div>
             <div class="small" style="color:#7fb4b7">{{ auth()->user()->email }}</div>
-            <form method="post" action="{{ route('admin.logout') }}">@csrf<button type="submit">Sign out</button></form>
+            <form method="post" action="{{ route('admin.logout') }}" data-saving="Signing out…">@csrf<button type="submit">Sign out</button></form>
         </div>
     </aside>
     <div class="main">
@@ -85,6 +86,7 @@
         if (msg && !confirm(msg)) e.preventDefault();
     });
 </script>
+<script src="{{ asset('admin-assets/feedback.js') }}?v=3" defer></script>
 <script src="{{ asset('admin-assets/live.js') }}?v=1" defer></script>
 </body>
 </html>

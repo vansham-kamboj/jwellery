@@ -38,9 +38,9 @@
                 @if ($editing && $slide->image)
                     <div class="grid" style="gap:6px"><span class="muted">Current photo</span><img src="{{ $photoUrl($slide->image) }}" alt="" style="width:100%;max-width:360px;border-radius:8px"></div>
                 @endif
-                <label class="field"><span>{{ $editing ? 'Replace the photo' : 'Photo' }}</span><input type="file" name="image_file" accept="image/jpeg,image/png,image/webp" {{ $editing ? '' : 'required' }}>@error('image_file')<span class="err">{{ $message }}</span>@enderror<span class="hint">Wide landscape photo works best. Large photos are resized and saved as WebP automatically.</span></label>
+                <label class="field"><span>{{ $editing ? 'Replace the photo' : 'Photo' }}</span><input type="file" name="image_file" data-max-mb="8" accept="image/jpeg,image/png,image/webp" {{ $editing ? '' : 'required' }}>@error('image_file')<span class="err">{{ $message }}</span>@enderror<span class="hint">Wide landscape photo works best. Large photos are resized and saved as WebP automatically.</span></label>
 
-                <label class="field"><span>Phone photo (optional)</span><input type="file" name="mobile_file" accept="image/jpeg,image/png,image/webp">@error('mobile_file')<span class="err">{{ $message }}</span>@enderror<span class="hint">A taller crop for phones. If you leave it empty, the main photo is used.</span></label>
+                <label class="field"><span>Phone photo (optional)</span><input type="file" name="mobile_file" data-max-mb="8" accept="image/jpeg,image/png,image/webp">@error('mobile_file')<span class="err">{{ $message }}</span>@enderror<span class="hint">A taller crop for phones. If you leave it empty, the main photo is used.</span></label>
                 @if ($editing && $slide->mobile_image)
                     <label class="check"><input type="checkbox" name="remove_mobile" value="1"> Remove the phone photo</label>
                 @endif

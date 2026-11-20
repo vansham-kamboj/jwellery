@@ -8,8 +8,9 @@
         <div><h1>Orders</h1><p class="muted">Customers send each order on WhatsApp. Change the status right in the list once it’s paid, shipped or done — it saves straight away.</p></div>
         <form method="get" class="inline-form">
             @if ($status)<input type="hidden" name="status" value="{{ $status }}">@endif
-            <input type="search" name="q" value="{{ $search }}" placeholder="Code, name or phone" aria-label="Search orders" style="width:240px">
+            <input type="search" name="q" value="{{ $search }}" placeholder="Code, name, phone or note" aria-label="Search orders" style="width:240px">
             <button class="btn ghost">Search</button>
+            <a href="{{ route('admin.manual-orders.create') }}" class="btn">+ Manual order</a>
         </form>
     </div>
 
@@ -30,8 +31,8 @@
                 @foreach ($orders as $o)
                     <tr>
                         <td><a href="{{ route('admin.orders.show', $o) }}" class="mono">{{ $o->code }}</a>@if ($o->needs_quote) <span class="badge new" title="Contains reserved bullion">Quote</span>@endif</td>
-                        <td>{{ $o->customer_name }}</td>
-                        <td class="muted">{{ $o->customer_phone }}</td>
+                        <td>@if ($o->isManual())<span class="badge quiet">Manual</span>@if ($o->note) <span class="muted small">{{ \Illuminate\Support\Str::limit($o->note, 60) }}</span>@endif @else{{ $o->customer_name }}@endif</td>
+                        <td class="muted">{{ $o->isManual() ? '—' : $o->customer_phone }}</td>
                         <td>{{ $o->items_count }}</td>
                         <td>@include('admin.orders._status', ['order' => $o])</td>
                         <td class="num">${{ number_format($o->total, 2) }}</td>

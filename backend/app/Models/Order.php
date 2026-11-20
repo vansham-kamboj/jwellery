@@ -10,6 +10,9 @@ class Order extends Model
 {
     public const STATUSES = ['new' => 'New', 'confirmed' => 'Confirmed', 'shipped' => 'Shipped', 'completed' => 'Completed', 'cancelled' => 'Cancelled'];
 
+    /** Orders added by hand in the admin (offline sales) carry this name and no phone; their details live in the note. */
+    public const MANUAL_NAME = 'Manual order';
+
     protected $guarded = ['id'];
 
     protected $casts = [
@@ -18,6 +21,11 @@ class Order extends Model
         'tax_rate' => 'decimal:2', 'tax' => 'decimal:2', 'total' => 'decimal:2',
         'confirmed_at' => 'datetime', 'shipped_at' => 'datetime', 'completed_at' => 'datetime', 'cancelled_at' => 'datetime',
     ];
+
+    public function isManual(): bool
+    {
+        return $this->customer_name === self::MANUAL_NAME && (string) $this->customer_phone === '';
+    }
 
     public function items(): HasMany
     {

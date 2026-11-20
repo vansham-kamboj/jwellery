@@ -1,13 +1,13 @@
 @extends('admin.layout')
 @section('title', $order->code)
 @section('crumbs')<a href="{{ route('admin.orders.index') }}">Orders</a> / {{ $order->code }}@endsection
-@section('top-actions')<a href="{{ $order->whatsappToCustomer() }}" target="_blank" rel="noopener" class="btn wa">Chat on WhatsApp</a>@endsection
+@section('top-actions')@unless ($order->isManual())<a href="{{ $order->whatsappToCustomer() }}" target="_blank" rel="noopener" class="btn wa">Chat on WhatsApp</a>@endunless @endsection
 
 @section('content')
     <div class="page-head">
         <div>
-            <h1>Order {{ $order->code }}</h1>
-            <p class="muted">Placed {{ $order->created_at->format('l j F Y, H:i') }} · <span class="badge {{ $order->status }}">{{ \App\Models\Order::STATUSES[$order->status] }}</span>
+            <h1>Order {{ $order->code }}@if ($order->isManual()) <span class="badge quiet" style="vertical-align:middle">Manual</span>@endif</h1>
+            <p class="muted">{{ $order->isManual() ? 'Added' : 'Placed' }} {{ $order->created_at->format('l j F Y, H:i') }} · <span class="badge {{ $order->status }}">{{ \App\Models\Order::STATUSES[$order->status] }}</span>
                 @if ($order->needs_quote) <span class="badge new">Reserved bullion — confirm today’s price</span>@endif</p>
         </div>
     </div>
@@ -32,17 +32,21 @@
                 </table></div>
                 <div class="totals">
                     <span class="muted">Subtotal</span><span class="num">${{ number_format($order->subtotal, 2) }}</span>
+                    @unless ($order->isManual())
                     @if ($order->discount_total > 0)<span class="muted">Offers applied</span><span class="num">−${{ number_format($order->discount_total, 2) }}</span>@endif
                     <span class="muted">Delivery ({{ $order->delivery_method }})</span><span class="num">{{ $order->delivery_fee > 0 ? '$'.number_format($order->delivery_fee, 2) : 'Free' }}</span>
                     @if ($order->gift_wrap)<span class="muted">Gift wrap</span><span class="num">${{ number_format($order->gift_wrap_fee, 2) }}</span>@endif
                     <span class="muted">Tax ({{ rtrim(rtrim(number_format($order->tax_rate, 3), '0'), '.') }}% {{ $order->province }})</span><span class="num">${{ number_format($order->tax, 2) }}</span>
+                    @endunless
                     <span class="grand">Total</span><span class="grand num">${{ number_format($order->total, 2) }} {{ $order->currency }}</span>
                 </div>
             </section>
+            @unless ($order->isManual())
             <section class="card card-pad grid" style="gap:12px">
                 <h3>WhatsApp message the customer sent</h3>
                 <pre class="msg">{{ $order->whatsapp_message }}</pre>
             </section>
+            @endunless
         </div>
 
         <div class="grid">
@@ -62,6 +66,17 @@
                     @endforeach
                 </dl>
             </section>
+            @if ($order->isManual())
+            <section class="card card-pad grid" style="gap:12px">
+                <h3>Note</h3>
+                <p class="muted small">Added by hand in the admin — there are no customer details on this order. Put a name or anything else worth keeping in the note.</p>
+                <form method="post" action="{{ route('admin.orders.note', $order) }}" class="grid" style="gap:10px">
+                    @csrf @method('PATCH')
+                    <label class="field"><span>Note</span><textarea name="note" maxlength="2000">{{ old('note', $order->note) }}</textarea></label>
+                    <button class="btn">Save note</button>
+                </form>
+            </section>
+            @else
             <section class="card card-pad grid" style="gap:12px">
                 <h3>Customer</h3>
                 <dl class="kv">
@@ -89,6 +104,7 @@
                     <button class="btn">Save details</button>
                 </form>
             </section>
+            @endif
             <section class="card card-pad grid" style="gap:12px">
                 <h3>Delete order</h3>
                 <p class="muted small">Removes this order and its items from the admin. This cannot be undone.</p>

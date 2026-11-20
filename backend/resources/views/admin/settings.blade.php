@@ -112,7 +112,7 @@
         @else
             <p class="muted">The database is up to date.</p>
         @endif
-        <form method="post" action="{{ route('admin.settings.migrate') }}">@csrf<button class="btn {{ count($pending) ? '' : 'ghost' }}">Run database updates</button></form>
+        <form method="post" action="{{ route('admin.settings.migrate') }}" data-saving="Running database updates… this can take a minute.">@csrf<button class="btn {{ count($pending) ? '' : 'ghost' }}">Run database updates</button></form>
     </section>
 
     <section class="card card-pad grid" style="gap:14px;max-width:560px">

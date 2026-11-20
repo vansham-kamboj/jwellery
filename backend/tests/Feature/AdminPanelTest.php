@@ -175,4 +175,43 @@ class AdminPanelTest extends TestCase
             ->assertSee('All time');
         $this->get('/admin?period=nonsense')->assertOk()->assertViewHas('period', 'month');
     }
+    public function test_manual_order_is_saved_as_confirmed_with_only_a_note(): void
+    {
+        $cat = Category::create(['name' => 'Rings', 'slug' => 'rings']);
+        $ring = Product::create(['category_id' => $cat->id, 'name' => 'Starflower Ring', 'slug' => 'starflower', 'price' => 50]);
+        $bowl = Product::create(['category_id' => $cat->id, 'name' => 'Silver Bowl', 'slug' => 'bowl', 'price' => 288, 'is_visible' => false]);
+        $this->actingAs($this->admin);
+
+        $this->get('/admin/manual-orders/create')->assertOk()->assertSee('Starflower Ring')->assertSee('Silver Bowl');
+
+        // Nothing picked: refused.
+        $this->post('/admin/manual-orders', ['note' => 'x'])->assertSessionHasErrors('lines');
+
+        // No note, no customer: still fine.
+        $this->post('/admin/manual-orders', ['lines' => [['product_id' => $ring->id, 'qty' => 2, 'price' => 45]]])->assertRedirect();
+        $plain = Order::latest('id')->first();
+        $this->assertSame('confirmed', $plain->status);
+        $this->assertNotNull($plain->confirmed_at);
+        $this->assertNull($plain->note);
+        $this->assertTrue($plain->isManual());
+        $this->assertEquals(90, $plain->total);
+        $this->get('/admin/orders/'.$plain->id)->assertOk()->assertSee('Manual')->assertDontSee('Chat on WhatsApp');
+
+        // With a note and two lines.
+        $this->post('/admin/manual-orders', [
+            'lines' => [['product_id' => $ring->id, 'qty' => 1, 'price' => 50], ['product_id' => $bowl->id, 'qty' => 1, 'price' => 280.5]],
+            'note' => 'Priya, paid cash at the shop',
+        ])->assertRedirect();
+        $order = Order::latest('id')->first();
+        $this->assertSame(2, $order->items()->count());
+        $this->assertEquals(330.5, $order->total);
+        $this->assertSame('Priya, paid cash at the shop', $order->note);
+
+        $this->get('/admin/orders?q=Priya')->assertOk()->assertSee($order->code);
+        $this->patch('/admin/orders/'.$order->id.'/note', ['note' => 'Priya K., paid by e-Transfer'])->assertRedirect();
+        $this->assertSame('Priya K., paid by e-Transfer', $order->fresh()->note);
+
+        // It counts as a sale on the dashboard.
+        $this->get('/admin?period=all')->assertViewHas('stats', fn ($s) => $s['sales'] == 420.5 && $s['salesCount'] === 2);
+    }
 }

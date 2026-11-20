@@ -63,7 +63,7 @@
                         <span class="hint">Drag a photo to change the order (on a phone, use the ◀ ▶ buttons). The first one is the main photo, shown on product cards. Press Save to keep the new order.</span>
                         <script src="{{ asset('admin-assets/media-sort.js') }}?v=1" defer></script>
                     @endif
-                    <label class="field"><span>Add files</span><input type="file" name="images[]" multiple accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"></label>
+                    <label class="field"><span>Add files</span><input type="file" name="images[]" data-max-mb="50" multiple accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"></label>
                     <span class="hint">JPG, PNG or WebP photos, MP4/WebM videos. Up to 50 MB each.</span>
                     @error('images.*')<span class="err">{{ $message }}</span>@enderror
                 </section>

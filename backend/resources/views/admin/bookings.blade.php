@@ -22,7 +22,7 @@
                         <td class="muted" style="max-width:260px">{{ $b->note ?: '—' }}</td>
                         <td>
                             <form method="post" action="{{ route('admin.bookings.update', $b) }}" class="inline-form">@csrf @method('PATCH')
-                                <select name="status" onchange="this.form.submit()" aria-label="Status">@foreach (\App\Models\Booking::STATUSES as $k => $label)<option value="{{ $k }}" @selected($b->status === $k)>{{ $label }}</option>@endforeach</select>
+                                <select name="status" onchange="this.form.requestSubmit()" aria-label="Status">@foreach (\App\Models\Booking::STATUSES as $k => $label)<option value="{{ $k }}" @selected($b->status === $k)>{{ $label }}</option>@endforeach</select>
                                 <noscript><button class="btn sm">Save</button></noscript>
                             </form>
                         </td>

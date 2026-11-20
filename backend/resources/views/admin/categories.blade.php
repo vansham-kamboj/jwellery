@@ -14,7 +14,7 @@
                 <tr>
                     <td style="width:150px">
                         @if ($c->image)<img src="{{ asset('uploads/'.$c->image) }}" alt="" class="thumb" style="border-radius:50%;margin-bottom:6px">@endif
-                        <input form="cat-{{ $c->id }}" type="file" name="image" accept="image/jpeg,image/png,image/webp" aria-label="Photo for {{ $c->name }}" style="max-width:140px;font-size:11px">
+                        <input form="cat-{{ $c->id }}" type="file" name="image" data-max-mb="8" accept="image/jpeg,image/png,image/webp" aria-label="Photo for {{ $c->name }}" style="max-width:140px;font-size:11px">
                         @if ($c->image)<label class="check small"><input form="cat-{{ $c->id }}" type="checkbox" name="remove_image" value="1"> Remove</label>@endif
                     </td>
                     <td><input form="cat-{{ $c->id }}" type="text" name="name" value="{{ $c->name }}" required aria-label="Name"></td>
@@ -43,7 +43,7 @@
             <label class="field"><span>Section on the site</span><input type="text" name="group" list="groups" placeholder="Silver Jewellery, Gold Jewellery, Bullion, Silver Utensils, Kids"></label>
             <label class="field"><span>Type</span><select name="kind"><option value="jewellery">Jewellery</option><option value="bullion">Bullion</option></select></label>
             <label class="field full"><span>Description</span><input type="text" name="description"></label>
-            <label class="field full"><span>Photo (optional, kept for later use)</span><input type="file" name="image" accept="image/jpeg,image/png,image/webp"><span class="hint">Not shown on the site at the moment — the home page uses icons.</span></label>
+            <label class="field full"><span>Photo (optional, kept for later use)</span><input type="file" name="image" data-max-mb="8" accept="image/jpeg,image/png,image/webp"><span class="hint">Not shown on the site at the moment — the home page uses icons.</span></label>
             <input type="hidden" name="is_visible" value="1">
             <div class="form-actions full"><button class="btn">Add category</button></div>
         </form>

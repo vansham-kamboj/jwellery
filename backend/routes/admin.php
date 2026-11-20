@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CatalogController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\InboxController;
+use App\Http\Controllers\Admin\ManualOrderController;
 use App\Http\Controllers\Admin\OfferController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
@@ -24,10 +25,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
     Route::get('live', [DashboardController::class, 'live'])->name('live');
 
+    Route::get('manual-orders/create', [ManualOrderController::class, 'create'])->name('manual-orders.create');
+    Route::post('manual-orders', [ManualOrderController::class, 'store'])->name('manual-orders.store');
+
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::patch('orders/{order}', [OrderController::class, 'update'])->name('orders.update');
     Route::patch('orders/{order}/details', [OrderController::class, 'updateDetails'])->name('orders.details');
+    Route::patch('orders/{order}/note', [OrderController::class, 'updateNote'])->name('orders.note');
     Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
     Route::resource('products', ProductController::class)->except('show');

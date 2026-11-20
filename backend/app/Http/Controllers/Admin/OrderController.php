@@ -17,7 +17,7 @@ class OrderController extends Controller
         $orders = Order::query()
             ->when(isset(Order::STATUSES[$status]), fn ($q) => $q->where('status', $status))
             ->when($search !== '', fn ($q) => $q->where(fn ($w) => $w->where('code', 'like', "%{$search}%")
-                ->orWhere('customer_name', 'like', "%{$search}%")->orWhere('customer_phone', 'like', "%{$search}%")))
+                ->orWhere('customer_name', 'like', "%{$search}%")->orWhere('customer_phone', 'like', "%{$search}%")->orWhere('note', 'like', "%{$search}%")))
             ->withCount('items')->latest()->paginate(25)->withQueryString();
 
         return view('admin.orders.index', ['orders' => $orders, 'status' => $status, 'search' => $search]);
@@ -41,6 +41,17 @@ class OrderController extends Controller
         }
 
         return back()->with('ok', 'Order '.$order->code.' updated.');
+    }
+
+    /** Manual orders have no customer fields: only the note can be changed. */
+    public function updateNote(Request $request, Order $order)
+    {
+        abort_unless($order->isManual(), 404);
+        $d = $request->validate(['note' => 'nullable|string|max:2000']);
+        $note = trim((string) ($d['note'] ?? ''));
+        $order->update(['note' => $note !== '' ? $note : null]);
+
+        return back()->with('ok', 'Note saved on '.$order->code.'.');
     }
 
     public function updateDetails(Request $request, Order $order)
